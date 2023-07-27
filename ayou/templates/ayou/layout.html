@@ -17,6 +17,11 @@
 <a href="{% url 'ayou:chat' %}"><button>chat salon</button></a>
 <a href="{% url 'ayou:account' %}"><button>account</button></a>
 <a href="{% url 'ayou:logout' %}"><button>Logout</button></a>
+<br>
+{% if name %}
+<p>logged in as {{ name }}</p>
+{% endif %}
+
 {% block body %}
 {% endblock %}
     </body>
