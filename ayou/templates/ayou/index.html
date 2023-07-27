@@ -1,0 +1,23 @@
+{% extends 'ayou/layout.html' %}
+
+{% block body %}
+       
+{% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+<h1>Welcome to Ayou index</h1>
+<h3>Please log in to meet your new self</h3>
+
+<form action="{% url 'ayou:login' %}" method="POST" >
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="login">
+   
+   
+</form>
+
+
+
+{% endblock %}
+

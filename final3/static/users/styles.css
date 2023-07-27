@@ -1,0 +1,11 @@
+h1 {
+    
+    font-size: 3rem;
+    color: rgb(0, 0, 0);
+    text-align: center;
+}
+body {
+    /* background-color: black; */
+    background-image: url(/static/users/imgs/red.jpg);
+    font-family : Verdana, Geneva, Tahoma, sans-serif;
+}

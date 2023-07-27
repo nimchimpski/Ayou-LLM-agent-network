@@ -1,0 +1,15 @@
+{% extends 'ayou/layout.html' %}
+{% block body %}
+
+<h1>chat with {{ name }} </h1>
+
+<form action="{% url 'ayou:chat' %}" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit">
+        <h3>Response: {{ responsecontent }}</h3>
+        <br>
+     <h3>tokens used in chat: {{ tokensused }}</h3>
+     <h3>tokens used in session: {{ sessiontokens }}</h3>
+
+        {% endblock %}

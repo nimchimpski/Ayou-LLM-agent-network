@@ -1,0 +1,27 @@
+{% extends 'ayou/layout.html' %}
+
+{% block body %}
+       
+
+
+
+
+<h3>Present Details</h3>
+<ul>{% for detail in Present %}
+    <li>{{ detail.item }} : {{ detail.description}}<h4> <button>CHANGE THIS</button></h4></li>
+    {% endfor %}
+    </ul>
+<h4><button>Add Detail</button></h4>
+
+
+
+<h3>Memories</h3>
+<ul>{% for memory in memories%}
+<li>{{ memory.date }} : {{ memory.description}} : {{memory.emotion}} <h4> <button>FORGET THIS</button></h4></li>
+{% endfor %}
+</ul>
+
+
+
+{% endblock %}
+

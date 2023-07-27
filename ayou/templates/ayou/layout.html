@@ -1,0 +1,23 @@
+
+
+
+<!DOCTYPE html>
+<html lang="eng">
+    <head>
+
+        <link href="/static/ayou/styles.css"  rel="stylesheet">
+        <title>ayou</title>
+    </head>
+    <body>
+
+<a href="{% url 'ayou:login' %}"><button>home/user</button></a>
+<a href="{% url 'ayou:memories' %}"><button>Memories</button></a>
+<a href="{% url 'ayou:social' %}"><button>social</button></a>
+
+<a href="{% url 'ayou:chat' %}"><button>chat salon</button></a>
+<a href="{% url 'ayou:account' %}"><button>account</button></a>
+<a href="{% url 'ayou:logout' %}"><button>Logout</button></a>
+{% block body %}
+{% endblock %}
+    </body>
+</html>
