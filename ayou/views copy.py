@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 import requests, os, openai
 # from dotenv import load_dotenv
-from .models import Memory, Biographyitem, Chat
+# from .models import Memory, Biographyitem, Chat
 
 
 class NewLoginForm(forms.Form):
@@ -22,7 +22,10 @@ class NewChatForm(forms.Form):
 openai.api_key = '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'
 
 namequery = Biographyitem.objects.get(item='firstname')
+
+
 memoryquery = Memory.objects.all()
+
 print('>>> memoryquery ', memoryquery)
 memories = []
 for memory in memoryquery:
@@ -72,11 +75,10 @@ def logout_view(request):
     return HttpResponseRedirect(reverse('ayou:login'))
 
 def chat(request):
-
-
     
     if request.method == 'POST':
         form = NewChatForm(request.POST)
+
         # print('>>> ', name)
         if form.is_valid():
             startnewchat = form.cleaned_data['startnewchat']
@@ -126,12 +128,16 @@ def chat(request):
             },
             }
             ]
+
             # get the openAI response
             completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo", messages = messagesforcompletion, max_tokens = 200, temperature=1, functions=functions, function_call='auto')
             print('>>> completion> ', completion)
+
             responsecontent = completion.choices[0].message['content']
             tokens = completion.usage.total_tokens
+                
+
             print('>>> total_tokens ', tokens)
             responsedict = completion.choices[0].message
             print('>>> responsedict> ', responsedict, type(responsedict))
@@ -142,6 +148,7 @@ def chat(request):
             thischat.messages = allmessages
             thischat.save()
             # look up a memory
+
             name = request.user.username
             return render(request, 'ayou/chat.html', {'form': form, 'responsecontent': responsecontent, 'tokensused': tokens, 'firstname': name})
         else:
