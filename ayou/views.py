@@ -64,16 +64,14 @@ def logout_view(request):
 def chat(request):
     name = request.user.username
     userid = request.user.id
-    nickname = request.user.username
-
-    print(f':::usernam {nickname}')
-    print(">>>chatF name> ", name)
+    print('>>> = maincode \n... = inside IF \n--- = inside ELSE \n/// = inside  FUNCTION')
+    print(">>>  username ", name)
     
 
-    def getusermemories(users_id):
-        print("/// userid mfn ", userid)
+    def getmemorieslist(users_id):
+        # print("/// userid mfn ", userid)
         memoryquery = Memory.objects.filter(user=users_id)
-        print("/// memoryquery mmfn ", memoryquery)
+        # print("/// memoryquery mmfn ", memoryquery)
         memories = []
         for memory in memoryquery:
             memorydict = {
@@ -81,14 +79,18 @@ def chat(request):
                 "description": memory.description,
                 "emotion": memory.emotion
             }
-            print(f'/// Memory: {memory}')
+            # print(f'/// Memory: {memory}')
             memories.append(memorydict)
-        print("/// memorieslist  mfn ", memories)
+        # print("/// memorieslist  mfn ", memories)
         return memories
 
     def getmemorycontent(memory_id):
         memory = Memory.objects.get(id=memory_id)
         return json.dumps(memory.content)
+    
+    systemprompt = f'You are the busy, slightly grumpy  clone of {name} complete with memories and feelings.  Keep your answers to no more than 2 sentences.  You  remember many things. Introduce yourself as {name}. Remember to look at your available functions and memories, and elaborate on them when asked.  Never give an empty answer!!!.'
+    systemmessage = {"role": "system", "content": systemprompt}
+    exampleassistantmessage = {"role": "assistant", "content": f"Hey! My names {name}. I'm actually a replica of {name}, and I remember quite a bit about my past. Not all my memories are good, but I'm happy to share them with you. I'm also happy to answer any questions you have about what I'm doing now, or about my past."}
     
 
     if request.method == "POST":
@@ -100,45 +102,36 @@ def chat(request):
             # ensure there is a chat
             if not Chat.objects.all() or startnewchat:
                 thischat = Chat.objects.create()
-                print(">>> new thisChat> ", thischat)
+                print("... NEW thisChat > ", thischat)
 
-                
-            # print(">>> num chats  ", Chat.objects.count())
+                messagechain = []
+                messagechain.append(systemmessage)
+                messagechain.append(exampleassistantmessage)
+                # print("... messagechain ", messagechain, type(messagechain))
+            else:
+                print('--- there is a chat')
+                thischat = Chat.objects.order_by("id").last()
+                # print("--- thischat/type ", thischat, type(thischat))
+                messagechain = thischat.messages
+                # print("--- messagechain/type ", messagechain, type(messagechain))
             usercontent = form.cleaned_data["usercontent"]
-            thischat = Chat.objects.order_by("id").last()
-            # print(">>> thischat.id ", thischat.id)
-            print(
-                ">>> thischat msgs>>>type ", thischat.messages, type(thischat.messages)
-            )
-            # create new message dict with form data
-            newusermessagedict = {"role": "user", "content": usercontent}
-            # print(">>> newusermessagedict ", newusermessagedict)
-            # append the newusermessagedict to the stored message list
-            # get the existing messages list/create it,  and append newmessage
-            allmessages = thischat.messages or []
-            allmessages.append(newusermessagedict)
-            # print(">>> thischat.messages ", thischat.messages, type(thischat.messages))
-            # print(">>> allmessages type  ", type(allmessages))
-            # print(">>> allmessages ", allmessages)
+            print(">>> usercontent ", usercontent)
 
-            
-            
-            # add system message
-            memorieslist = getusermemories(userid)
-            systemprompt = f'You are the helpful digital representation of {name}.  Keep your answers to no more than 2 sentences. Your digital mind is still young and you have a lot to learn. But you also remember quite a lot'
-            systemmessage = {"role": "system", "content": systemprompt}
-            messagesforcompletion = allmessages.copy()
-            messagesforcompletion.append(systemmessage)
-            # print(">>> asystemmessage ", systemmessage)
-            print('>>> memorieslist ', memorieslist)    
+            newusermessagedict = {"role": "user", "content": usercontent}            
+            messagechain.append(newusermessagedict)
+            print(">>> messagechain at start   ", messagechain)
 
-            #   >>>>>>>>>>  messagesforcompletion now has the user message and the system prompt
+            """
+                    now we have a messagechain with the user's message at the end
 
-            # define the functions
+            """
+
+            memorieslist = getmemorieslist(userid)# print('>>> memorieslist ', memorieslist)    
+
             functions = [
                 {
                     "name": "getmemorycontent",
-                    "description": f"if you need information about a memory, look in this list : {memorieslist} . You can retrieve details about the memory  by calling this function with the id of the memory as the parameter. TYou will use  this new information to answer the question.",
+                    "description": f"if you need information about a memory, look in this list : {memorieslist} . You can retrieve details about the memory  by calling this function with the id of the memory as the parameter. You will use  this new information to answer the question. Always give a complete answer, and try to use the information from the memory in your answer. ",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -151,98 +144,153 @@ def chat(request):
                     },
                 }
             ]
-            # define completion parameters
-            # parameters = 'model="gpt-3.5-turbo", messages = allmessages, max_tokens = 200, temperature=1, functions=functions, function_call='auto''
+            # print(">>> functions> ", functions)
 
-            # get the openAI initial response
-            completion = openai.ChatCompletion.create(
+            """
+                            get the openAI first completion
+            """
+            
+            firstcompletion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
-                messages=messagesforcompletion,
+                messages=messagechain,
                 max_tokens=200,
                 temperature=1,
                 functions=functions,
                 function_call="auto",
             )
-            print(">>> completion> ", completion)
+            print(">>> firstcompletion> ", firstcompletion)
 
             """
-            check if this response is a functioncall!!!!
-                if it is, call the function and append the result to the messagesforcompletion
-            """
+                            check if this response includes functioncall!!!!
+                            if it is, call the function and append the result to the messagesforcompletion
+            '"""
+            # firstresponsedict = {'role': 'assistant', 'content': f'{firstcompletion}'}
+            completionmessage = firstcompletion["choices"][0]["message"]
+            print(">>> completionmessage> ", completionmessage, type(completionmessage))
+            # try:
+            #     function_call = firstcompletion["choices"][0]["message"]["function_call"]
+            # except (KeyError, IndexError):
+            #     function_call = None
 
-            # extract agent response
-            responsecontent = completion.choices[0].message["content"]
-            print(">>> responsecontent> ", responsecontent, type(responsecontent))
+            if completionmessage.get("function_call"):
+                print('... functioncalled')
 
-            # make a dict of all the messages
-            responsedict = completion.choices[0].message
-            print(">>> responsedict> ", responsedict, type(responsedict))
-            print(">>> allchoices> ", completion.choices)
-            # check if a memory is requested
-
-            if responsedict.get("function_call"):
-                print('>>> functioncalled')
                 possfunctions = {"getmemorycontent": getmemorycontent}
-                functionname = responsedict["function_call"]["name"]
+                functionname = completionmessage["function_call"]["name"]
                 functiontocall = possfunctions[functionname]
-                print('>>> functiontocall ', functiontocall)
-                functionargs = json.loads(responsedict["function_call"]["arguments"])
-                print('>>> functionargs ', functionargs)
+                # print('... functiontocall ', functiontocall)
+                functionargs = json.loads(completionmessage["function_call"]["arguments"])
+                # print('... functionargs ', functionargs)
                 functionresponse = functiontocall(**functionargs)
-                print('>>> functionresponse ', functionresponse)
-                messagesforcompletion.append(
+                # print('... functionresponse ', functionresponse)
+                messagechain.append(
                     {
                         "role": "function",
                         "name": functionname,
                         "content": functionresponse,
                     }
                 )
-                print('>>>/////// messagesforcompletion ', messagesforcompletion)
-                # make second agent call with function results
-                completion = openai.ChatCompletion.create(
+                """
+
+                           make second agent call with function results
+                
+                """
+                completionwithfunctionresults = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
-                    messages=messagesforcompletion,
+                    messages=messagechain,
                     max_tokens=200,
                     temperature=1,
                     functions=functions,
                     function_call="auto",
                 )
-                print(">>> fn completion> ", completion)
-                # extract agent response
-                responsecontent = completion.choices[0].message["content"]
-                print(
-                    ">>> fn responsecontent> ", responsecontent, type(responsecontent)
-                )
-                # make a dict of all the messages
-                responsedict = completion.choices[0].message
-                print(">>> fn responsedict> ", responsedict, type(responsedict))
-            else:
-                print('>>> no functioncalled')
-                pass
+                # print("... 2nd completion> ", completionwithfunctionresults, type(completionwithfunctionresults))
 
-            tokens = completion.usage.total_tokens
-            print(">>> total_tokens ", tokens)
-            # append the AI response and save
-            allmessages.append(responsedict)
-            print(">>> allmessages b4 save ", allmessages)
-            thischat.messages = allmessages
+                #       extract agent response from secondcompletion
+                responseforuser = completionwithfunctionresults.choices[0].message["content"]
+                # print("... fn responseforuser> ", responseforuser, type(responseforuser))
+
+                #       make a dict of all the messages
+                secondresponsedict = completionwithfunctionresults.choices[0].message
+                # print("... fn responsedict> ", secondresponsedict, type(secondresponsedict))
+                tokens = completionwithfunctionresults.usage.total_tokens
+                print("... total_tokens ", tokens)
+                messagechain.append(secondresponsedict)
+            else:
+                          #       extract agent response from firstcompletion
+                responseforuser = firstcompletion.choices[0].message["content"]
+       
+
+                #       make a dict of the agents response, which will be added to the chain
+                firstresponsedict = {'role': 'assistant', 'content': f'{firstcompletion.choices[0].message["content"]}'}    
+                print('--- no functioncalled')
+                tokens = firstcompletion.usage.total_tokens
+                print("--- total_tokens ", tokens)
+                messagechain.append(firstresponsedict)
+                # print("--- messagechain b4 save ", messagechain)
+          
+            print('>>> messagechain b4 IF summary ', messagechain)
+
+
+            """
+                            before saving, is the chain too long?
+            """
+
+            if tokens >1800:
+                summariserequestmessage = {"role": "system", "content": "IMPORTANT! summarise the  conversation so far, using no more than 300 tokens. "}
+                messagechain = messagechain[2:]
+                messagechain.append(summariserequestmessage)
+                print('... toolong messagechain ', messagechain)
+
+                """
+                            completion to summarise the chain 
+                            loose the first 2 dicts in the chain!
+
+                """
+                summarycompletion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=messagechain,
+                temperature=0.3
+                )
+                print('... summarycompletion ', summarycompletion)
+                summarisedtokencount = summarycompletion.usage.total_tokens
+                print('... summarisedtokencount ', summarisedtokencount)
+
+                summarycompletioncontent = summarycompletion.choices[0].message
+                summarycompletionmessage = {"role": "assistant", "content": f"PREVIOUS CHAT SUMMARY: {summarycompletioncontent}"}
+                messagechain = []
+                messagechain.append(systemmessage)
+                messagechain.append(exampleassistantmessage)
+                messagechain.append(summarycompletionmessage)
+                print('...> sumarised messagechain ', messagechain)
+
+            #       append the agent response and save the chat
+            thischat.messages = messagechain
             thischat.save()
-            # look up a memory
-            # name = request.user.username
+
+            """
+                            render the page with the last agent response
+            """
+
             return render(
                 request,
                 "ayou/chat.html",
                 {
                     "form": form,
-                    "responsecontent": responsecontent,
+                    "responsecontent": responseforuser,
                     "tokensused": tokens,
                     "name": name,
                 },
             )
         else:
             return HttpResponse("FORM ERROR")
+        
+    """
+                    if the request is GET, render the page with an empty form
+    """
+
     name = request.user.username
-    return render(request, "ayou/chat.html", {"form": NewChatForm(), "name": name})
+    return render(request, "ayou/chat.html", {"form": NewChatForm(), "name": name,"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past" })
+
 
 
 def social(request):
