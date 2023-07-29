@@ -13,7 +13,7 @@ class Memory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True )
 
     def __str__(self):
-        return f'{self.date} : {self.description} : {self.emotion}'
+        return f'{self.user.username} : {self.description} : {self.emotion}'
 
 class Biographyitem(models.Model):
     item = models.CharField(max_length=64)
@@ -21,11 +21,18 @@ class Biographyitem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return f'{self.id} : {self.item} : {self.description}'
+        return f'{self.user.username} : {self.item} : {self.description}'
 
 class Chat(models.Model):
     messages = models.JSONField(null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
    
     def __str__(self):
-        return f'{self.id} : {self.messages}'
+        return f'{self.user.username} : {self.messages}'
+    
+class Domain(models.Model):
+    domain = models.CharField(max_length=64)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return f'{self.user.username} : {self.domain}'

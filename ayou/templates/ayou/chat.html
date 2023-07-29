@@ -6,7 +6,7 @@
 <form action="{% url 'ayou:chat' %}" method="POST">
         {% csrf_token %}
         {{ form }}
-        <input type="submit">
+        <input type="submit"></form>
         <h3>Response: {{ responsecontent }}</h3>
         <br>
      <h3>tokens used in chat: {{ tokensused }}</h3>

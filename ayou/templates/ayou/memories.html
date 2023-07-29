@@ -1,27 +1,125 @@
 {% extends 'ayou/layout.html' %}
 
 {% block body %}
+<style>
+    body {
+        color: #f5f5f5;
+        margin-left: 8rem;
+
+    }
+    .flex-container {
+        display: flex;
+        flex-wrap: wrap;
+        /* background-color: #f5f5f5; */
+        justify-content: center;
+        align-items: center;
+        padding: 0px;
+        margin: 0px;
+    }
+    .form-group label {
+    display: block;
+    width: 200px;
+    float: left;
+    margin: 10px;
+}
+
+.form-group input, .form-group select{
+    width: 300px;
+    margin: 10px;
+}
+.form-group textarea {
+    width: 300px;
+    height: 200px;
+    margin: 10px;
+}
+
+
+
+
+</style>
        
 
 
+<p>{{ message }}</p>
+<div >
+<p>your domains are {{ domainslist }}</p>
 
-
-<h3>Present Details</h3>
-<ul>{% for detail in Present %}
-    <li>{{ detail.item }} : {{ detail.description}}<h4> <button>CHANGE THIS</button></h4></li>
+        
+<h3>Biography items</h3>
+<ul>{% for item in biographyitems %}
+    <li>{{ item.item }} : {{ item.description}}
+        <!-- delete biography item -->
+    <form action="{% url 'ayou:memories' %}" method="POST">
+        {% csrf_token %}
+        {{  deletebioform  }}
+        <input type="hidden" name="id" value="{{ item.id }}">
+        <input type="hidden" name="formname" value="deletebioform">
+        <input type="submit" name="confirm" value="confirm">
+     </form>
+     <!--  -->
+    </li>
     {% endfor %}
     </ul>
-<h4><button>Add Detail</button></h4>
+
+<!-- add new biography item -->
+<form action="{% url 'ayou:memories' %}" method="POST">
+    {% csrf_token %}
+    {{ newbioform }}
+    <input type="hidden" name="formname" value="newbioform">
+    <input type="submit" value="Add Detail">
+</form>
+<!--  -->
 
 
 
-<h3>Memories</h3>
+<h3>Your memories</h3>
 <ul>{% for memory in memories%}
-<li>{{ memory.date }} : {{ memory.description}} : {{memory.emotion}} <h4> <button>FORGET THIS</button></h4></li>
+<li>{{ memory.date }} : {{ memory.description}} : {{memory.emotion}} 
+    <!-- delete memory -->
+    <form action="{% url 'ayou:memories' %}" method="POST">
+        {% csrf_token %}
+        {{  deletememoryform  }}
+        <input type="hidden" name="formname" value="deletememoryform">
+        <input type="hidden" name="id" value="{{ memory.id }}">
+        <input type="submit" name="confirm" value="confirm">
+      <!--  -->
+        
+    </form>
+    </li>
 {% endfor %}
 </ul>
+<br>
+<h3>Make a new memory</h3>
+<div>
+    <!-- add a memory -->
+<form action="{% url 'ayou:memories' %}" method="POST">
+    {% csrf_token %}
+  
+    <div class="form-group ">
+        <label for="{{ newmemoryform.emotion.id_for_label }}">{{ newmemoryform.date.label_tag }}</label>
+        {{ newmemoryform.date }}
+    </div>
+    <div class="form-group">
+        <label for="{{ newmemoryform.emotion.id_for_label }}">{{ newmemoryform.emotion.label_tag }}</label>
+         {{ newmemoryform.emotion }}
+    </div>
+    <div class="form-group">
+        <label for="{{ newmemoryform.emotion.id_for_label }}">{{ newmemoryform.description.label_tag }}</label>
+        {{ newmemoryform.description}}
+    </div>
+    <div class="form-group textarea">
+        <label for="{{ newmemoryform.emotion.id_for_label }}">{{ newmemoryform.content.label_tag }}</label>
+         {{ newmemoryform.content }}
+    </div>
+    <input type="hidden" name="formname" value="newmemoryform">
+    
+    <input type="submit"></form>
+    <!--  -->
+    
+</div>
 
 
+    </div> 
 
 {% endblock %}
 
