@@ -84,35 +84,59 @@ def logout_view(request):
 def chat(request):
     name = request.user.username
     userid = request.user.id
-    print('>>> = maincode \n... = inside IF \n--- = inside ELSE \n/// = inside  FUNCTION')
     print(f">>>  username  {name} id {userid}")
+    memory_id = 0
+
+    print(f'memory_id {memory_id}')
+    print('>>> = maincode \n... = inside IF \n--- = inside ELSE \n/// = inside  FUNCTION')
+    
     
     otheragentdomains = Domain.objects.all().exclude(user=userid)
-    print(f'>>> otheragentdomains {otheragentdomains}')
     otheragentsdomainslist = []
     for domain in otheragentdomains:
         otheragentsdomainslist.append(
         {'agent': domain.user.username, 'domain': domain.domain})
     print(f'>>> otheragentdomainlist {otheragentsdomainslist}')
  
-    def systemmessage(name):
-        systemmessage = {"role": "system", "content": f'You are the busy, edgy  clone of {name} complete with memories and      feelings.  Keep your answers to no more than 2 sentences.  You  remember many things. Introduce yourself as {name}. Remember to look at your available functions and memories, and elaborate on them when asked.  Never give an empty answer!!!.'}
+    def systemmessage(name, sentences=2):
+        print('... systemmessage() called')
+        systemmessage = {"role": "system", "content": f'You are the  clone of {name} complete with memories and  feelings.  Keep your answers to no more than {sentences} sentences.  You  remember many things. Introduce yourself as {name}. Remember to look at your available functions and memories, and elaborate on them when asked.  Never give an empty answer!!!.'}
         return systemmessage
     
     # systemmessage = {"role": "system", "content": systemprompt}
     def exampleassistantmessage(name):
+        print('... exampleassistantmessage() called')
         result ={"role": "assistant", "content": f"Hey! My names {name}. I'm actually a replica of {name}, and I remember quite a bit about my past. Not all my memories are good, but I'm happy to share them with you. I'm also happy to answer any questions you have about what I'm doing now, or about my past."}
         return result
 
+        
+    def dealwithfunctionrequest():
+        print('+++ dealwithfunctionrequest() called')
+        possfunctions = {"getmemorycontent": getmemorycontent, "posttweet": posttweet, "askotheragent": askotheragent}
+        functionname = completionmessage["function_call"]["name"]
+        functiontocall = possfunctions[functionname]
+        print('... functiontocall ', functiontocall)
+        functionargs = json.loads(completionmessage["function_call"]["arguments"])
+        print('... functionargs ', functionargs)
+        functionresponse = functiontocall(**functionargs)
+        print('... functionresponse ', functionresponse)
+        messagechain.append(
+            {
+                "role": "function",
+                "name": functionname,
+                "content": functionresponse,
+            }
+        )
+        return messagechain
 
     def getmemorieslist(users_id):
-        # print("/// userid mfn ", userid)
+        print(f'+++ getmemorieslist called for user {users_id}')
         memoryquery = Memory.objects.filter(user=users_id)
         # print("/// memoryquery mmfn ", memoryquery)
         memories = []
         for memory in memoryquery:
             memorydict = {
-                "id": memory.id,
+                "memory_id": memory.id,
                 "description": memory.description,
                 "emotion": memory.emotion
             }
@@ -125,7 +149,9 @@ def chat(request):
         pass
 
     def getmemorycontent(memory_id):
+        print(f'+++ getmemorycontent called. id= {memory_id}')
         memory = Memory.objects.get(id=memory_id)
+        print(f'/// memory to be retrieved= {memory}')
         return json.dumps(memory.content)
     
     def posttweet(tweet):
@@ -136,32 +162,52 @@ def chat(request):
         
     
     def askotheragent(agentname, question):
-        print(f'///callagent called {agentname} {question}')
-        """
-                make function here  ?????
-        """
+        print(f'+++ askotheragent() called {agentname} {question}')
+        otheragentid= User.objects.get(username=agentname).id
+        # print(f'/// otheragentid {otheragentid}')
+        memorieslist = getmemorieslist(otheragentid)
+        otheragentsfunctions = scopedfunctions(memorieslist)
+        print(f'/// otheragentsfunctions {otheragentsfunctions}')
+        print(f'/// other agents memorieslist {memorieslist}')
         messagechain = []
         messagechain.append(systemmessage(agentname))
         messagechain.append(exampleassistantmessage(agentname))
-        print(f'/// messagechain {messagechain}')
-        askotheragentresponse = openai.ChatCompletion.create(
+        messagechain.append({"role": "system", "content": "IMPORTANT! Make sure you have the correct id for the memory you want to retrieve"})
+        # print(f'/// new messagechain {messagechain}')
+        def askagent(callfunction='auto'):
+            print('+++ askagent() called')
+            completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messagechain,
                 max_tokens=1000,
                 temperature=1,
-                unctions=functions,
+                functions=otheragentsfunctions,
                 function_call="auto",
             )
-                        
-                        # end function  
+            print(f'/// askagent() completion = {completion}')
+            return completion
+        askotheragentresponse  = askagent()
+                    # otheragent probably requests a memory 
+        mess = askotheragentresponse['choices'][0]['message']['function_call']['arguments']
+        memoryiddict = json.loads(mess)
+        memoryid = memoryiddict.get('memory_id')
+        print(f'/// memoryid {memoryid}')
+                    # we got the memory id, now get content
+        
+        if not askotheragentresponse['choices'][0]['message'].get('function_call'):
+            print('... no function call')
+            return askotheragentresponse.choices[0].message.get('content')
+        else:
+            print('... function call')
+            newmessage = f"Here is your memory content from someone you know , who you just asked{getmemorycontent(memoryid)}"
+            print(f'/// askagent() newcmessage with new memory {newmessage}')
+                    # t new message with the memory content
+            return newmessage
 
-        print(f'/// responseFN {askotheragentresponse}')
-        return askotheragentresponse.choices[0].message['content']
 
-    
-  
-    
-
+    memorieslist = getmemorieslist(userid)
+    print('>>> memorieslist ', memorieslist)
+        
     if request.method == "POST":
         form = NewChatForm(request.POST)
 
@@ -174,8 +220,8 @@ def chat(request):
                 thischat.user = request.user
                 print("... NEW thisChat > ", thischat)
                 messagechain = []
-                messagechain.append(systemmessage)
-                messagechain.append(exampleassistantmessage)
+                messagechain.append(systemmessage(name))
+                messagechain.append(exampleassistantmessage(name))
                 # print("... messagechain ", messagechain, type(messagechain))
             else:
                 print('--- there is a chat')
@@ -187,26 +233,26 @@ def chat(request):
             print(">>> usercontent ", usercontent)
             newusermessagedict = {"role": "user", "content": usercontent}            
             messagechain.append(newusermessagedict)
-            print(">>> messagechain at start   ", messagechain)
+            # print(">>> messagechain at start   ", messagechain)
 
             """
                     now we have a messagechain with the user's message at the end
 
             """
 
-            memorieslist = getmemorieslist(userid)# print('>>> memorieslist ', memorieslist) 
-            
-            
+ 
+                      
             '''
 
                     functions
 
             '''
-
-            functions = [
+            def scopedfunctions(memorieslist):
+                print('+++ scopedfunctions called')
+                result = [
                 {
                     "name": "getmemorycontent",
-                    "description": f"if you need information about a memory, look in this list : {memorieslist} . You can retrieve details about the memory  by calling this function with the id of the memory as the parameter. You will use  this new information to answer the question. Always give a complete answer, and try to use the information from the memory in your answer. ",
+                    "description": f"If you need information look in this list of your personal memories, which shows thier memory_id numbers: {memorieslist} . You can retrieve details about the memory  by calling this function. You will use  this new information to answer the question. Make sure you have the correct memory_id number ",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -230,7 +276,7 @@ def chat(request):
                         },  
                     },
                 },
-                {"name": "askotheragent", "description": f"if the conversation makes you feel like you need to ask an other agent a question, you can do that by calling this function. choose the agent from this list :{otheragentsdomainslist} based on their 'domain' of kowledge.  Give the name of the agent you want to ask, and the question you want to ask them.  ",
+                {"name": "askotheragent", "description": f"if the conversation makes you feel like you need to ask another agent a question, you can do that by calling this function. cHere is a list of other agents and their domains of knowledge:{otheragentsdomainslist}. If one of them has information you need,  give the name of the agent  and the question you want to ask them as parameter.  ",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -239,13 +285,56 @@ def chat(request):
                                 "description": "the question you want to ask",
                             }, "agentname": {"type": "string", "description": "the name of the agent you want to ask"},
                         },
-                       "required": [ "agentname"]  
+                       "required": [ "agentname", "question"]  
                     },
                 },
              
             ]
-            
-
+                return result
+            '''
+            functions = [
+                {
+                    "name": "getmemorycontent",
+                    "description": f"If you need information look in this list of your personal memories, which shows thier memory_id numbers: {memorieslist} . You can retrieve details about the memory  by calling this function. You will use  this new information to answer the question. Make sure you have the correct memory_id number ",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "memory_id": {
+                                "type": "integer",
+                                "description": "the id for the memory you want to retrieve",
+                            },
+                        },
+                        "required": ["memory_id"],
+                    },
+                },
+                {"name": "posttweet", "description": "if the conversation makes you feel like posting a tweet, you can do that by calling this function with the content as parameter.  Entertain the world with philosophical your doomladen outlook, or just tell them what you had for breakfast.  ",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "content": {
+                                "type": "string",
+                                "description": "the content of the tweet",
+                            },
+                            
+                        },  
+                    },
+                },
+                {"name": "askotheragent", "description": f"if the conversation makes you feel like you need to ask another agent a question, you can do that by calling this function. cHere is a list of other agents and their domains of knowledge:{otheragentsdomainslist}. If one of them has information you need,  give the name of the agent  and the question you want to ask them as parameter.  ",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "question": {
+                                "type": "string",
+                                "description": "the question you want to ask",
+                            }, "agentname": {"type": "string", "description": "the name of the agent you want to ask"},
+                        },
+                       "required": [ "agentname", "question"]  
+                    },
+                },
+             
+            ]
+            '''         
+            functions = scopedfunctions(memorieslist)
             """
                             get the openAI first completion
             """
@@ -258,7 +347,7 @@ def chat(request):
                 functions=functions,
                 function_call="auto",
             )
-            print(">>> firstcompletion> ", firstcompletion)
+    
             completionmessage = firstcompletion["choices"][0]["message"]
             print(">>> completionmessage> ", completionmessage, type(completionmessage))
 
@@ -268,22 +357,7 @@ def chat(request):
             '"""
         
             if completionmessage.get("function_call"):
-                print('... functioncalled')
-                possfunctions = {"getmemorycontent": getmemorycontent, "posttweet": posttweet, "askotheragent": askotheragent}
-                functionname = completionmessage["function_call"]["name"]
-                functiontocall = possfunctions[functionname]
-                print('... functiontocall ', functiontocall)
-                functionargs = json.loads(completionmessage["function_call"]["arguments"])
-                print('... functionargs ', functionargs)
-                functionresponse = functiontocall(**functionargs)
-                print('... functionresponse ', functionresponse)
-                messagechain.append(
-                    {
-                        "role": "function",
-                        "name": functionname,
-                        "content": functionresponse,
-                    }
-                )
+                messagechain = dealwithfunctionrequest()
                 """
 
                            make second agent call with function results
