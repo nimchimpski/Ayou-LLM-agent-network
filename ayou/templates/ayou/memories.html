@@ -1,40 +1,8 @@
 {% extends 'ayou/layout.html' %}
 
 {% block body %}
+
 <style>
-    body {
-        color: #f5f5f5;
-        margin-left: 8rem;
-
-    }
-    .flex-container {
-        display: flex;
-        flex-wrap: wrap;
-        /* background-color: #f5f5f5; */
-        justify-content: center;
-        align-items: center;
-        padding: 0px;
-        margin: 0px;
-    }
-    .form-group label {
-    display: block;
-    width: 200px;
-    float: left;
-    margin: 10px;
-}
-
-.form-group input, .form-group select{
-    width: 300px;
-    margin: 10px;
-}
-.form-group textarea {
-    width: 300px;
-    height: 200px;
-    margin: 10px;
-}
-
-
-
 
 </style>
        
@@ -42,10 +10,20 @@
 
 <p>{{ message }}</p>
 <div >
-<p>your knowledge areas are : {{ domainslist|join:',' }}</p>
+    <h1>Configure Ayou</h1>
+<p><h4>Your knowledge areas are : {{ domainslist|join:',' }}</h4></p>
+<!-- edit the domainslist -->
+<h3>edit Ayou's knowledge area</h3>
 
-        
-<h3>Biography items</h3>
+<form action="{% url 'ayou:memories' %}" method="POST">
+    {% csrf_token %}
+    {{ domainslistform }}
+    <input type="hidden" name="formname" value="DomainslistForm">
+    <input type="submit" value="Update" class="btn">
+</form>
+<!--  -->
+<!-- <div class="flex-container">  -->
+<h2>Facts about Ayou</h2>
 <ul>{% for item in biographyitems %}
     <li>{{ item.item }} : {{ item.description}}
         <!-- delete biography item -->
@@ -61,7 +39,9 @@
     {% endfor %}
     </ul>
 
+    
 <!-- add new biography item -->
+<h3>Add a new fact</h3>
 <form action="{% url 'ayou:memories' %}" method="POST">
     {% csrf_token %}
     {{ newbioform }}
@@ -72,7 +52,7 @@
 
 
 
-<h3>Your memories</h3>
+<h2>Ayou's memories</h2>
 <ul>{% for memory in memories%}
 <li>{{ memory.date }} : {{ memory.description}} : {{memory.emotion}} 
     <!-- delete memory -->
@@ -89,9 +69,13 @@
 {% endfor %}
 </ul>
 <br>
-<h3>Make a new memory</h3>
-<div>
+
+<h3>Give Ayou a new memory</h3>
+
+    
     <!-- add a memory -->
+    
+    <div>
 <form action="{% url 'ayou:memories' %}" method="POST">
     {% csrf_token %}
   
@@ -114,12 +98,13 @@
     <input type="hidden" name="formname" value="newmemoryform">
     
     <input type="submit"></form>
+</div>
     <!--  -->
     
 </div>
 
 
-    </div> 
+
 
 {% endblock %}
 

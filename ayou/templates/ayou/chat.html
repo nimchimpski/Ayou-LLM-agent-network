@@ -1,15 +1,22 @@
 {% extends 'ayou/layout.html' %}
+{% load static %}
+
+
 {% block body %}
 
-<h2>Chat with you clone</h2>
+<h1>Chat with Ayou</h1>
 
 <form action="{% url 'ayou:chat' %}" method="POST">
         {% csrf_token %}
         {{ form }}
         <input type="submit"></form>
-        <h3>Response: {{ responsecontent }}</h3>
+        <h3>{{ responsecontent }}</h3>
         <br>
+
+        {% if tokensused %}
      <h3>tokens used in chat: {{ tokensused }}</h3>
-     
+     {% endif %}
+
+   
 
         {% endblock %}

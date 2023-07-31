@@ -1,20 +1,21 @@
-
+{% load static %}
 
 
 <!DOCTYPE html>
 <html lang="eng">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="{% static 'ayou/styles.css' %}" rel="stylesheet">
 
-        <link href="/static/ayou/styles.css"  rel="stylesheet">
-        <title>ayou</title>
+        <title>layout</title>
+
+        
     </head>
     <body>
 
 <a href="{% url 'ayou:chat' %}"><button>Ayou</button></a>
-<a href="{% url 'ayou:memories' %}"><button>clone klinik</button></a>
-
-
-
+<a href="{% url 'ayou:memories' %}"><button>Configure</button></a>
 <a href="{% url 'ayou:account' %}"><button>account</button></a>
 <a href="{% url 'ayou:logout' %}"><button>Logout</button></a>
 <br>
@@ -23,7 +24,7 @@
 <ul class="messages">
     
     {% for message in messages %}
-    <li>{{ message }}</li>
+    <li><h4>{{ message }}</h4></li>
     {% endfor %}
 </ul>
 {% block body %}

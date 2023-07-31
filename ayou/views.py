@@ -19,10 +19,9 @@ class NewLoginForm(forms.Form):
     username = forms.CharField(label="username")
     password = forms.CharField(widget=forms.PasswordInput(), label="Password")
 
-
 class NewChatForm(forms.Form):
-    startnewchat = forms.BooleanField(label="New topic?", required=False)
-    usercontent = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 50}), max_length=500, label="What do you want to say?")
+    startnewchat = forms.BooleanField(widget=forms.CheckboxInput(attrs={ 'class': 'topicboo'}),label="New topic?", required=False)
+    usercontent = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 50, 'class': 'textarea'}), max_length=500, label="What do you want to say?")
 
 class NewMemoryForm(forms.Form):
     date = forms.DateField(label="date YYYY-MM-DD")
@@ -40,7 +39,9 @@ class NewBioForm(forms.Form):
 class DeleteBioForm(forms.Form):
     deletebioboo = forms.BooleanField(label="delete this fact?" )
 
-
+class DomainslistForm(forms.Form):
+    domain = forms.CharField(label="domain")
+    agent = forms.CharField(label="agent")
 
 # load_dotenv()
 # openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -242,7 +243,7 @@ def chat(request):
         print(f'/// memory to be retrieved= {memory}')
         return json.dumps(memory.content)
     
-    def posttweet(tweet):
+   
         """
         DO THIS!!!
         """
@@ -253,7 +254,12 @@ def chat(request):
 
     memorieslist = getmemorieslist(userid)
     print('>>> memorieslist ', memorieslist)
-        
+
+    '''
+
+                POST REQUEST
+
+    '''
     if request.method == "POST":
         form = NewChatForm(request.POST)
 
@@ -505,20 +511,32 @@ def chat(request):
             return HttpResponse("FORM ERROR")
         
     """
-                    if the request is GET, render the page with an empty form
+
+                GET REQUEST, render the page with an empty form
+
     """
 
     name = request.user.username
+    messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
     return render(request, "ayou/chat.html", {"form": NewChatForm(), "name": name,"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past" })
 
 
 @login_required
 def social(request):
-
+    messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
     return render(request, "ayou/social.html")
 
 @login_required
 def account(request):
+
+    def posttweet(tweet):
+        ...
+        pass
+
+    # if request.method == 'POST':
+
+
+    messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
     return render(request, "ayou/account.html")
 
 @login_required

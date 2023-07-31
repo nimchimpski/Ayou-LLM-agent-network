@@ -1,0 +1,61 @@
+
+body {
+    /* background-color: black; */
+    background-image: url('imgs/red.jpg' );
+    font-family : Verdana, Geneva, Tahoma, sans-serif;
+  /* color: silver; */
+    margin-left: 8rem;
+    
+    
+}
+
+.btn {
+    background-color: red;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    color: green;
+}
+
+a {
+    text-decoration: none;
+    color: silver;
+}
+
+ul, li {
+color: silver
+}
+  
+h4 {
+    font-weight: 100;
+}
+form input[type=submit] {
+    
+    background-color: rgb(234, 34, 34);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+h1,h2, h3, h4 {
+    
+    
+    background: -webkit-linear-gradient(45deg, rgb(255, 255, 255),rgb(94, 94, 94));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+form {
+    color: silver;
+}
+
+.textarea {
+    margin-top: 1rem;
+}
+label.textarea {
+    margin-top: 2rem;
+}
+.topicboo {
+    display: block;
+}
