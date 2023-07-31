@@ -4,19 +4,36 @@
 
 {% block body %}
 
-<h1>Chat with Ayou</h1>
+<h1>Chat with {{ name }}'s' Ayou</h1>
 
 <form action="{% url 'ayou:chat' %}" method="POST">
         {% csrf_token %}
-        {{ form }}
-        <input type="submit"></form>
-        <h3>{{ responsecontent }}</h3>
+        {{ chatform }}
+        <input type="submit" name="chatsubmit"></form>
+        <h4>{{ responsecontent }}</h4>
         <br>
+
+
+<form action="{% url 'ayou:chat' %}" method="POST">
+        {% csrf_token %}
+<div class="form-group">
+
+
+
+
+
 
         {% if tokensused %}
      <h3>tokens used in chat: {{ tokensused }}</h3>
      {% endif %}
 
-   
+<h3>Chat with someone elses Ayou clone</h3>
+
+<form action="{% url 'ayou:chat' %}" method="POST">
+   {% csrf_token %}
+   {{ selectagentform }}
+   <input type="submit" value="choose clone" name="selectagentsubmit">
+   </form>
+
 
         {% endblock %}

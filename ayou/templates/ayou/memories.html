@@ -9,7 +9,7 @@
 
 
 <p>{{ message }}</p>
-<div >
+
     <h1>Configure Ayou</h1>
 <p><h4>Your knowledge areas are : {{ domainslist|join:',' }}</h4></p>
 <!-- edit the domainslist -->
@@ -75,12 +75,12 @@
     
     <!-- add a memory -->
     
-    <div>
+    <div class='newmemoryform'>
 <form action="{% url 'ayou:memories' %}" method="POST">
     {% csrf_token %}
   
     <div class="form-group ">
-        <label for="{{ newmemoryform.emotion.id_for_label }}">{{ newmemoryform.date.label_tag }}</label>
+        <label for="{{ newmemoryform.date.id_for_label }}">{{ newmemoryform.date.label_tag }}</label>
         {{ newmemoryform.date }}
     </div>
     <div class="form-group">
@@ -88,11 +88,11 @@
          {{ newmemoryform.emotion }}
     </div>
     <div class="form-group">
-        <label for="{{ newmemoryform.emotion.id_for_label }}">{{ newmemoryform.description.label_tag }}</label>
+        <label for="{{ newmemoryform.description.id_for_label }}">{{ newmemoryform.description.label_tag }}</label>
         {{ newmemoryform.description}}
     </div>
-    <div class="form-group textarea">
-        <label for="{{ newmemoryform.emotion.id_for_label }}">{{ newmemoryform.content.label_tag }}</label>
+    <div class="form-group">
+        <label for="{{ newmemoryform.content.id_for_label }}">{{ newmemoryform.content.label_tag }}</label>
          {{ newmemoryform.content }}
     </div>
     <input type="hidden" name="formname" value="newmemoryform">
@@ -101,7 +101,7 @@
 </div>
     <!--  -->
     
-</div>
+
 
 
 

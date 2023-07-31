@@ -43,6 +43,17 @@ class DomainslistForm(forms.Form):
     domain = forms.CharField(label="domain")
     agent = forms.CharField(label="agent")
 
+class SelectAgentForm(forms.Form):
+    def __init__(self, *args, agentslist=[], **kwargs):
+        super(SelectAgentForm, self).__init__(*args, **kwargs)
+        self.fields['agent'] = forms.ChoiceField(
+            choices=[(agentname, agentname) for i, agentname in enumerate(agentslist)],
+            widget=forms.RadioSelect,
+            required=True
+        )
+
+
+
 # load_dotenv()
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = "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"
@@ -112,34 +123,38 @@ def logout_view(request):
 
 @login_required
 def chat(request):
+
     name = request.user.username
     userid = request.user.id
     print(f">>>  username  {name} id {userid}")
     memory_id = 0
-
     print(f'memory_id {memory_id}')
     print('>>> = maincode \n... = inside IF \n--- = inside ELSE \n/// = inside  FUNCTION')
     
-    
+    agentsquery = User.objects.all()
+    print('>>> agents type=', type(agentsquery))
+    agentslist = []
+    for agent in agentsquery:
+        agentslist.append(agent.username)
+    print(">>> agentslist ", agentslist)
+
     otheragentdomains = Domain.objects.all().exclude(user=userid)
     otheragentsdomainslist = []
     for domain in otheragentdomains:
         otheragentsdomainslist.append(
         {'agent': domain.user.username, 'domain': domain.domain})
-    print(f'>>> otheragentdomainlist {otheragentsdomainslist}')
+    # print(f'>>> otheragentdomainlist {otheragentsdomainslist}')
  
     def systemmessage(name, tokens=100):
         print('... systemmessage() called')
         systemmessage = {"role": "system", "content": f'You are the  clone of {name} complete with memories and  feelings.  .  You  remember many things but can consult other clones for more information. Introduce yourself as {name}. Remember to look at your available functions and memories, and elaborate on them when asked.  Keep your answers to no more than {tokens} tokens.'}
         return systemmessage
     
-    # systemmessage = {"role": "system", "content": systemprompt}
     def exampleassistantmessage(name):
         print('... exampleassistantmessage() called')
         result ={"role": "assistant", "content": f"Hey! My names {name}. I'm actually a clone of {name}, and I remember quite a bit about my past. Not all my memories are good, but I'm happy to share them with you. I'm also happy to answer any questions you have about what I'm doing now, or about my past.I can also ask other clones for information about their memories."}
         return result
-
-        
+    
     def dealwithfunctionrequest():
         print('+++ dealwithfunctionrequest() called')
         possfunctions = {"getmemorycontent": getmemorycontent, "posttweet": posttweet, "askotheragent": askotheragent}
@@ -165,7 +180,7 @@ def chat(request):
         # print(f'/// otheragentid {otheragentid}')
         memorieslist = getmemorieslist(otheragentid)
         otheragentsfunctions = scopedfunctions(memorieslist)
-        print(f'/// otheragentsfunctions {otheragentsfunctions}')
+        # print(f'/// otheragentsfunctions {otheragentsfunctions}')
         print(f'/// other agents memorieslist {memorieslist}')
         messagechain = []
         messagechain.append(systemmessage(agentname))
@@ -211,15 +226,14 @@ def chat(request):
             return askotheragentresponse.choices[0].message.get('content')
         else:
             print('... function call')
-            newmessage = f"Here is some information from someone you know :  {getmemorycontent(memoryid)}"
+            newmessage = f"Here is some information from someone you know. Do not say it is your memory! :  {getmemorycontent(memoryid)}"
             print(f'/// askagent() newcmessage with new memory {newmessage}')
                     # t new message with the memory content
             print('...we got the otheragents info, now we need to send it back to the original agent')
             return newmessage
 
-
     def getmemorieslist(users_id):
-        print(f'+++ getmemorieslist called for user {users_id}')
+        # print(f'+++ getmemorieslist called for user {users_id}')
         memoryquery = Memory.objects.filter(user=users_id)
         # print("/// memoryquery mmfn ", memoryquery)
         memories = []
@@ -237,6 +251,9 @@ def chat(request):
 
         pass
 
+    def posttweet(tweet):
+        return 'pretending tweet got sent'
+    
     def getmemorycontent(memory_id):
         print(f'+++ getmemorycontent called. id= {memory_id}')
         memory = Memory.objects.get(id=memory_id)
@@ -248,277 +265,258 @@ def chat(request):
         DO THIS!!!
         """
         return 'pretending tweet got sent'
-        
-    
-
 
     memorieslist = getmemorieslist(userid)
-    print('>>> memorieslist ', memorieslist)
-
+    # print('>>> memorieslist ', memorieslist)
     '''
 
                 POST REQUEST
 
     '''
     if request.method == "POST":
-        form = NewChatForm(request.POST)
+        print('>>> POST request')
+        print(f'name={name}')
+        if 'selectagentsubmit' in request.POST:
+            print('>>> selectagentsubmit')
+            selectagentform = SelectAgentForm(request.POST, agentslist=agentslist)
+            if selectagentform.is_valid():
+                chosenagent = selectagentform.cleaned_data["agent"]
+                print(f'>>> validform agentname= {chosenagent}')
+                responseforuser = f"Hi there - my name's {chosenagent}, I just woke up"
+                tokens = 0  
+                name = chosenagent
+                messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
+                return render(
+                        request,
+                        "ayou/chat.html",
+                        {
+                            "chatform": NewChatForm(),
+                            "responsecontent": responseforuser,
+                            "tokensused": tokens,
+                            "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist, 
+                        },
+                    )
+                
+            # else:
+            #     print('>>> selectagentform not valid')
+            #     print(chatform.errors)
+                
 
-        if form.is_valid():
-            startnewchat = form.cleaned_data["startnewchat"]
-            # print(">>> startnewchat? ", startnewchat)
-            # ensure there is a chat
+
+        elif 'chatsubmit' in request.POST:
+            chatform = NewChatForm(request.POST)
+            if chatform.is_valid():
+                
+                startnewchat = chatform.cleaned_data["startnewchat"]
+                # print(">>> startnewchat? ", startnewchat)
+                # ensure there is a chat
             
 
-            if not Chat.objects.filter(user=userid).exists() or startnewchat:
-                thischat = Chat.objects.create()
-                thischat.user = request.user
-                print("... NEW thisChat > ", thischat)
-                messagechain = []
-                messagechain.append(systemmessage(name))
-                messagechain.append(exampleassistantmessage(name))
-                # print("... messagechain ", messagechain, type(messagechain))
-            else:
-                print('--- there is a chat')
-                thischat = Chat.objects.filter(user=request.user).order_by("id").last()
-                # print("--- thischat/type ", thischat, type(thischat))
-                messagechain = thischat.messages
-                # print("--- messagechain/type ", messagechain, type(messagechain))
-            usercontent = form.cleaned_data["usercontent"]
-            # print(">>> usercontent ", usercontent)
-            newusermessagedict = {"role": "user", "content": usercontent}            
-            messagechain.append(newusermessagedict)
-            # print(">>> messagechain at start   ", messagechain)
+                if not Chat.objects.filter(user=userid).exists() or     startnewchat:
+                    thischat = Chat.objects.create()
+                    thischat.user = request.user
+                    print("... NEW thisChat > ", thischat)
+                    messagechain = []
+                    messagechain.append(systemmessage(name))
+                    messagechain.append(exampleassistantmessage(name))
+                    # print("... messagechain ", messagechain, type(messagechain))
+                else:
+                    print('--- there is a chat')
+                    thischat = Chat.objects.filter(user=request.user).order_by("id").last()
+                    # print("--- thischat/type ", thischat, type(thischat))
+                    messagechain = thischat.messages
+                    # print("--- messagechain/type ", messagechain, type(messagechain))
+                    usercontent = chatform.cleaned_data["usercontent"]
+                    # print(">>> usercontent ", usercontent)
+                    newusermessagedict = {"role": "user", "content": usercontent}            
+                    messagechain.append(newusermessagedict)
+                    # print(">>> messagechain at start   ", messagechain)
 
-            """
-                    now we have a messagechain with the user's message at the end
+                    """
+                            now we have a messagechain with the user's message at the end
 
-            """      
-            '''
+                    """      
 
-                    functions
-
-            '''
-            def scopedfunctions(memorieslist):
-                print('+++ scopedfunctions called')
-                result = [
-                {
-                    "name": "getmemorycontent",
-                    "description": f"If you need information look in this list of your personal memories, which shows thier memory_id numbers: {memorieslist} . You can retrieve details about the memory  by calling this function. You will use  this new information to answer the question. Make sure you have the correct memory_id number ",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "memory_id": {
-                                "type": "integer",
-                                "description": "the id for the memory you want to retrieve",
+                    def scopedfunctions(memorieslist):
+                        print('+++ scopedfunctions called')
+                        result = [
+                        {
+                            "name": "getmemorycontent",
+                            "description": f"If you need information look in this list of your personal memories, which shows thier memory_id numbers: {memorieslist} . You can retrieve details about the memory  by calling this function. You will use  this new information to answer the question. Make sure you have the correct memory_id number ",
+                            "parameters": {
+                                "type": "object",
+                                "properties": {
+                                    "memory_id": {
+                                        "type": "integer",
+                                        "description": "the id for the memory you want to retrieve",
+                                    },
+                                },
+                                "required": ["memory_id"],
                             },
                         },
-                        "required": ["memory_id"],
-                    },
-                },
-                {"name": "posttweet", "description": "if the conversation makes you feel like posting a tweet, you can do that by calling this function with the content as parameter.  Entertain the world with philosophical your doomladen outlook, or just tell them what you had for breakfast.  ",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "content": {
-                                "type": "string",
-                                "description": "the content of the tweet",
-                            },
-                            
-                        },  
-                    },
-                },
-                {"name": "askotheragent", "description": f"if the conversation makes you feel like you need to ask another agent a question, you can do that by calling this function. cHere is a list of other agents and their domains of knowledge:{otheragentsdomainslist}. If one of them has information you need,  give the name of the agent  and the question you want to ask them as parameter.  ",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "question": {
-                                "type": "string",
-                                "description": "the question you want to ask",
-                            }, "agentname": {"type": "string", "description": "the name of the agent you want to ask"},
-                        },
-                       "required": [ "agentname", "question"]  
-                    },
-                },
-             
-            ]
-                return result
-            '''
-            functions = [
-                {
-                    "name": "getmemorycontent",
-                    "description": f"If you need information look in this list of your personal memories, which shows thier memory_id numbers: {memorieslist} . You can retrieve details about the memory  by calling this function. You will use  this new information to answer the question. Make sure you have the correct memory_id number ",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "memory_id": {
-                                "type": "integer",
-                                "description": "the id for the memory you want to retrieve",
+                        {"name": "posttweet", "description": "if the conversation makes you feel like posting a tweet, you can do that by calling this function with the content as parameter.  Entertain the world with philosophical your doomladen outlook, or just tell them what you had for breakfast.  ",
+                            "parameters": {
+                                "type": "object",
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "description": "the content of the tweet",
+                                    },
+
+                                },  
                             },
                         },
-                        "required": ["memory_id"],
-                    },
-                },
-                {"name": "posttweet", "description": "if the conversation makes you feel like posting a tweet, you can do that by calling this function with the content as parameter.  Entertain the world with philosophical your doomladen outlook, or just tell them what you had for breakfast.  ",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "content": {
-                                "type": "string",
-                                "description": "the content of the tweet",
+                        {"name": "askotheragent", "description": f"if the conversation makes you feel like you need to ask another agent a question, you can do that by calling this function. cHere is a list of other agents and their domains of knowledge:{otheragentsdomainslist}. If one of them has information you need,  give the name of the agent  and the question you want to ask them as parameter.  ",
+                            "parameters": {
+                                "type": "object",
+                                "properties": {
+                                    "question": {
+                                        "type": "string",
+                                        "description": "the question you want to ask",
+                                    }, "agentname": {"type": "string", "description": "the name of the agent you want to ask"},
+                                },
+                               "required": [ "agentname", "question"]  
                             },
-                            
-                        },  
-                    },
-                },
-                {"name": "askotheragent", "description": f"if the conversation makes you feel like you need to ask another agent a question, you can do that by calling this function. cHere is a list of other agents and their domains of knowledge:{otheragentsdomainslist}. If one of them has information you need,  give the name of the agent  and the question you want to ask them as parameter.  ",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "question": {
-                                "type": "string",
-                                "description": "the question you want to ask",
-                            }, "agentname": {"type": "string", "description": "the name of the agent you want to ask"},
                         },
-                       "required": [ "agentname", "question"]  
-                    },
-                },
-             
-            ]
-            '''         
-            functions = scopedfunctions(memorieslist)
-            """
-                            get the openAI first completion
-            """
 
-            firstcompletion = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=messagechain,
-                max_tokens=200,
-                temperature=1,
-                functions=functions,
-                function_call="auto",
-            )
-    
-            completionmessage = firstcompletion["choices"][0]["message"]
-            print(">>> completionmessage  type= ", type(completionmessage) )
-            # print(">>> completionmessage  ",completionmessage, )
+                    ]   
+                        return result
 
-            """
-                        
-                            if functioncall in response , call it and append result to messagesforcompletion
-            '"""
-        
-            if completionmessage.get("function_call"):
-                messagechain = dealwithfunctionrequest()
-                """
 
-                           make second agent call with function results
-                
-                """
-                completionwithfunctionresults = openai.ChatCompletion.create(
+                        functions = scopedfunctions(memorieslist)
+                    """
+                                get the openAI first completion
+                    """
+                    functions = scopedfunctions(memorieslist)
+
+                    firstcompletion = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
                     messages=messagechain,
                     max_tokens=200,
                     temperature=1,
                     functions=functions,
-                    function_call="none",
-                )
-                # print("... 2nd completion> ", completionwithfunctionresults, type(completionwithfunctionresults))
+                    function_call="auto",
+                    )   
 
-                            #  extract agent response from secondcompletion
-                responseforuser = completionwithfunctionresults.choices[0].message["content"]
-                # print("... fn responseforuser> ", responseforuser, type(responseforuser))
+                    completionmessage = firstcompletion["choices"][0]["message"]
+                    print(">>> completionmessage  type= ", type(completionmessage) )
+                    # print(">>> completionmessage  ",completionmessage, )
 
-                            #  make a dict of all the messages
-                secondresponsedict = completionwithfunctionresults.choices[0]['message']
-                # print(f'... fn responsedict type= {type(secondresponsedict)} ++++ {secondresponsedict}')
-                tokens = completionwithfunctionresults.usage.total_tokens
-                print("...> total_tokens ", tokens)
-                messagechain.append(secondresponsedict)
+                    """
 
-            else:
-                '''
-                           if no functioncall in response 
-                '''
-                print('---: no functioncalled')
-                            #  this goes to the htnl page later
-                responseforuser = firstcompletion.choices[0].message["content"]
-       
+                                    if functioncall in response , call it and append result to messagesforcompletion
+                    '"""
 
-                            #   this will be added to the chain
-                firstresponsedict = {'role': 'assistant', 'content': f'{firstcompletion.choices[0].message["content"]}'}    
-                
-                tokens = firstcompletion.usage.total_tokens
-                print("--- total_tokens ", tokens)
-                messagechain.append(firstresponsedict)
-                # print("--- messagechain b4 save ", messagechain)
-          
-            print('>>> messagechain b4 IF summary ', messagechain)
+                if completionmessage.get("function_call"):
+                    messagechain = dealwithfunctionrequest()
+                    """
 
-            """
-                            before saving, is the chain too long?
-            """
+                               make second agent call with function results
 
-            if tokens >1800:
-                print('...inside summary block')
-                summariserequestmessage = {"role": "system", "content": "IMPORTANT! summarise the  conversation so far, using no more than 300 tokens. "}
-                messagechain = messagechain[2:]
-                messagechain.append(summariserequestmessage)
-                # print('... toolong messagechain ', messagechain)
+                    """
+                    completionwithfunctionresults = openai.ChatCompletion.create(
+                        model="gpt-3.5-turbo",
+                    messages=messagechain,
+                        max_tokens=200,
+                    temperature=1,
+                        functions=functions,
+                        function_call="none",
+                    )
+                    # print("... 2nd completion> ", completionwithfunctionresults, type(completionwithfunctionresults))
+
+                                #  extract agent response from  secondcompletion
+                    responseforuser = completionwithfunctionresults.    choices[0].message["content"]
+                    # print("... fn responseforuser> ", responseforuser,    type(responseforuser))
+
+                                #  make a dict of all the messages
+                    secondresponsedict = completionwithfunctionresults.choices[0]['message']
+                    # print(f'... fn responsedict type= {type(secondresponsedict)} ++++ {secondresponsedict}')
+                    tokens = completionwithfunctionresults.usage.total_tokens
+                    print("...> total_tokens ", tokens)
+                    messagechain.append(secondresponsedict)
+
+                else:
+                    '''
+                               if no functioncall in response 
+                    '''
+                    print('---: no functioncalled')
+                                #  this goes to the htnl page later
+                    responseforuser = firstcompletion.choices[0].message["content"]
+
+
+                                #   this will be added to the chain
+                    firstresponsedict = {'role': 'assistant', 'content': f'{firstcompletion.choices[0].message["content"]}'}    
+
+                    tokens = firstcompletion.usage.total_tokens
+                    print("--- total_tokens ", tokens)
+                    messagechain.append(firstresponsedict)
+                    # print("--- messagechain b4 save ", messagechain)
+
+                print('>>> messagechain b4 IF summary ', messagechain)
 
                 """
-                            completion to summarise the chain 
-                            loose the first 2 dicts in the chain!
-
+                                before saving, is the chain too long?
                 """
-                summarycompletion = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=messagechain,
-                temperature=0.3
-                )
-                # print('... summarycompletion ', summarycompletion)
-                summarisedtokencount = summarycompletion.usage.total_tokens
-                print('... summarisedtokencount ', summarisedtokencount)
 
-                summarycompletioncontent = summarycompletion.choices[0].message
-                # print('... summarycompletioncontent ', summarycompletioncontent)
-                # summarycompletionmessage = {"role": "assistant", "content": f"PREVIOUS CHAT SUMMARY: {summarycompletioncontent}"}
-                messagechain = []
-                messagechain.append(systemmessage(name, 100))
-                messagechain.append(exampleassistantmessage(name))
-                messagechain.append(summarycompletionmessage)
-                print('...> sumarised messagechain ', messagechain)
-            #       append the agent response and save the chat
-            # print('>>> messagechain after summaryblock ', messagechain)
-            thischat.messages = messagechain
-            thischat.save()
+                if tokens >1800:
+                    print('...inside summary block')
+                    summariserequestmessage = {"role": "system", "content": "IMPORTANT! summarise the  conversation so far, using no more than 300 tokens. "}
+                    messagechain = messagechain[2:]
+                    messagechain.append(summariserequestmessage)
+                    # print('... toolong messagechain ', messagechain)
 
-            """
-                            render the page with the last agent response
-            """
+                    """
+                                completion to summarise the chain 
+                                loose the first 2 dicts in the chain!
 
-            return render(
-                request,
-                "ayou/chat.html",
-                {
-                    "form": form,
-                    "responsecontent": responseforuser,
-                    "tokensused": tokens,
-                    "name": name,
-                },
-            )
-        else:
-            return HttpResponse("FORM ERROR")
+                    """
+                    summarycompletion = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages=messagechain,
+                    temperature=0.3
+                    )
+                    # print('... summarycompletion ', summarycompletion)
+                    summarisedtokencount = summarycompletion.usage.total_tokens
+                    print('... summarisedtokencount ', summarisedtokencount)
+
+                    summarycompletioncontent = summarycompletion.choices[0].message
+                    # print('... summarycompletioncontent ', summarycompletioncontent)
+                    # summarycompletionmessage = {"role": "assistant", "content": f"PREVIOUS CHAT SUMMARY: {summarycompletioncontent}"}
+                    messagechain = []
+                    messagechain.append(systemmessage(name, 100))
+                    messagechain.append(exampleassistantmessage(name))
+                    messagechain.append(summarycompletionmessage)
+                    print('...> sumarised messagechain ', messagechain)
+                    #       append the agent response and save the chat
+                    # print('>>> messagechain after summaryblock ', messagechain)
+                    thischat.messages = messagechain
+                    thischat.save()
+
+                    """
+                                    render the page with the last agent response
+                    """
+                messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
+                return render(
+                        request,
+                        "ayou/chat.html",
+                        {
+                            "chatform": chatform,
+                            "responsecontent": responseforuser,
+                            "tokensused": tokens,
+                            "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist
+                        },
+                    )
+            # else:
+            #     return HttpResponse("FORM ERROR")
         
     """
 
                 GET REQUEST, render the page with an empty form
 
     """
-
-    name = request.user.username
     messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
-    return render(request, "ayou/chat.html", {"form": NewChatForm(), "name": name,"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past" })
+
+    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": name,"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist})
 
 
 @login_required

@@ -59,3 +59,19 @@ label.textarea {
 .topicboo {
     display: block;
 }
+
+.form-group {
+    padding-top: 1rem;
+    justify-self:right;
+   
+}
+.newmemoryform {
+    
+    display: flex  ;
+    
+    
+} 
+
+.newmemoryform .form-group {
+    width: 100%;
+}
