@@ -13,20 +13,22 @@
         
     </head>
     <body>
-
-<a href="{% url 'ayou:chat' %}"><button>Ayou</button></a>
-<a href="{% url 'ayou:memories' %}"><button>Configure</button></a>
-<a href="{% url 'ayou:account' %}"><button>account</button></a>
-<a href="{% url 'ayou:logout' %}"><button>Logout</button></a>
-<br>
-
-<br>
+<div class="menucontainer">
+<div class="menu">
+<a href="{% url 'ayou:chat' %}"><button class="btn">Ayou</button></a>
+<a href="{% url 'ayou:memories' %}"><button class="btn">Configure</button></a>
+<a href="{% url 'ayou:logout' %}"><button class="btn"> Logout</button></a>
+</div>
 <ul class="messages">
-    
     {% for message in messages %}
     <li><h4>{{ message }}</h4></li>
     {% endfor %}
 </ul>
+</div>
+<br>
+
+<br>
+
 {% block body %}
 {% endblock %}
     </body>

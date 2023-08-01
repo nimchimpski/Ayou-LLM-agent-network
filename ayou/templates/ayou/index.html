@@ -2,7 +2,15 @@
 
 
 {% block body %}
-       
+{% load static %}
+       <style>
+
+body {
+    /* background-color: aqua; */
+    background-image: url('{% static "ayou/imgs/blader.jpg" %}' );
+    
+}
+       </style>
 
 
 <h1>Welcome to Ayou</h1>
@@ -14,10 +22,14 @@
     {{ form }}
     <input type="submit" value="login">
 </form>
+<br>
+<button class="btn2"><a href="{% url 'password_reset' %}">Forgot password?</a></button>
+    </div>
 
-
-    <p>Register here to make your clone</p>
-    <button><a href = "{% url 'ayou:register' %}">Register</a></button>
+<br>
+<br>
+    <h4>Not registered?</h4>
+    <button class='btn register'><a href = "{% url 'ayou:register' %}">Join us</a></button>
 
 
 

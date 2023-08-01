@@ -1,16 +1,24 @@
 {% extends 'ayou/layout.html' %}
-{% load static %}
-
-
 {% block body %}
+{% load static %}
+       <style>
 
-<h1>Chat with {{ name }}'s' Ayou</h1>
+body {
+    /* background-color: aqua; */
+    background-image: url('{% static "ayou/imgs/red.jpg" %}' );
+    background-position: RIGHT 0rem;
+  
+
+}
+       </style>
+
+<h1 class="chatheading">Chat with {{ name }} Ayou</h1>
 
 <form action="{% url 'ayou:chat' %}" method="POST">
         {% csrf_token %}
         {{ chatform }}
         <input type="submit" name="chatsubmit"></form>
-        <h4>{{ responsecontent }}</h4>
+        <div class="response">{{ responsecontent }}</div>
         <br>
 
 

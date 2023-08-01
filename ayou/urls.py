@@ -9,7 +9,4 @@ urlpatterns = [
     path('chat/', views.chat, name='chat'),
     path('memories/', views.memories, name='memories'),
     
-
-    path('social/', views.social, name='social'),
-    path('account/', views.account, name='account')
 ]

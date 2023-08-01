@@ -9,39 +9,47 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 import requests, os, openai
 import json
+from django import forms
 
 # from dotenv import load_dotenv
 from .models import Memory, Biographyitem, Chat, Domain
 
 
 
+
 class NewLoginForm(forms.Form):
-    username = forms.CharField(label="username")
-    password = forms.CharField(widget=forms.PasswordInput(), label="Password")
+    username = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="username")
+    password = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="Password")
 
 class NewChatForm(forms.Form):
     startnewchat = forms.BooleanField(widget=forms.CheckboxInput(attrs={ 'class': 'topicboo'}),label="New topic?", required=False)
     usercontent = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 50, 'class': 'textarea'}), max_length=500, label="What do you want to say?")
 
 class NewMemoryForm(forms.Form):
-    date = forms.DateField(label="date YYYY-MM-DD")
-    emotion = forms.CharField(label="emotion")
-    description = forms.CharField(label="description")
-    content = forms.CharField(label="content")
+    date = forms.DateField(widget=forms.DateInput(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="date YYYY-MM-DD")
+    emotion = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="emotion")
+    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="description")
+    content = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 50, 'class': 'textarea'}),label="content")
 
 class DeleteMemoryForm(forms.Form):
     deletememoryboo = forms.BooleanField(label="Forget this memory?" )
 
 class NewBioForm(forms.Form):
-    item = forms.CharField(label="item")
-    description = forms.CharField(label="description")
+    item = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="item")
+    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="description")
 
 class DeleteBioForm(forms.Form):
     deletebioboo = forms.BooleanField(label="delete this fact?" )
 
-class DomainslistForm(forms.Form):
-    domain = forms.CharField(label="domain")
-    agent = forms.CharField(label="agent")
+class DomainsListForm(forms.ModelForm):
+    domain = forms.CharField(widget=forms.Textarea(attrs={'style': 'width:300px', 'rows':2, 'cols':30, 'class': 'textarea'}), label="",)
+    class Meta:
+        model = Domain
+        fields = ['domain'] 
+        labels = {
+            "domain": "",
+        }
+       
 
 class SelectAgentForm(forms.Form):
     def __init__(self, *args, agentslist=[], **kwargs):
@@ -74,7 +82,7 @@ def login_view(request):
                 if not Domain.objects.filter(user=request.user).exists():
                     defaultdomain = Domain(domain='general',user=request.user)
                     defaultdomain.save()
-                return HttpResponseRedirect(reverse("ayou:memories"))
+                return HttpResponseRedirect(reverse("ayou:chat"))
             else:
                 return render(
                     request,
@@ -284,7 +292,11 @@ def chat(request):
                 print(f'>>> validform agentname= {chosenagent}')
                 responseforuser = f"Hi there - my name's {chosenagent}, I just woke up"
                 tokens = 0  
-                name = chosenagent
+                
+                if chosenagent != request.user.username :
+                    name = f"{chosenagent}'s"
+                else:
+                    name = 'your'
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
                 return render(
                         request,
@@ -514,18 +526,11 @@ def chat(request):
                 GET REQUEST, render the page with an empty form
 
     """
-    messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
-
-    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": name,"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist})
-
-
-@login_required
-def social(request):
     messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
-    return render(request, "ayou/social.html")
 
-@login_required
-def account(request):
+    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist, })
+
+
 
     def posttweet(tweet):
         ...
@@ -539,9 +544,9 @@ def account(request):
 
 @login_required
 def memories(request):
-
     message = ""
-  
+    domain = Domain.objects.get(user=request.user)
+
     def pagevariables(request, message):
         return  {"biographyitems": Biographyitem.objects.filter(user=request.user),    
                 "memories": Memory.objects.filter(user=request.user),
@@ -551,24 +556,31 @@ def memories(request):
                 "deletebioform": DeleteBioForm(),
                 'newbioform': NewBioForm(),
                 'message': message,
-                'domainslist': domainslist}
+                'domainslist': domainslist,
+                'domainslistform': DomainsListForm(instance=domain)}
     
     if Domain.objects.filter(user=request.user).exists():
-        domainsquery = Domain.objects.filter(user=request.user)
-        domainslist = []
-        for domain in domainsquery:
-            domainslist.append(domain.domain)
-        print(f'... domainslist  {domainslist} type {type(domainslist[0])}')
-        
-        
-    
 
+        domainsquery = Domain.objects.filter(user=request.user)
+        print(f'... domainsquery  {domainsquery} type {type(domainsquery)}')
+                # mylist
+        domainslist=[]
+        # print(f'... domainslist 1 {domainslist} type {type(domainslist)}')
+        for domain in domainsquery:
+            print(f'... domain.domain {domain.domain} type {type(domain.domain)}')  
+            domainslist.append(domain.domain)   
+        # print(f'... domainslist 2 {domainslist} type {type(domainslist[0])}')
+        #         #endmylist
+        
     if request.method == "POST":
         print(">>> POST request ", request.POST)
+        print('xxxxx', request.POST)
         newbioform = NewBioForm(request.POST)
         deletebioform = DeleteBioForm(request.POST)
         newmemoryform = NewMemoryForm(request.POST)
         deletememoryform = DeleteMemoryForm(request.POST)
+        domainslistform = DomainsListForm(request.POST, instance=domain)
+
         """
             make a function for these is_valid() checks
     
@@ -637,14 +649,22 @@ def memories(request):
                     memorytodelete.delete()
                     print(">>> memory deleted")
 
+        if request.POST.get("formname") == "domainslistform":
+            print('... found form in POST')
 
+            if domainslistform.is_valid():
+                domainslistform.save()
+                print('updated domain? ',Domain.objects.get(user=request.user))
 
         print('rendering')     
-        
+        messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
         return render(request, "ayou/memories.html", pagevariables(request, message))
     """
                 if here by GET
     """
+   
+    
+  
     messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
     return render(request, "ayou/memories.html", pagevariables(request, message))
-    # return HttpResponse('learn')
+ 
