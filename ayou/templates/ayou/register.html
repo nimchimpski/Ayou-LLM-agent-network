@@ -1,10 +1,20 @@
 {% extends 'ayou/layout.html' %}
+{% load static %}
 
 
 {% block body %}
-       
+<!-- register.html -->
+<style>
+body {
+    /* background-color: aqua; */
+    background-image: url('{% static "ayou/imgs/dove.jpg" %}' );
+    /* background-position: right; */
+    background-position: 60rem 60rem;
+    
+}
+</style>
 
-
+<div class="mainpagecontainer">
 <h2>Welcome to Ayou</h2>
 <br>
 {% if messages %}
@@ -23,7 +33,7 @@
 </form>
 
  
-
+</div>
 
 
 {% endblock %}

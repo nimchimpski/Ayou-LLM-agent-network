@@ -1,47 +1,63 @@
 {% extends 'ayou/layout.html' %}
 {% block body %}
-{% load static %}
-       <style>
+<!-- {% load static %} -->
+<style>
+        body {
+                /* background-color: aqua; */
+                background-image: url('{% static "ayou/imgs/red.jpg" %}');
+                background-position: RIGHT 0rem;
+                background-attachment: fixed;
+        }
 
-body {
-    /* background-color: aqua; */
-    background-image: url('{% static "ayou/imgs/red.jpg" %}' );
-    background-position: RIGHT 0rem;
-  
 
-}
-       </style>
+        /*      just layout.html needs style here       */
+</style>
 
-<h1 class="chatheading">Chat with {{ name }} Ayou</h1>
+<div class="mainpagecontainer">
+        <div class="figletheading">
+                <pre>{{ heading }}</pre>
+        </div>
 
-<form action="{% url 'ayou:chat' %}" method="POST">
-        {% csrf_token %}
-        {{ chatform }}
-        <input type="submit" name="chatsubmit"></form>
-        <div class="response">{{ responsecontent }}</div>
+
+        
+                <div class="response">{{ responsecontent }}</div>
+                <form action="{% url 'ayou:chat' %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                                <label for="chat">{{ chatform.usercontent.label }}</label>
+                                {{ chatform.usercontent }}
+                        </div>
+                     
+                        <input type="hidden" name="chatsubmit" value="domainslistform">
+                        <br>
+                        <div class="chatsubmit"><input type="submit"></div>
+                </form>
+      
         <br>
+        <br>
+        <div class="form-group">
+                <label for="chat">{{ chatform.startnewchat.label }}</label>
+                {{ chatform.startnewchat }}
+                {% if tokensused %}
+                <h3>tokens used in chat: {{ tokensused }}</h3>
+                {% endif %}
+
+                <div class="chooseclonebox">
+                        <div class="figletsubheading">
+                                <pre>{{ figletsubheading }}</pre>
+                        </div>
+
+                        <div class="chooseclone">
+                                <form action="{% url 'ayou:chat' %}" method="POST">
+                                        {% csrf_token %}
+                                        {{ selectagentform }}
+                                        <br>
+                                        <input type="submit" value="choose clone" name="selectagentsubmit">
+                                </form>
+                        </div>
+                </div>
 
 
-<form action="{% url 'ayou:chat' %}" method="POST">
-        {% csrf_token %}
-<div class="form-group">
-
-
-
-
-
-
-        {% if tokensused %}
-     <h3>tokens used in chat: {{ tokensused }}</h3>
-     {% endif %}
-
-<h3>Chat with someone elses Ayou clone</h3>
-
-<form action="{% url 'ayou:chat' %}" method="POST">
-   {% csrf_token %}
-   {{ selectagentform }}
-   <input type="submit" value="choose clone" name="selectagentsubmit">
-   </form>
-
-
+        </div>
         {% endblock %}

@@ -10,6 +10,9 @@ from django.urls import reverse
 import requests, os, openai
 import json
 from django import forms
+from pyfiglet import Figlet
+from .helpers import *
+
 
 # from dotenv import load_dotenv
 from .models import Memory, Biographyitem, Chat, Domain
@@ -22,17 +25,18 @@ class NewLoginForm(forms.Form):
     password = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="Password")
 
 class NewChatForm(forms.Form):
-    startnewchat = forms.BooleanField(widget=forms.CheckboxInput(attrs={ 'class': 'topicboo'}),label="New topic?", required=False)
-    usercontent = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 50, 'class': 'textarea'}), max_length=500, label="What do you want to say?")
+  
+    usercontent = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 58, 'class': 'textarea', }), max_length=500, label="")
+    startnewchat = forms.BooleanField(widget=forms.CheckboxInput(attrs={ 'class': 'topicboo'}),label="Start new chat?", required=False)
 
 class NewMemoryForm(forms.Form):
-    date = forms.DateField(widget=forms.DateInput(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="date YYYY-MM-DD")
+    date = forms.DateField(widget=forms.DateInput(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="date (YYYY-MM-DD)")
     emotion = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="emotion")
     description = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="description")
-    content = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 50, 'class': 'textarea'}),label="content")
+    content = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 50, 'class': 'textarea memorycontent'}),label="content")
 
 class DeleteMemoryForm(forms.Form):
-    deletememoryboo = forms.BooleanField(label="Forget this memory?" )
+    deletememoryboo = forms.BooleanField(label="Forget?" )
 
 class NewBioForm(forms.Form):
     item = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="item")
@@ -42,7 +46,7 @@ class DeleteBioForm(forms.Form):
     deletebioboo = forms.BooleanField(label="delete this fact?" )
 
 class DomainsListForm(forms.ModelForm):
-    domain = forms.CharField(widget=forms.Textarea(attrs={'style': 'width:300px', 'rows':2, 'cols':30, 'class': 'textarea'}), label="",)
+    domain = forms.CharField(widget=forms.Textarea(attrs={'style': 'width:300px', 'rows':2, 'mincols':30, 'class': 'textarea'}), label="",)
     class Meta:
         model = Domain
         fields = ['domain'] 
@@ -57,14 +61,14 @@ class SelectAgentForm(forms.Form):
         self.fields['agent'] = forms.ChoiceField(
             choices=[(agentname, agentname) for i, agentname in enumerate(agentslist)],
             widget=forms.RadioSelect,
-            required=True
+            required=False, label='',
         )
 
 
 
 # load_dotenv()
 # openai.api_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = "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"
+openai.api_key = "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"
 
 
 def login_view(request):
@@ -140,10 +144,12 @@ def chat(request):
     print('>>> = maincode \n... = inside IF \n--- = inside ELSE \n/// = inside  FUNCTION')
     
     agentsquery = User.objects.all()
-    print('>>> agents type=', type(agentsquery))
+    
     agentslist = []
     for agent in agentsquery:
+        print('>>> agent type=', type(agent))
         agentslist.append(agent.username)
+    print(">>> agentslisttype ", type(agentslist))
     print(">>> agentslist ", agentslist)
 
     otheragentdomains = Domain.objects.all().exclude(user=userid)
@@ -305,7 +311,7 @@ def chat(request):
                             "chatform": NewChatForm(),
                             "responsecontent": responseforuser,
                             "tokensused": tokens,
-                            "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist, 
+                            "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist),  
                         },
                     )
                 
@@ -320,14 +326,14 @@ def chat(request):
             if chatform.is_valid():
                 
                 startnewchat = chatform.cleaned_data["startnewchat"]
-                # print(">>> startnewchat? ", startnewchat)
+                print(">>> startnewchat? ", startnewchat)
                 # ensure there is a chat
             
 
                 if not Chat.objects.filter(user=userid).exists() or     startnewchat:
                     thischat = Chat.objects.create()
                     thischat.user = request.user
-                    print("... NEW thisChat > ", thischat)
+                    # print("... NEW thisChat > ", thischat)
                     messagechain = []
                     messagechain.append(systemmessage(name))
                     messagechain.append(exampleassistantmessage(name))
@@ -493,7 +499,7 @@ def chat(request):
 
                     summarycompletioncontent = summarycompletion.choices[0].message
                     # print('... summarycompletioncontent ', summarycompletioncontent)
-                    # summarycompletionmessage = {"role": "assistant", "content": f"PREVIOUS CHAT SUMMARY: {summarycompletioncontent}"}
+                    summarycompletionmessage = {"role": "assistant", "content": f"PREVIOUS CHAT SUMMARY: {summarycompletioncontent}"}
                     messagechain = []
                     messagechain.append(systemmessage(name, 100))
                     messagechain.append(exampleassistantmessage(name))
@@ -520,15 +526,24 @@ def chat(request):
                     )
             # else:
             #     return HttpResponse("FORM ERROR")
-        
+    print('...balls')
     """
 
                 GET REQUEST, render the page with an empty form
 
     """
+    
+    
+    # figletheading=Figlet(font='small')
+    # figletheading=figletheading.renderText('Chat with your Ayou clone')
+    heading = figlettext('Chat with your Ayou clone', 'small')
+    figletsubheading = figlettext('Chat with another Ayou clone', 'small')
+    # figletsubheading=Figlet(font='small')
+    # figletsubheading=figletsubheading.renderText('Chat with another persons Ayou clone')
+
     messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
 
-    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist, })
+    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading})
 
 
 
@@ -536,16 +551,14 @@ def chat(request):
         ...
         pass
 
-    # if request.method == 'POST':
 
-
-    messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
-    return render(request, "ayou/account.html")
 
 @login_required
 def memories(request):
     message = ""
     domain = Domain.objects.get(user=request.user)
+
+    heading = figlettext('Configure Ayou', 'small')
 
     def pagevariables(request, message):
         return  {"biographyitems": Biographyitem.objects.filter(user=request.user),    
@@ -557,7 +570,8 @@ def memories(request):
                 'newbioform': NewBioForm(),
                 'message': message,
                 'domainslist': domainslist,
-                'domainslistform': DomainsListForm(instance=domain)}
+                'domainslistform': DomainsListForm(instance=domain),
+                'heading': heading}
     
     if Domain.objects.filter(user=request.user).exists():
 
@@ -655,6 +669,7 @@ def memories(request):
             if domainslistform.is_valid():
                 domainslistform.save()
                 print('updated domain? ',Domain.objects.get(user=request.user))
+                message='knowledge area updated'
 
         print('rendering')     
         messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
@@ -662,9 +677,9 @@ def memories(request):
     """
                 if here by GET
     """
-   
+    print('request path ', request.path)
     
   
     messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
-    return render(request, "ayou/memories.html", pagevariables(request, message))
+    return render(request, "ayou/memories.html", pagevariables(request, message), )
  
