@@ -6,9 +6,15 @@ text.text
 final3venv/
 
 db.sqlite3
+§
+#  cause conflicts and can be regenerated
+*/migrations/*
 
 __pycache__/
 
 .vscode/
 
-ignore/
+zignore/
+
+# Ignore the Mac OS X .DS_Store files
+.DS_Store
