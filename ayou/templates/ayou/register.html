@@ -6,24 +6,26 @@
 <!-- register.html -->
 <style>
 body {
-    /* background-color: aqua; */
-    background-image: url('{% static "ayou/imgs/dove.jpg" %}' );
-    /* background-position: right; */
-    background-position: 60rem 60rem;
+    background-size: cover;
+    background-image: url('{% static "ayou/imgs/rachel.jpg" %}' );
+    background-position: 63rem   0rem;
+    background-attachment: fixed;
+  overflow: hidden;
     
 }
+
 </style>
 
 <div class="mainpagecontainer">
 <h2>Welcome to Ayou</h2>
 <br>
-{% if messages %}
+<!-- {% if messages %}
     <ul class="messages">
         {% for message in messages %}
             <li>{{ message }}</li>
         {% endfor %}
     </ul>
-{% endif %}
+{% endif %} -->
 
 
 <form action="{% url 'ayou:register' %}" method="POST" >
@@ -32,7 +34,12 @@ body {
     <input type="submit" value="register">
 </form>
 
- 
+<div> Or log in 
+
+<button class='btn register'><a href = "{% url 'ayou:login' %}">Log in</a></button>
+</div>
+
+ <br>
 </div>
 
 

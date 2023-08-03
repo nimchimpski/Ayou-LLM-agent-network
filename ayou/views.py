@@ -566,6 +566,7 @@ def memories(request):
     
 
     heading = figlettext('Configure Ayou', 'small')
+    
 
     def pagevariables(request, message):
         return  {"biographyitems": Biographyitem.objects.filter(user=request.user),    

@@ -9,8 +9,10 @@
 
 body {
     /* background-color: aqua; */
-    background-image: url('{% static "ayou/imgs/rachel.jpg" %}' );
-    background-position: 0rem 0rem;
+    background-image: url('{% static "ayou/imgs/dove.jpg" %}' );
+    background-position: 60rem 60rem;
+ 
+    overflow: hidden;
 }
        </style>
 
@@ -41,8 +43,10 @@ body {
 <br>
 <br>
     <h4>Not registered?</h4>
+    <br>
     <button class='btn register'><a href = "{% url 'ayou:register' %}">Join us</a></button>
-
+<br>
+<br>
 
 </div
 {% endblock %}

@@ -110,7 +110,8 @@ body {
     {% if memories %}
 <p class="text1">Ayou's memories      {{ memorymessage}}</p>
             {% endif %}
-<div class="configurescrollbox"> 
+<div class="configurescrollbox mem"> 
+<div class="inner">
 <ul>{% for memory in memories%}
 <li>{{ memory.date }} : {{ memory.description}} : {{memory.emotion}} 
     <!-- delete memory -->
@@ -126,6 +127,7 @@ body {
     </li>
 {% endfor %}
 </ul>
+</div>
 </div>
 <!-- end list memories -->
 

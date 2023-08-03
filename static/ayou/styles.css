@@ -28,7 +28,7 @@ background-color: rgb(119, 119, 119);
     border: 1px solid rgba(255, 255, 255, 0.5);
     padding-left: 5rem;
     padding-right: 5rem;
-    padding-bottom: 12rem;
+    padding-bottom: 14rem;
 }
 
 .mainpagecontainer {
@@ -38,10 +38,11 @@ background-color: rgb(119, 119, 119);
     align-items: center;
     position: relative;
     top: 12rem;
-    
-    
 }
-
+.noscroll {
+    overflow: hidden;
+    overscroll-behavior-y: none;
+}
 h1, h2, h3, h4, h5, h6, p, a, li, label,  .pwdchange .agentyou {
     opacity: .8;
   }
@@ -61,6 +62,7 @@ form input[type=submit] {
     border: none;
     cursor: pointer;
     border-radius: 0.5rem;
+    color: rgb(216, 214, 214);
 }
 
 .btn {
@@ -76,7 +78,6 @@ form input[type=submit] {
 }
 
 .btn2 {
-    
     background: -webkit-linear-gradient(-45deg, rgb(167, 158, 158),rgb(234, 137, 34));
     text-decoration: none;
     border: none;
@@ -89,11 +90,10 @@ form input[type=submit] {
 
 
 
-
 .heading {
     margin-top: -2rem;
     font-size: 3rem;
-   
+
 }
 
 /* /////////   menu/layout page  //////////// */
@@ -113,14 +113,10 @@ text-align: left;
     padding-left: 1rem;
     padding-bottom: 1rem;
     height: auto;
-
 }
 .toprightbox {
     /* border: 1px solid rgba(255,255,255, .5); */
-
     margin-left: 2rem;
-    
-
     text-align: left;
     padding-right: 1rem;
 }
@@ -147,10 +143,8 @@ text-align: left;
     /* border-top: 1px solid rgba(255,255,255, .5); */
     min-width: 700px;
     padding-bottom: 1rem;
-
     top: 0;
-   
-  
+
 }
 .agentyou {
     position: relative;
@@ -186,6 +180,11 @@ text-align: left;
     overflow-y: scroll;
 }
 
+.inner {
+    margin-bottom: -3rem;
+    /* border: 1px solid rgba(255, 255, 255, 0.5); */
+}
+
 .pwdchange {
     position: relative;
     /* top: 1.5rem; */
@@ -193,12 +192,11 @@ text-align: left;
     border: 1px solid rgba(255,255,255, .5);
     height: 1rem;
     padding: .5rem .5rem .5rem .5rem;
-    
 }
+
 .domainfield {
     width:20rem;
 }
-
 
 .textarea {
     display: block;
@@ -206,16 +204,13 @@ text-align: left;
     min-width: 15rem;
     margin-top: .5rem;
     opacity: .5;
-    
 }
 .text1 {
     opacity: .8;
     font-size: 1.2rem;
 
 }
-/* label.textarea {
-    margin-top: 2rem;
-} */
+
 .topicboo {
     display: block;
 }
@@ -226,21 +221,16 @@ text-align: left;
    
 }
 
-
 .newmemoryform .form-group {
     width: 100%;
 }
-
-
-
 
 
         /* //////// chat page ///////// */
 
 
 .chooseclonebox {
-
-            position: relative;
+           position: relative;
             /* left: 10%; */
              
           }
