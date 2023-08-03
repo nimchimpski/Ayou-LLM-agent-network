@@ -9,8 +9,8 @@ body {
 background-color: rgb(119, 119, 119);
     font-size: 1rem;
     
-    padding-left:2rem;
-    padding-right:2rem;
+    /* padding-left:2rem; */
+    /* padding-right:2rem; */
     max-width: 700px;
     min-width: 700px;
     
@@ -76,11 +76,13 @@ text-align: left;
 .toprightbox {
     border: 1px solid rgba(255,255,255, .5);
 
-    margin-left: 1rem;
+    margin-left: 2rem;
+    
 
     text-align: left;
-    padding-right: .5rem;
+    padding-right: 1rem;
 }
+
 .loggedin {
     opacity: .8;
     font-size: .8rem;
@@ -89,6 +91,7 @@ text-align: left;
     
 }
 .menu {
+    margin-left: 5rem;
     position: fixed;
     display: flex;
     margin-top: 0rem;
@@ -175,6 +178,7 @@ text-align: left;
 
 .figletlogo {
     font-weight: bold;
+    padding-left: 2rem;
 }
 
         /* chat page  */

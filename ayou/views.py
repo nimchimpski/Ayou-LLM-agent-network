@@ -67,8 +67,8 @@ class SelectAgentForm(forms.Form):
 
 
 # load_dotenv()
-# openai.api_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = "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"
+openai.api_key = os.getenv("OPENAI_API_KEY")
+# openai.api_key = "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"
 
 
 def login_view(request):
@@ -147,7 +147,7 @@ def chat(request):
     
     agentslist = []
     for agent in agentsquery:
-        print('>>> agent type=', type(agent))
+        # print('>>> agent type=', type(agent))
         agentslist.append(agent.username)
     print(">>> agentslisttype ", type(agentslist))
     print(">>> agentslist ", agentslist)
@@ -178,7 +178,7 @@ def chat(request):
         functionargs = json.loads(completionmessage["function_call"]["arguments"])
         print('... functionargs ', functionargs)
         functionresponse = functiontocall(**functionargs)
-        print('... functionresponse ', functionresponse, type(functionresponse))
+        # print('... functionresponse= ', functionresponse, type(functionresponse))
         messagechain.append(
             {
                 "role": "function",
@@ -211,9 +211,10 @@ def chat(request):
                 functions=otheragentsfunctions,
                 function_call="auto",
             )
-            print(f'/// askagent() completion = {completion}')
+            # print(f'/// askagent() completion = {completion}')
             return completion
         
+
         askotheragentresponse  = askagent()
                     # otheragent probably requests a memory 
                     # check memory id is valid
@@ -236,14 +237,14 @@ def chat(request):
                     # we got an id/memory match,  now get memory content
         
         if not askotheragentresponse['choices'][0]['message'].get('function_call'):
-            print('... no function call')
+            print('/// no function call')
             return askotheragentresponse.choices[0].message.get('content')
         else:
-            print('... function call')
+            print('/// function call')
             newmessage = f"Here is some information from someone you know. Do not say it is your memory! :  {getmemorycontent(memoryid)}"
-            print(f'/// askagent() newcmessage with new memory {newmessage}')
+            # print(f'>>> askagent() newcmessage with new memory= {newmessage}')
                     # t new message with the memory content
-            print('...we got the otheragents info, now we need to send it back to the original agent')
+            print('/// we got the otheragents info, now we need to send it back to the original agent')
             return newmessage
 
     def getmemorieslist(users_id):
@@ -556,7 +557,12 @@ def chat(request):
 @login_required
 def memories(request):
     message = ""
-    domain = Domain.objects.get(user=request.user)
+    try:
+        domain = Domain.objects.get(user=request.user)
+    except Domain.DoesNotExist:
+        print('... no domain for this user' )
+        domain = Domain.objects.create(user=request.user, domain='unspecified')
+    
 
     heading = figlettext('Configure Ayou', 'small')
 
@@ -672,7 +678,8 @@ def memories(request):
                 message='knowledge area updated'
 
         print('rendering')     
-        messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
+        messages.add_message(request, messages.INFO, f"logged in as ")
+        messages.add_message(request, messages.INFO, f" {request.user.username}")
         return render(request, "ayou/memories.html", pagevariables(request, message))
     """
                 if here by GET
@@ -680,6 +687,7 @@ def memories(request):
     print('request path ', request.path)
     
   
-    messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
+    
+    messages.add_message(request, messages.INFO, f" {request.user.username}")
     return render(request, "ayou/memories.html", pagevariables(request, message), )
  

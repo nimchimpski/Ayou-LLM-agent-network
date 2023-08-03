@@ -14,7 +14,7 @@
     </head>
     <body>
         <style>
-            menu {background-image: url('{% static "ayou/imgs/sea.jpg" %}' );}}
+            menu {background-image: url('{% static "ayou/imgs/sea.jpg" %}' );}
         </style>
 
 <div class="menu">
@@ -27,18 +27,18 @@
     <a href="{% url 'ayou:chat' %}"><button class="btn">Chat</button></a>
     <a href="{% url 'ayou:memories' %}"><button class="btn">Configure</button></a>
     <a href="{% url 'ayou:logout' %}"><button class="btn"> Logout</button></a>
-   
+   <div toprightboxbox>
     <div class="toprightbox">
     <ul class="messages">
         {% for message in messages %}
-        <li><p class="loggedin">{{ message }}</p></li>
+        <li><p class="loggedin">{{ message|linebreaksbr }}</p></li>
         {% endfor %}
     </ul>  
   
 
 </div>
 </div>
-
+</div>
 
 
 <br>
