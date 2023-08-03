@@ -8,14 +8,13 @@ body {
     color: rgb(252, 252, 252);
 background-color: rgb(119, 119, 119);
     font-size: 1rem;
-    
-    /* padding-left:2rem; */
-    /* padding-right:2rem; */
     max-width: 700px;
     min-width: 700px;
-    border: 1px solid rgba(255,255,255, .5);
+    /* border: 1px solid rgba(83, 179, 48, 0.5); */
+    border-top: 0px;
     padding-bottom: 10rem;
-    padding-top: 10rem;
+    margin-top: -1rem;
+    /* padding-top: 12rem; */
     
 }
 
@@ -28,16 +27,7 @@ a {
     color: white;
 }
 
-.mainpagecontainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    top: -4rem;
-    
-    
-}
+
 
 /* buttons */
 form input[type=submit] {
@@ -70,7 +60,44 @@ form input[type=submit] {
     color: white;
     border-radius: 0.5rem;
 }
+
+/* //////// shared //////// */
+
+
+.mainpagecontainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: 10rem;
+    
+    
+}
+
+.heading {
+    margin-top: -2rem;
+    font-size: 3rem;
+   
+}
+
 /* /////////   menu/layout page  //////////// */
+
+.ultimatecontainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers children horizontally */
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto; /* Centers the container itself */
+    position: relative;
+    left: 20%;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding-left: 5rem;
+    padding-right: 5rem;
+    padding-bottom: 12rem;
+}
+
 
 .figletlogo {
     font-weight: bold;
@@ -104,20 +131,22 @@ text-align: left;
 .menubox {
     
 }
-.menu {
+.menulayout {
    
     margin-left: 0rem;
     position: fixed;
     display: flex;
     margin-top: 0rem;
-    align-items: center ;
+    align-items: center ;   
     /* justify-content: space-between; */
     flex-wrap: nowrap;
   /* min-width: 600px; */
     z-index: 1000;
-    /* border: 1px solid rgba(255,255,255, .5); */
+    border-bottom: 1px solid rgba(255,255,255, .5);
+    /* border-top: 1px solid rgba(255,255,255, .5); */
     min-width: 700px;
-   
+    padding-bottom: 1rem;
+
     top: 0;
    
   
@@ -131,15 +160,6 @@ text-align: left;
 }
 
 
-/* //////// shared //////// */
-
-
-
-.heading {
-    margin-top: -2rem;
-    font-size: 3rem;
-   
-}
 
 /* ////////  memories page ////////// */
 

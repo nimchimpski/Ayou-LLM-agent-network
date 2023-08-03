@@ -13,11 +13,12 @@
         
     </head>
     <body>
+        <div class="ultimatecontainer">
         <style>
             menu {background-image: url('{% static "ayou/imgs/sea.jpg" %}' );}
         </style>
 
-<div class="menu">
+<div class="menulayout">
     <div class="logobox">
    <div class="figletlogo">
         <a href="{% url 'ayou:chat' %}"><pre>{{ figletlogo }}</pre></a>
@@ -47,5 +48,6 @@
 
 {% block body %}
 {% endblock %}
+</div>
     </body>
 </html>
