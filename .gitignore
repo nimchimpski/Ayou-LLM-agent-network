@@ -18,3 +18,5 @@ zignore/
 
 # Ignore the Mac OS X .DS_Store files
 .DS_Store
+
+final3.code-workspace

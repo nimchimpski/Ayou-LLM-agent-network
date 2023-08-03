@@ -542,7 +542,7 @@ def chat(request):
     # figletsubheading=Figlet(font='small')
     # figletsubheading=figletsubheading.renderText('Chat with another persons Ayou clone')
 
-    messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
+    messages.add_message(request, messages.INFO, f"{request.user.username}")
 
     return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading})
 

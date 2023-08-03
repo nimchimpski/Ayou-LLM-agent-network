@@ -13,6 +13,9 @@ body {
     background-attachment: fixed;
     background-size: cover;
     background-size: 160%;
+    /* overflow: hidden; */
+
+ 
     /* background-repeat: no-repeat; */
     
 }
@@ -22,11 +25,14 @@ body {
        background-attachment: fixed;
     background-size: cover;
     background-size: 160%;
-    left:-4rem;
+    
 }
       </style>
+       
 <div class="mainpagecontainer">
 <!-- heading and pwd change-->
+<div class="pwdchange"><a href="{% url 'password_change' %}">Change password</a>
+</div>
 <div class="configureheadingbox">
     <div>
         <div class="figletheading"><pre>{{ heading }}</pre>
@@ -34,8 +40,7 @@ body {
         <p>{{ message }}</p>
     </div>
    
-    <div class="pwdchange"><a href="{% url 'password_change' %}">Change password</a>
-    </div>
+  
 </div>
 <!-- end heading-->
 

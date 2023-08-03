@@ -8,6 +8,13 @@
                 background-position: RIGHT 0rem;
                 background-attachment: fixed;
         }
+        .menu {
+                background-image: url('{% static "ayou/imgs/red.jpg" %}' ); 
+                background-position: RIGHT 0rem; 
+                background-attachment: fixed;
+              
+    
+}
 
 
         /*      just layout.html needs style here       */
@@ -36,18 +43,18 @@
       
         <br>
         <br>
-        <div class="form-group">
+        <div class="form-group startnewchat">
                 <label for="chat">{{ chatform.startnewchat.label }}</label>
                 {{ chatform.startnewchat }}
                 {% if tokensused %}
                 <h3>tokens used in chat: {{ tokensused }}</h3>
                 {% endif %}
-
+        </div>
                 <div class="chooseclonebox">
                         <div class="figletsubheading">
                                 <pre>{{ figletsubheading }}</pre>
                         </div>
-
+               
                         <div class="chooseclone">
                                 <form action="{% url 'ayou:chat' %}" method="POST">
                                         {% csrf_token %}
@@ -59,5 +66,5 @@
                 </div>
 
 
-        </div>
+        
         {% endblock %}

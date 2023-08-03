@@ -13,6 +13,9 @@ background-color: rgb(119, 119, 119);
     /* padding-right:2rem; */
     max-width: 700px;
     min-width: 700px;
+    border: 1px solid rgba(255,255,255, .5);
+    padding-bottom: 10rem;
+    padding-top: 10rem;
     
 }
 
@@ -26,8 +29,14 @@ a {
 }
 
 .mainpagecontainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     position: relative;
-    top: 5rem;
+    top: -4rem;
+    
+    
 }
 
 /* buttons */
@@ -61,7 +70,12 @@ form input[type=submit] {
     color: white;
     border-radius: 0.5rem;
 }
-/* menu/layout page */
+/* /////////   menu/layout page  //////////// */
+
+.figletlogo {
+    font-weight: bold;
+    padding-left: 2rem;
+}
 
 .messages {
 text-align: left;
@@ -74,7 +88,7 @@ text-align: left;
 
 }
 .toprightbox {
-    border: 1px solid rgba(255,255,255, .5);
+    /* border: 1px solid rgba(255,255,255, .5); */
 
     margin-left: 2rem;
     
@@ -91,12 +105,13 @@ text-align: left;
     
 }
 .menu {
-    margin-left: 5rem;
+   
+    margin-left: 0rem;
     position: fixed;
     display: flex;
     margin-top: 0rem;
     align-items: center ;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     flex-wrap: nowrap;
   /* min-width: 600px; */
     z-index: 1000;
@@ -115,7 +130,18 @@ text-align: left;
     
 }
 
-/* configure page */
+
+/* //////// shared //////// */
+
+
+
+.heading {
+    margin-top: -2rem;
+    font-size: 3rem;
+   
+}
+
+/* ////////  memories page ////////// */
 
 .configureheadingbox {
     display: flex;
@@ -127,6 +153,9 @@ text-align: left;
     margin-bottom: 1rem;
 }
 .pwdchange {
+    position: relative;
+    /* top: 1.5rem; */
+    /* left: 4rem; */
     border: 1px solid rgba(255,255,255, .5);
     height: 1rem;
     padding: .5rem .5rem .5rem .5rem;
@@ -136,11 +165,7 @@ text-align: left;
     width:20rem;
 }
 
-.heading {
-    margin-top: -2rem;
-    font-size: 3rem;
-   
-}
+
 
 
 .textarea {
@@ -176,18 +201,15 @@ text-align: left;
 
 
 
-.figletlogo {
-    font-weight: bold;
-    padding-left: 2rem;
-}
 
-        /* chat page  */
+
+        /* //////// chat page ///////// */
 
 
 .chooseclonebox {
 
             position: relative;
-            left: 10%;
+            /* left: 10%; */
              
           }
           
@@ -196,7 +218,7 @@ text-align: left;
               position: relative;
               left: 30%;
               overflow-y: scroll;
-              opacity: 0.8;
+              /* opacity: 0.8; */
           }
 .response {
             margin-top: 1rem;
@@ -212,15 +234,20 @@ text-align: left;
     
 .chatsubmit {
     position: relative;
-    left: 30%;
+    left: 45%;
+}
+
+.startnewchat {
+    position: relative;
+    opacity: .8;
 }
 
 .figletheading {
-            position: relative;
+            /* position: relative; */
             font-size: .6rem;
             font-weight: bold;
             opacity: .7;    
-            left: 10%;
+            /* left: 10%; */
             /* line-height: .8; */
         }
 
