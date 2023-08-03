@@ -57,9 +57,10 @@ body {
 
 <!-- edit the bio items -->
  <div class="configurebox">
-    {% if  biographyitems %}
     <p class="text1">Facts about Ayou</p>
-    {% endif %}
+    {% if  biographyitems %}
+    
+    
 
     <!-- list the bio items -->
     <div class="configurescrollbox">
@@ -79,6 +80,7 @@ body {
     {% endfor %}
     </ul> 
     </div>
+    {% endif %}
 <!-- add new -->
 <p class="text1">Add new fact</p>
 
@@ -109,7 +111,7 @@ body {
 <div class="configurebox">
     {% if memories %}
 <p class="text1">Ayou's memories      {{ memorymessage}}</p>
-            {% endif %}
+           
 <div class="configurescrollbox mem"> 
 <div class="inner">
 <ul>{% for memory in memories%}
@@ -129,6 +131,7 @@ body {
 </ul>
 </div>
 </div>
+{% endif %}
 <!-- end list memories -->
 
 

@@ -27,16 +27,18 @@ body {
     </ul>
 {% endif %} -->
 
-
+<div class="registerbox">
 <form action="{% url 'ayou:register' %}" method="POST" >
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="register">
 </form>
-
+<br>
+<br>
 <div> Or log in 
 
 <button class='btn register'><a href = "{% url 'ayou:login' %}">Log in</a></button>
+</div>
 </div>
 
  <br>
