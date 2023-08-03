@@ -68,7 +68,7 @@ class SelectAgentForm(forms.Form):
 
 # load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-# openai.api_key = "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"
+
 
 
 def login_view(request):
