@@ -3,8 +3,12 @@ text.text
 
 .env
 
+final3venv/
+
 db.sqlite3
 
 __pycache__/
 
 .vscode/
+
+ignore/
