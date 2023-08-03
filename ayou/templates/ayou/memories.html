@@ -13,11 +13,6 @@ body {
     background-attachment: fixed;
     background-size: cover;
     background-size: 160%;
-    /* overflow: hidden; */
-
- 
-    /* background-repeat: no-repeat; */
-    
 }
 .menulayout {
        background-image: url('{% static "ayou/imgs/sea.jpg" %}' );
@@ -27,10 +22,12 @@ body {
     background-size: 160%;
     
 }
-      </style>
+</style>
        
 <div class="mainpagecontainer">
-<!-- heading and pwd change-->
+
+<!-- //////// heading and pwd change /////////// -->
+
 <div class="pwdchange"><a href="{% url 'password_change' %}">Change password</a>
 </div>
 <div class="configureheadingbox">
@@ -39,13 +36,11 @@ body {
         </div>
         <p>{{ message }}</p>
     </div>
-   
-  
 </div>
 <!-- end heading-->
 
+<!-- //////// domains /////////// -->
 
-<!-- edit the domainslist -->
 <div class="configurebox">
     <p class="text1">Ayou's knowledge area</p>
 
@@ -56,18 +51,21 @@ body {
     <br>
     <input type="submit" value="Update" >
     </form>
-
 </div>
 
+<!-- //////// bio items ////////// -->
 
 <!-- edit the bio items -->
  <div class="configurebox">
     {% if  biographyitems %}
     <p class="text1">Facts about Ayou</p>
     {% endif %}
+
+    <!-- list the bio items -->
+    <div class="configurescrollbox">
     <ul>{% for item in biographyitems %}
-   
     <li>{{ item.item }} : {{ item.description}} 
+
         <!-- delete biography item -->
     <form action="{% url 'ayou:memories' %}" method="POST">
         {% csrf_token %}
@@ -80,6 +78,7 @@ body {
     </li>
     {% endfor %}
     </ul> 
+    </div>
 <!-- add new -->
 <p class="text1">Add new fact</p>
 
@@ -94,23 +93,25 @@ body {
         <label for="{{ newbioform.description.id_for_label }}">{{ newbioform.description.label }}</label>
         {{ newbioform.description }}
     </div>
+    <input type="hidden" name="formname" value="newbioform">
     <br>
     <input type="submit" value="Submit">
 </form>
 </div>
+<!-- end add new -->
 
 
 
+<!-- ///////// memories /////////// -->
 
-
-            <!-- edit memories -->
-
+            
+<!-- list memories -->
 <div class="configurebox">
     {% if memories %}
-<p class="text1">Ayou's memories</p>
+<p class="text1">Ayou's memories      {{ memorymessage}}</p>
             {% endif %}
+<div class="configurescrollbox"> 
 <ul>{% for memory in memories%}
-  
 <li>{{ memory.date }} : {{ memory.description}} : {{memory.emotion}} 
     <!-- delete memory -->
     <form action="{% url 'ayou:memories' %}" method="POST">
@@ -119,13 +120,17 @@ body {
         <input type="hidden" name="formname" value="deletememoryform">
         <input type="hidden" name="id" value="{{ memory.id }}">
         <input type="submit" name="confirm" value="confirm">
-      <!--  -->
-        
     </form>
+     <!-- end delete-->
     <br>
     </li>
 {% endfor %}
 </ul>
+</div>
+<!-- end list memories -->
+
+
+
 <br>
 
 <p class="text1">Add new memory</p>

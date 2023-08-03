@@ -14,7 +14,7 @@ from pyfiglet import Figlet
 from .helpers import *
 
 
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from .models import Memory, Biographyitem, Chat, Domain
 
 
@@ -66,8 +66,9 @@ class SelectAgentForm(forms.Form):
 
 
 
-# load_dotenv()
+load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
+# openai.api_key = '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'
 
 
 
@@ -582,34 +583,29 @@ def memories(request):
     if Domain.objects.filter(user=request.user).exists():
 
         domainsquery = Domain.objects.filter(user=request.user)
-        print(f'... domainsquery  {domainsquery} type {type(domainsquery)}')
+        # print(f'... domainsquery  {domainsquery} type {type(domainsquery)}')
                 # mylist
         domainslist=[]
         # print(f'... domainslist 1 {domainslist} type {type(domainslist)}')
         for domain in domainsquery:
-            print(f'... domain.domain {domain.domain} type {type(domain.domain)}')  
+            # print(f'... domain.domain {domain.domain} type {type(domain.domain)}')  
             domainslist.append(domain.domain)   
         # print(f'... domainslist 2 {domainslist} type {type(domainslist[0])}')
         #         #endmylist
         
     if request.method == "POST":
         print(">>> POST request ", request.POST)
-        print('xxxxx', request.POST)
-        newbioform = NewBioForm(request.POST)
-        deletebioform = DeleteBioForm(request.POST)
-        newmemoryform = NewMemoryForm(request.POST)
-        deletememoryform = DeleteMemoryForm(request.POST)
-        domainslistform = DomainsListForm(request.POST, instance=domain)
-
+        print('>>> POST request content>', request.POST)
         """
             make a function for these is_valid() checks
     
         """
         if request.POST.get("formname") == "newbioform":
             print(">>> nnewbioform request")
+            newbioform = NewBioForm(request.POST)
             if newbioform.is_valid():
                 print(">>> newbioform is valid ")
-                # newbioform = NewBioForm(request.POST)
+                
                 item = newbioform.cleaned_data['item']
                 print('... item ', item)
                 description = newbioform.cleaned_data['description']
@@ -625,23 +621,25 @@ def memories(request):
                 return render(request, "ayou/memories.html", pagevariables(request, message))
             
         elif request.POST.get("formname") == "deletebioform":
+            deletebioform = DeleteBioForm(request.POST)
             if deletebioform.is_valid():
                 print(">> deletebioform  valid ")
                 deletebioboo = deletebioform.cleaned_data["deletebioboo"]
                 if deletebioboo:
                     bioid = request.POST.get("id")  
-                    print('... bioid ', bioid)
+                    # print('... bioid ', bioid)
                     biotodelete = Biographyitem.objects.get(id=bioid)
-                    print('... biotodelete ', biotodelete)
+                    # print('... biotodelete ', biotodelete)
                     message = f"Biography item deleted: {biotodelete.item}"
                     biotodelete.delete()
-                    print('... biotodelete deleteed now render page')
+                    # print('... biotodelete deleteed now render page')
             else:
-                print('... deletebioform not valid', deletebioform.errors)
+                # print('... deletebioform not valid', deletebioform.errors)
                 message = "Biography item not deleted. Correct the form and try again."
                 return render(request, "ayou/memories.html", pagevariables(request, message))
             
         elif request.POST.get("formname") == "newmemoryform":
+            newmemoryform = NewMemoryForm(request.POST)
             if newmemoryform.is_valid():
                 date = newmemoryform.cleaned_data['date']
                 description = newmemoryform.cleaned_data['description']
@@ -650,35 +648,36 @@ def memories(request):
                 newmemory = Memory.objects.create(date=date, description=description, content=content, emotion=emotion, user=request.user)
                 newmemory.save()
                 message = f"New memory added: {description}"
-                print('... newmemory ', newmemory)
-                print('... newmemoryfromdb ', Memory.objects.order_by('id').last())
+                # print('... newmemory ', newmemory)
+                # print('... newmemoryfromdb ', Memory.objects.order_by('id').last())
             else:
-                print('... newmemoryform not valid', newmemoryform.errors)
+                # print('... newmemoryform not valid', newmemoryform.errors)
                 message = "Memory not added. Correct the form and try again."
                 return render(request, "ayou/memories.html", pagevariables(request, message))
             
         elif request.POST.get("formname") == "deletememoryform":
+            deletememoryform = DeleteMemoryForm(request.POST)
             if deletememoryform.is_valid():
                 deletememoryboo = deletememoryform.cleaned_data["deletememoryboo"]
                 if deletememoryboo:
-                    print(">>> boolean deletememory ", request.POST.get("deletememory"))
-                    print(">>> memoryid ", request.POST.get("memory_id"))
+                    # print(">>> boolean deletememory ", request.POST.get("deletememory"))
+                    # print(">>> memoryid ", request.POST.get("memory_id"))
                     memoryid = request.POST.get("id")
                     memorytodelete = Memory.objects.get(id=memoryid)
                     message = f"Memory deleted: {memorytodelete.description}"
                     memorytodelete.delete()
-                    print(">>> memory deleted")
+                    # print(">>> memory deleted")
 
         if request.POST.get("formname") == "domainslistform":
-            print('... found form in POST')
-
+            # print('... found form in POST')
+            domainslistform = DomainsListForm(request.POST, instance=domain)
             if domainslistform.is_valid():
                 domainslistform.save()
                 print('updated domain? ',Domain.objects.get(user=request.user))
                 message='knowledge area updated'
 
         print('rendering')     
-        messages.add_message(request, messages.INFO, f"logged in as ")
+        
         messages.add_message(request, messages.INFO, f" {request.user.username}")
         return render(request, "ayou/memories.html", pagevariables(request, message))
     """
