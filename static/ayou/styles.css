@@ -269,8 +269,7 @@ text-align: left;
             font-size: .6rem;
             font-weight: bold;
             opacity: .7;    
-            /* left: 10%; */
-            /* line-height: .8; */
+            text-align: center;
         }
 
 .figletsubheading {

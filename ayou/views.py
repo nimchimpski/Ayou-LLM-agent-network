@@ -190,18 +190,7 @@ def chat(request):
         return messagechain
     
     def askotheragent(agentname, question):
-        print(f'+++ askotheragent() called {agentname} {question}')
-        otheragentid= User.objects.get(username=agentname).id
-        # print(f'/// otheragentid {otheragentid}')
-        memorieslist = getmemorieslist(otheragentid)
-        otheragentsfunctions = scopedfunctions(memorieslist)
-        # print(f'/// otheragentsfunctions {otheragentsfunctions}')
-        print(f'/// other agents memorieslist {memorieslist}')
-        messagechain = []
-        messagechain.append(systemmessage(agentname))
-        messagechain.append(exampleassistantmessage(agentname))
-        messagechain.append({"role": "system", "content": "IMPORTANT! Make sure you have the correct id for the memory you want to retrieve"})
-        # print(f'/// new messagechain {messagechain}')
+
         def askagent(callfunction='auto'):
             print('+++ askagent() called')
             completion = openai.ChatCompletion.create(
@@ -215,7 +204,20 @@ def chat(request):
             # print(f'/// askagent() completion = {completion}')
             return completion
         
-
+        attempts = 0
+        
+        print(f'+++ askotheragent() called {agentname} {question}')
+        otheragentid= User.objects.get(username=agentname).id
+        # print(f'/// otheragentid {otheragentid}')
+        memorieslist = getmemorieslist(otheragentid)
+        otheragentsfunctions = scopedfunctions(memorieslist)
+        # print(f'/// otheragentsfunctions {otheragentsfunctions}')
+        print(f'/// other agents memorieslist {memorieslist}')
+        messagechain = []
+        messagechain.append(systemmessage(agentname))
+        messagechain.append(exampleassistantmessage(agentname))
+        messagechain.append({"role": "system", "content": "IMPORTANT! Make sure you have the correct id for the memory you want to retrieve"})
+        # print(f'/// new messagechain {messagechain}')
         askotheragentresponse  = askagent()
                     # otheragent probably requests a memory 
                     # check memory id is valid
@@ -224,8 +226,9 @@ def chat(request):
         memoryid = memoryiddict.get('memory_id')
         while not Memory.objects.filter(id=memoryid):
             print('... memory id not valid')
-            askagent()
             print(f'/// memoryid {memoryid}')
+            # askagent()
+            
             askotheragentresponse  = askagent()
             mess = askotheragentresponse['choices'][0]['message']['function_call']['arguments']
             memoryiddict = json.loads(mess)
@@ -272,7 +275,12 @@ def chat(request):
     
     def getmemorycontent(memory_id):
         print(f'+++ getmemorycontent called. id= {memory_id}')
+                # check memory id is valid
+        if not Memory.objects.filter(id=memory_id):
+            print('.../// memory id not valid')
+            return json.dumps({"role": "system", "content": f'No useful memories came back from this enquiry. '})
         memory = Memory.objects.get(id=memory_id)
+
         print(f'/// memory to be retrieved= {memory}')
         return json.dumps(memory.content)
     
@@ -333,6 +341,7 @@ def chat(request):
             
 
                 if not Chat.objects.filter(user=userid).exists() or     startnewchat:
+                    print('--- there is no chat')
                     thischat = Chat.objects.create()
                     thischat.user = request.user
                     # print("... NEW thisChat > ", thischat)
@@ -352,12 +361,12 @@ def chat(request):
                     messagechain.append(newusermessagedict)
                     # print(">>> messagechain at start   ", messagechain)
 
-                    """
+                """
                             now we have a messagechain with the user's message at the end
 
-                    """      
+                """      
 
-                    def scopedfunctions(memorieslist):
+                def scopedfunctions(memorieslist):
                         print('+++ scopedfunctions called')
                         result = [
                         {
@@ -404,30 +413,27 @@ def chat(request):
 
 
                         functions = scopedfunctions(memorieslist)
-                    """
+                """
                                 get the openAI first completion
-                    """
-                    functions = scopedfunctions(memorieslist)
+                """
+                functions = scopedfunctions(memorieslist)
 
-                    firstcompletion = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",
-                    messages=messagechain,
-                    max_tokens=200,
-                    temperature=1,
-                    functions=functions,
-                    function_call="auto",
-                    )   
-
-                    completionmessage = firstcompletion["choices"][0]["message"]
-                    print(">>> completionmessage  type= ", type(completionmessage) )
-                    # print(">>> completionmessage  ",completionmessage, )
-
-                    """
-
-                                    if functioncall in response , call it and append result to messagesforcompletion
-                    '"""
-
+                firstcompletion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=messagechain,
+                max_tokens=200,
+                temperature=1,
+                functions=functions,
+                function_call="auto",
+                )   
+                completionmessage = firstcompletion["choices"][0]["message"]
+                print(">>> completionmessage  type= ", type(completionmessage) )
+                # print(">>> completionmessage  ",completionmessage, )
+                """
+                                if functioncall in response , call it and append result to messagesforcompletion
+                '"""
                 if completionmessage.get("function_call"):
+                    print(">>> function_call in completionmessage")
                     messagechain = dealwithfunctionrequest()
                     """
 
