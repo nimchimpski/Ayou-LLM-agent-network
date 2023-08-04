@@ -133,22 +133,23 @@ def chat(request):
 
     def systemmessage(name, tokens=100):
         print('++++ systemmessage() called')
-        systemmessage = {"role": "system", "content": f'You are the  clone of {name} and you have memories and  feelings.  Here are some of your personal details {biographyitems} You  can consult other clones for more information. Introduce yourself as {name}. Remember to look at your available functions and memories. Only talk about the memory if it is useful for the conversation.  Keep your answers to no more than {tokens} tokens.'}
+        systemmessage = {"role": "system", "content": f'You are a character called {name} and here are some details about you  {biographyitems}. Of course you have memories and  feelings. Look at your getmemorycontent function if you need to remember things. You  can also consult other agents for more information using the askotheragent function.  Keep your answers to no more than {tokens} tokens.  Please always reply in character, and never say you are an A.I.!]'}
         return systemmessage
     
     def exampleassistantmessage(name):
         print('+++++ exampleassistantmessage() called')
-        result ={"role": "assistant", "content": f"Hey! My names {name}. I'm actually a clone of {name}, and I remember quite a bit about my past. Not all my memories are good, but I'm happy to share them with you. I'm also happy to answer any questions you have about what I'm doing now, or about my past.I can also ask other clones for information about their memories."}
+        result ={"role": "assistant", "content": f"Hello! My names {name}.  I remember quite a bit about my past. Not all my memories are happy, but I'm willing to share them with you. I'm also happy to answer any questions you have about what I'm doing now, or about my past.I can also ask other clones for information about their memories."}
         return result
     
     def dealwithfunctionrequest():
-        print('+++ dealwithfunctionrequest():')
+        print('+++ dealwithfunctionrequest() called')
         possfunctions = {"getmemorycontent": getmemorycontent, "askotheragent": askotheragent}
         functionname = completionmessage["function_call"]["name"]
         functiontocall = possfunctions[functionname]
         print('... functiontocall ', functiontocall)
         functionargs = json.loads(completionmessage["function_call"]["arguments"])
         print('... functionargs ', functionargs)
+                    ##### completion call here!
         functionresponse = functiontocall(**functionargs)
         # print('... functionresponse= ', functionresponse, type(functionresponse))
         messagechain.append(
@@ -161,9 +162,9 @@ def chat(request):
         return messagechain
     
     def askotheragent(agentname, question):
-
-        def askagent(callfunction='auto'):
-            print('+++ askagent() called')
+  
+        def askotheragentcompletion(callfunction='auto'):
+            print('+++ askotheragent() completion called')
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messagechain,
@@ -174,32 +175,37 @@ def chat(request):
             )
             print(f'/// askagent(): completion = {completion}')
             return completion
-        
+        """
+        redefine variables and chat, with local scope, to the other agent
+        """        
         attempts = 0
-        print(f'+++ askotheragent() called {agentname} {question}')
+        print(f'+++ askotheragent() called= {agentname}')
+        print(f'+++ with this question= {question}')
         otheragentid= User.objects.get(username=agentname).id
-        # print(f'/// otheragentid {otheragentid}')
+        print(f'/// otheragentid ={otheragentid}')
         memorieslist = getmemorieslist(otheragentid)
-        otheragentsfunctions = scopedfunctions(memorieslist)
-        # print(f'/// otheragentsfunctions {otheragentsfunctions}')
-        print(f'/// other agents memorieslist {memorieslist}')
+        otheragentsdomainslist = otheragentdomainsfunction(otheragentid)
+        otheragentsfunctions = scopedfunctions(memorieslist, otheragentsdomainslist)
+        print(f'/// {agentname}"s functions ={otheragentsfunctions}')
+        print(f'/// {agentname}s memorieslist ={memorieslist}')
         messagechain = []
         messagechain.append(systemmessage(agentname))
         messagechain.append(exampleassistantmessage(agentname))
         messagechain.append({"role": "system", "content": "IMPORTANT! Make sure you have the correct id for the memory you want to retrieve"})
-        print(f'/// new messagechain {messagechain}')
-        askotheragentresponse  = askagent()
+        print(f'/// n{agentname}s messagechain {messagechain}')
+                    ######  make the first completion
+        askotheragentresponse  = askotheragentcompletion()
                     ####### otheragent probably requests a memory 
-                    ####### check memory id is valid
+                    ####### check memory id is valid / why does it go wrong here?
         mess = askotheragentresponse['choices'][0]['message']['function_call']['arguments']
         memoryiddict = json.loads(mess)
         memoryid = memoryiddict.get('memory_id')
         while not Memory.objects.filter(id=memoryid):
             print('... memory id not valid')
             print(f'/// memoryid {memoryid}')
-            # askagent()
-            
-            askotheragentresponse  = askagent()
+                    ####### first attempt at memry id failed, try again
+            askotheragentresponse  = askotheragentcompletion()
+
             mess = askotheragentresponse['choices'][0]['message']['function_call']['arguments']
             memoryiddict = json.loads(mess)
             memoryid = memoryiddict.get('memory_id')
@@ -252,7 +258,7 @@ def chat(request):
         print(f'/// memory to be retrieved= {memory}')
         return json.dumps(memory.content)
 
-    def scopedfunctions(memorieslist):
+    def scopedfunctions(memorieslist, otheragentsdomainslist):
         print('+++ scopedfunctions called')
         result = [
                         {
@@ -269,7 +275,7 @@ def chat(request):
                                 "required": ["memory_id"],
                             },
                         },
-                        {"name": "askotheragent", "description": f"Only call this function if the user has asked for information you dont have. Here is a list of other agents and their domains of knowledge:{otheragentsdomainslist}. If one of them has information you need call the function,   giving the agentname  and the original users question as function parameters.  ",
+                        {"name": "askotheragent", "description": f"Only call this function if the user has asked for information you dont have. Here is a list of other agents and their domains of knowledge:{otheragentsdomainslist}. If one of them has information you need you can call the function,   giving the agentname  and the original users question as function parameters.  ",
                             "parameters": {
                                 "type": "object",
                                 "properties": {
@@ -284,6 +290,18 @@ def chat(request):
 
                     ]   
         return result
+   
+    def otheragentdomainsfunction(userid):
+        print('+++ otheragentdomainsfunction called')
+        otheragentdomains = Domain.objects.all().exclude(user=userid)
+        otheragentsdomainslist = []
+        for domain in otheragentdomains:
+            otheragentsdomainslist.append(
+            {'agent': domain.user.username, 'domain': domain.domain})
+        print(f'>>> otheragentdomainlist {otheragentsdomainslist}')
+        print(f'>>> otheragentdomainlist type {type(otheragentsdomainslist)}')
+        return otheragentsdomainslist
+   
     """
                the variables we need
     """
@@ -304,18 +322,19 @@ def chat(request):
     print(">>> agentslist ", agentslist)
     print(">>> agentslist[0] ", agentslist[1])
 
-                ####### domains objects for ask...() and memories page
-    otheragentdomains = Domain.objects.all().exclude(user=userid)
-    otheragentsdomainslist = []
-    for domain in otheragentdomains:
-        otheragentsdomainslist.append(
-        {'agent': domain.user.username, 'domain': domain.domain})
-    print(f'>>> otheragentdomainlist {otheragentsdomainslist}')
-    print(f'>>> otheragentdomainlist type {type(otheragentsdomainslist)}')
+
+                ####### domains objects for askotheragents() and memories page
+    # otheragentdomains = Domain.objects.all().exclude(user=userid)
+    # otheragentsdomainslist = []
+    # for domain in otheragentdomains:
+    #     otheragentsdomainslist.append(
+    #     {'agent': domain.user.username, 'domain': domain.domain})
+    # print(f'>>> otheragentdomainlist {otheragentsdomainslist}')
+    # print(f'>>> otheragentdomainlist type {type(otheragentsdomainslist)}')
 
     memorieslist = getmemorieslist(userid)
     # print('>>> memorieslist ', memorieslist)
-
+    otheragentsdomainslist = otheragentdomainsfunction(userid)
     '''
 
                 POST REQUEST
@@ -386,15 +405,11 @@ def chat(request):
                 """
                            ####### now we have a messagechain with the user's message at the end
 
-                """     
-
-                
-
-                        
+                """         
                 """
                               #######  get the openAI first completion
                 """
-                functions = scopedfunctions(memorieslist)
+                functions = scopedfunctions(memorieslist, otheragentsdomainslist)
 
                 firstcompletion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
@@ -411,11 +426,12 @@ def chat(request):
                               #######  if functioncall in response , call it and append result to messagesforcompletion
                 '"""
                 if completionmessage.get("function_call"):
-                    print("... function_call in completionmessage")
+                    print("... function_call in completionmessage - will now call dealwithfunctionrequest()")
                     messagechain = dealwithfunctionrequest()
+                    print("...now out of dealwithfunctionrequest())")
                     """
 
-                              ####### make second agent call with function results
+                              ####### make second primary agent call with function results
 
                     """
                     completionwithfunctionresults = openai.ChatCompletion.create(
