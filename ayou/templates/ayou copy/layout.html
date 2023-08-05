@@ -1,21 +1,15 @@
 {% load static %}
-
-
 <!DOCTYPE html>
 <html lang="eng">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="{% static 'ayou/styles.css' %}" rel="stylesheet">
-
         <title>layout</title>
-
-        
     </head>
-    <body class="{{ page_class }}">
+    <body class="{{ page_class}}]">
         <div class="ultimatecontainer">
-
-
+ 
 <div class="menulayout">
     <div class="logobox">
    <div class="figletlogo">
@@ -33,12 +27,9 @@
         <li><p class="loggedin">{{ message|linebreaksbr }}</p></li>
         {% endfor %}
     </ul>  
-  
-
 </div>
 </div>
 </div>
-
 {% block body %}
 {% endblock %}
 </div>

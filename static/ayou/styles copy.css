@@ -1,23 +1,14 @@
 
 
 body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
   
-    /* background-image: url('imgs/sea.jpg' ); */
+    background-image: url('/static/ayou/imgs/red.jpg' );
     font-family : Helvetica, sans-serif;
     color: rgb(252, 252, 252);
-    background-color: rgb(119, 119, 119);
-    /* background-attachment: fixed; */
-    
-
-
+background-color: rgb(119, 119, 119);
     font-size: 1rem;
-
-   
-  
+    max-width: 700px;
+    min-width: 700px;
     /* border: 1px solid rgba(83, 179, 48, 0.5); */
     border-top: 0px;
     padding-bottom: 10rem;
@@ -25,45 +16,18 @@ body {
     /* padding-top: 12rem; */
     
 }
-.indexpage {
-    background-image: url("../imgs/dove.jpg" );
-    background-position: 60rem 60rem;
- 
-    overflow: hidden;
-}
-.chatpage{
-    background-image: url("imgs/dove.jpg");
-    /* background-position: RIGHT 0rem; */
-    background-attachment: fixed;
-}
-.memoriespage {
-    background-image: url( "imgs/dove.jpg" );
-    background-position: -20rem 0rem;
-    background-attachment: fixed;
-    background-size: cover;
-    background-size: 160%;
-}
-.registerpage {
-    background-size: cover;
-    background-image: url( "ayou/imgs/rachel.jpg" );
-    background-position: 63rem   0rem;
-    background-attachment: fixed;
-}
 
 .ultimatecontainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center; 
-    /* width: 80%; */
+    width: 80%;
     max-width: 1200px;
     position: relative;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-    border-left: 1px solid rgba(255, 255, 255, 0.5);
-    border-right: 1px solid rgba(255, 255, 255, 0.5);
-    margin-top: 1rem;
-    padding-left: 6rem;
-    padding-right: 6rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding-left: 5rem;
+    padding-right: 5rem;
     padding-bottom: 14rem;
 }
 
@@ -74,7 +38,6 @@ body {
     align-items: center;
     position: relative;
     top: 12rem;
-    /* border: 1px solid rgba(255, 255, 255, 0.5); */
 }
 .noscroll {
     overflow: hidden;
@@ -167,19 +130,18 @@ text-align: left;
 }
 .menulayout {
    
- 
+    margin-left: 0rem;
     position: fixed;
     display: flex;
-    /* margin-top: 1rem; */
+    margin-top: 0rem;
     align-items: center ;   
     /* justify-content: space-between; */
-    /* flex-wrap: nowrap; */
+    flex-wrap: nowrap;
   /* min-width: 600px; */
     z-index: 1000;
     border-bottom: 1px solid rgba(255,255,255, .5);
     /* border-top: 1px solid rgba(255,255,255, .5); */
-    /* border: 1px solid rgba(255,255,255, .5); */
-    /* min-width: 700px; */
+    min-width: 700px;
     padding-bottom: 1rem;
     top: 0;
 

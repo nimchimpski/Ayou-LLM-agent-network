@@ -1,21 +1,20 @@
 {% extends 'ayou/layout.html' %}
 {% block body %}
-{% with page_class='chatpage' %}
-{% load static %}
-
+<!-- {% load static %} -->
 <style>
-        /* body {
+        body {
+                /* background-color: aqua; */
                 background-image: url('{% static "ayou/imgs/red.jpg" %}');
                 background-position: RIGHT 0rem;
                 background-attachment: fixed;
-        } */
-        /* .menulayout {
+        }
+        .menulayout {
                 background-image: url('{% static "ayou/imgs/red.jpg" %}' ); 
                 background-position: RIGHT 0rem; 
                 background-attachment: fixed;
               
     
-} */
+}
 
 
         /*      just layout.html needs style here       */
@@ -25,6 +24,9 @@
         <div class="figletheading">
                 <pre>{{ heading }}</pre>
         </div>
+
+
+        
                 <div class="response">{{ responsecontent }}</div>
                 <form action="{% url 'ayou:chat' %}" method="POST">
                         {% csrf_token %}
@@ -66,5 +68,5 @@
                 </div>
 
 
-        {% endwith %}
+        
         {% endblock %}

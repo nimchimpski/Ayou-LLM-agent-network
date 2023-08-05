@@ -1,19 +1,19 @@
 {% extends 'ayou/layout.html' %}
+{% block body %}
 {% load static %}
 
-{% block body %}
+{% with page_class=indexpage %}
 
 
 <!-- index.html -->
        <style>
 
-body {
-    /* background-color: aqua; */
+/* body {
     background-image: url('{% static "ayou/imgs/dove.jpg" %}' );
     background-position: 60rem 60rem;
  
     overflow: hidden;
-}
+} */
        </style>
 
 <div class="mainpagecontainer">
@@ -49,5 +49,6 @@ body {
 <br>
 
 </div
+{% endwith %}
 {% endblock %}
 

@@ -1,24 +1,27 @@
 {% extends 'ayou/layout.html' %}
+
 {% block body %}
-{% with page_class='memoriesepage' %}
+
 {% load static %}
        <style>
 
-/* body {
+body {
+    /* background-color: aqua; */
     background-image: url('{% static "ayou/imgs/sea.jpg" %}' );
+    /* background-position: right; */
     background-position: -20rem 0rem;
     background-attachment: fixed;
     background-size: cover;
     background-size: 160%;
-} */
-/* .menulayout {
+}
+.menulayout {
        background-image: url('{% static "ayou/imgs/sea.jpg" %}' );
        background-position: -20rem 0rem;
        background-attachment: fixed;
     background-size: cover;
     background-size: 160%;
     
-} */
+}
 </style>
        
 <div class="mainpagecontainer">
@@ -175,6 +178,6 @@
 
 
 
-{% endwith %}
+
 {% endblock %}
 
