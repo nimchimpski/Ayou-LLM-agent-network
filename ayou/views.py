@@ -131,9 +131,9 @@ def logout_view(request):
 @login_required
 def chat(request):
 
-    def systemmessage(name, sentences=10):
+    def systemmessage(name, sentences=5):
         print('++++ systemmessage() called')
-        systemmessage = {"role": "system", "content": f"You are a character called {name} and here are some details about you  {biographyitems}. Of course you have memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. You  can also consult other agents for more information using the 'askotheragent' function.  Keep your answers to no more than {sentences} sentences.  Please always reply in character, and never say you are an A.I.!]"}
+        systemmessage = {"role": "system", "content": f"You are a character called {name} and here are some details about you  {biographyitems}. Of course you have memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. You  can also consult other agents for more information using the 'askotheragent' function.  Keep your answers to about {sentences} sentences.  Please always reply in character, and never say you are an A.I.!]"}
         return systemmessage
     
     def exampleassistantmessage(name):
@@ -173,7 +173,7 @@ def chat(request):
                 functions=otheragentsfunctions,
                 function_call="auto",
             )
-            print(f'/// askotheragentcompletion(): completion = {completion}')
+            # print(f'/// askotheragentcompletion(): completion = {completion}')
             return completion
         """
         redefine variables and chat, with local scope, to the other agent
@@ -200,10 +200,19 @@ def chat(request):
                     ###### if no request for a memory+id, loop until you get one
 
         for i in range(5):
-            askotheragentresponse  = askotheragentcompletion()
+            askotheragentresponse  = (askotheragentcompletion())
             print(f'/// askotheragentresponse = {askotheragentresponse}')
+            print(f'/// askotheragentresponse type = {type(askotheragentresponse)}')
             functioncall =  askotheragentresponse['choices'][0]['message'].get('function_call')
-            memoryid = askotheragentresponse['choices'][0]['message']['function_call']['arguments'].get('memory_id')
+            print(f'/// functioncall = {functioncall}')
+            arguments = askotheragentresponse['choices'][0]['message']['function_call']['arguments']
+            print(f'/// arguments = {arguments}')
+            # is a string
+            print(f'/// arguments type = {type(arguments)}')
+            argumentsdict= json.loads(arguments)
+            print(f'/// argumentsdict = {argumentsdict}')
+            memoryid=argumentsdict['memory_id']
+            print(f'/// memoryid = {memoryid}')
                     ##### check if there is both memory and id
             if (functioncall is not None) and (memoryid is not None):
                 print('/// response has function call and id')
@@ -399,7 +408,7 @@ def chat(request):
                 print("... usercontent ", usercontent)
                 newusermessagedict = {"role": "user", "content": usercontent}            
                 messagechain.append(newusermessagedict)
-                print("... messagechain at start   ", messagechain)
+                # print("... messagechain at start   ", messagechain)
                 
                             ####### now we have a messagechain with the user's message at the end
                 
@@ -469,7 +478,7 @@ def chat(request):
                     messagechain.append(firstresponsedict)
                     # print("--- messagechain b4 save ", messagechain)
 
-                print('... messagechain b4 IF summary ', messagechain)
+                # print('... messagechain b4 IF summary ', messagechain)
 
                 """
                         #######        before saving, is the chain too long?
@@ -498,7 +507,7 @@ def chat(request):
 
                     summarycompletioncontent = summarycompletion.choices[0].message
                     # print('... summarycompletioncontent ', summarycompletioncontent)
-                    summarycompletionmessage = {"role": "assistant", "content": f"PREVIOUS CHAT SUMMARY: {summarycompletioncontent}"}
+                    summarycompletionmessage = {"role": "assistant", "content": f"This is what you were talking about: {summarycompletioncontent}"}
                     messagechain = []
                     messagechain.append(systemmessage(name, 100))
                     messagechain.append(exampleassistantmessage(name))
