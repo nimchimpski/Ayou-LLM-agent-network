@@ -237,8 +237,6 @@ def chat(request):
                     return json.dumps({"role": "system", "content": f'No useful memories came back from this enquiry. '})
                             #### end of loop
                   
-            
-
     def getmemorieslist(users_id):
         print(f'+++ getmemorieslist called for user {users_id}')
         rememberingagentquery=User.objects.filter(id=users_id)
@@ -311,24 +309,26 @@ def chat(request):
         for domain in otheragentdomains:
             otheragentsdomainslist.append(
             {'agent': domain.user.username, 'domain': domain.domain})
-        print(f'>>> otheragentdomainlist {otheragentsdomainslist}')
-        print(f'>>> otheragentdomainlist type {type(otheragentsdomainslist)}')
+        # print(f'>>> otheragentdomainlist {otheragentsdomainslist}')
+        # print(f'>>> otheragentdomainlist type {type(otheragentsdomainslist)}')
         return otheragentsdomainslist
    
+    def biographyitems(userobject):
+        biographyitemsquery=Biographyitem.objects.filter(user=userobject)
+        biographyitems = {}
+        for item in biographyitemsquery:
+            biographyitems[item.item]=item.description
+        return biographyitems
     """
                the variables we need
     """
-    name = request.user.username
+                ### create the selectedagent object
+    
     userid = request.user.id
-    print(f">>>  username  {name} id {userid}")
+    # print(f">>>  username  {name} id {userid}")
     memory_id = 0
     print(f'memory_id {memory_id}')
-    biographyitemsquery=Biographyitem.objects.filter(user=request.user)
-    biographyitems = {}
-    for item in biographyitemsquery:
-        biographyitems[item.item]=item.description
-    print('||| biographyitems: ',biographyitems)
-                ##### list of agents
+                ##### make list of agents
     agentsquery = User.objects.all()
     agentslist = []
     for agent in agentsquery:
@@ -336,32 +336,43 @@ def chat(request):
         agentslist.append(agent.username)
     print(">>> agentslist type ", type(agentslist))
     print(">>> agentslist ", agentslist)
-    print(">>> agentslist[0] ", agentslist[1])
-
-    memorieslist = getmemorieslist(userid)
-    # print('>>> memorieslist ', memorieslist)
-    otheragentsdomainslist = otheragentdomainsfunction(userid)
     '''
 
                 POST REQUEST
 
     '''
     if request.method == "POST":
-        print('XXXXXXXXXXXXXXX POST request XXXXXXXXXXXXXXXXX')
-        print(f'name={name}')
+        print('\n XXXXXXXXXXXXXXX POST request XXXXXXXXXXXXXXXXX \n')
+        print('request=', request.POST)
+        print(">>> request.session['selectedagent']= ", request.session['selectedagent'])
+        name=request.session['selectedagent']
+        print('>>>name= ',name)
+        selectedagentobject = User.objects.get(username=name)
+        
+        biographyitems = biographyitems(selectedagentobject)
+        print('||| biographyitems: ',biographyitems)
+        print('||| biographyitems type: ',type(biographyitems))
+        memorieslist = getmemorieslist(selectedagentobject.id)
+        print('>>> memorieslist ', memorieslist)
+        otheragentsdomainslist = otheragentdomainsfunction(userid)
+        
+        #### check if different agent selected  
         if 'selectagentsubmit' in request.POST:
-            print('... selectagentsubmit')
+            print('... Different agent selected')
             selectagentform = SelectAgentForm(request.POST, agentslist=agentslist)
             if selectagentform.is_valid():
-                chosenagent = selectagentform.cleaned_data["agent"]
-                print(f'... validform agentname= {chosenagent}')
-                responseforuser = f"Hi there - my name's {chosenagent}, I just woke up"
+                selectedagent = selectagentform.cleaned_data["agent"]
+                print(f'... validform agentname= {selectedagent}')
+                responseforuser = f"Hi there - my name's {selectedagent}, I just woke up"
                 tokens = 0  
-                
-                if chosenagent != request.user.username :
-                    name = f"{chosenagent}'s"
+                if selectedagent != request.user.username :
+                    print('>>> =', selectedagent, '>>> is not =', request.user.username)
+                    request.session['selectedagent'] = selectedagent
+                    print('>>> session[selectedagent] = ', request.session['selectedagent'])
+                    name=selectedagent
                 else:
-                    name = 'your'
+                    request.session['selectedagent'] = 'request.user.username'
+                    name= request.user.username
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
                 return render(
                         request,
@@ -381,24 +392,25 @@ def chat(request):
 
 
         elif 'chatsubmit' in request.POST:
+            name=request.session['selectedagent']
+            print('>>> name,  ', name)
             chatform = NewChatForm(request.POST)
             if chatform.is_valid():
                 startnewchat = chatform.cleaned_data["startnewchat"]
                 print("... startnewchat? ", startnewchat)
-                print('>>> userid ', userid)
                 ####### ensure there is a chat
-                if not Chat.objects.filter(user=userid).exists() or  startnewchat:
+                if not Chat.objects.filter(user=selectedagentobject.id).exists() or  startnewchat:
                     print('--- either startnewchat or no chat exists')
-                    thischat = Chat.objects.create()
-                    thischat.user = request.user
-                    # print("... NEW thisChat > ", thischat)
+                   
+                    thischat = Chat.objects.create(user=selectedagentobject)
+                    print("... NEW thisChat > ", thischat)
                     messagechain = []
                     messagechain.append(systemmessage(name))
                     messagechain.append(exampleassistantmessage(name))
                     print("... newly created messagechain ", messagechain, type(messagechain))
                 else:
                     print('--- there is a chat')
-                    thischat = Chat.objects.filter(user=request.user).order_by("id").last()
+                    thischat = Chat.objects.filter(user=selectedagentobject).order_by("id").last()
                     # print("--- thischat/type ", thischat, type(thischat))
                     messagechain = thischat.messages
                     # print("--- messagechain/type ", messagechain, type(messagechain))
@@ -509,7 +521,7 @@ def chat(request):
                     # print('... summarycompletioncontent ', summarycompletioncontent)
                     summarycompletionmessage = {"role": "assistant", "content": f"This is what you were talking about: {summarycompletioncontent}"}
                     messagechain = []
-                    messagechain.append(systemmessage(name, 100))
+                    messagechain.append(systemmessage(name))
                     messagechain.append(exampleassistantmessage(name))
                     messagechain.append(summarycompletionmessage)
                     print('...> sumarised messagechain ', messagechain)
@@ -521,6 +533,8 @@ def chat(request):
                 """
                                     render the page with the last agent response
                 """
+                heading = figlettext('Chat with your Ayou clone', 'small')
+                figletsubheading = figlettext('Chat with another Ayou clone', 'small')
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
                 return render(
                         request,
@@ -529,20 +543,26 @@ def chat(request):
                             "chatform": chatform,
                             "responsecontent": responseforuser,
                             "tokensused": tokens,
-                            "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist
+                            "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,
+                             'heading': heading, 'figletsubheading': figletsubheading
                         },
                     )
             # else:
             #     return HttpResponse("FORM ERROR")
-    print('>>>> GET request')
+   
     """
 
             #######    GET REQUEST, render the page with an empty form
 
     """
+    print('>>>> GET request')
     heading = figlettext('Chat with your Ayou clone', 'small')
     figletsubheading = figlettext('Chat with another Ayou clone', 'small')
-
+    if 'selectedagent' not in request.session:
+        request.session['selectedagent'] = request.user.username
+    name = request.session['selectedagent']
+    print('>>> reqest.session[selectedagent] ', request.session['selectedagent'])
+    print('... name at GET ', name)
     messages.add_message(request, messages.INFO, f"{request.user.username}")
 
     return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading})
