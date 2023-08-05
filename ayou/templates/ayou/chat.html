@@ -30,26 +30,28 @@
                 <div class="response">{{ responsecontent }}</div>
                 <form action="{% url 'ayou:chat' %}" method="POST">
                         {% csrf_token %}
-                        
+                        <!-- chatform -->
                         <div class="form-group">
                                 <label for="chat">{{ chatform.usercontent.label }}</label>
                                 {{ chatform.usercontent }}
                         </div>
                      
-                        <input type="hidden" name="chatsubmit" value="domainslistform">
+                        <input type="hidden" name="chatsubmit" value="chatform">
                         <br>
                         <div class="chatsubmit"><input type="submit"></div>
-                </form>
+                
       
         <br>
         <br>
         <div class="form-group startnewchat">
                 <label for="chat">{{ chatform.startnewchat.label }}</label>
+        
                 {{ chatform.startnewchat }}
                 {% if tokensused %}
                 <h3>tokens used in chat: {{ tokensused }}</h3>
                 {% endif %}
         </div>
+</form>
                 <div class="chooseclonebox">
                         <div class="figletsubheading">
                                 <pre>{{ figletsubheading }}</pre>

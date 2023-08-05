@@ -131,9 +131,9 @@ def logout_view(request):
 @login_required
 def chat(request):
 
-    def systemmessage(name, tokens=100):
+    def systemmessage(name, sentences=10):
         print('++++ systemmessage() called')
-        systemmessage = {"role": "system", "content": f'You are a character called {name} and here are some details about you  {biographyitems}. Of course you have memories and  feelings. Look at your getmemorycontent function if you need to remember things. You  can also consult other agents for more information using the askotheragent function.  Keep your answers to no more than {tokens} tokens.  Please always reply in character, and never say you are an A.I.!]'}
+        systemmessage = {"role": "system", "content": f"You are a character called {name} and here are some details about you  {biographyitems}. Of course you have memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. You  can also consult other agents for more information using the 'askotheragent' function.  Keep your answers to no more than {sentences} sentences.  Please always reply in character, and never say you are an A.I.!]"}
         return systemmessage
     
     def exampleassistantmessage(name):
@@ -164,7 +164,7 @@ def chat(request):
     def askotheragent(agentname, question):
   
         def askotheragentcompletion(callfunction='auto'):
-            print('+++ askotheragent() completion called')
+            print('+++ askotheragentcompletion() called')
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messagechain,
@@ -173,7 +173,7 @@ def chat(request):
                 functions=otheragentsfunctions,
                 function_call="auto",
             )
-            print(f'/// askagent(): completion = {completion}')
+            print(f'/// askotheragentcompletion(): completion = {completion}')
             return completion
         """
         redefine variables and chat, with local scope, to the other agent
@@ -190,42 +190,45 @@ def chat(request):
         print(f'/// {agentname}s memorieslist ={memorieslist}')
         messagechain = []
         messagechain.append(systemmessage(agentname))
-        messagechain.append(exampleassistantmessage(agentname))
         messagechain.append({"role": "system", "content": "IMPORTANT! Make sure you have the correct id for the memory you want to retrieve"})
-        print(f'/// n{agentname}s messagechain {messagechain}')
-                    ######  make the first completion
-        askotheragentresponse  = askotheragentcompletion()
-                    ####### otheragent probably requests a memory 
-                    ####### check memory id is valid / why does it go wrong here?
-        mess = askotheragentresponse['choices'][0]['message']['function_call']['arguments']
-        memoryiddict = json.loads(mess)
-        memoryid = memoryiddict.get('memory_id')
-        while not Memory.objects.filter(id=memoryid):
-            print('... memory id not valid')
-            print(f'/// memoryid {memoryid}')
-                    ####### first attempt at memry id failed, try again
+        messagechain.append(exampleassistantmessage(agentname))
+      
+        print(f'/// {agentname}s messagechain {messagechain}')
+        print('///////  about to make the first completion to otheragent')
+                    
+
+                    ###### if no request for a memory+id, loop until you get one
+
+        for i in range(5):
             askotheragentresponse  = askotheragentcompletion()
+            print(f'/// askotheragentresponse = {askotheragentresponse}')
+            functioncall =  askotheragentresponse['choices'][0]['message'].get('function_call')
+            memoryid = askotheragentresponse['choices'][0]['message']['function_call']['arguments'].get('memory_id')
+                    ##### check if there is both memory and id
+            if (functioncall is not None) and (memoryid is not None):
+                print('/// response has function call and id')
+                        ##### check id matches a memory 
+                            ##### destringify the args    
+                argsstring = askotheragentresponse['choices'][0]['message']['function_call']['arguments']
+                argsdict = json.loads(argsstring)
+                print(f'/// argsdict = {argsdict}')
+                memoryid = argsdict.get('memory_id')
+                if  Memory.objects.filter(id=memoryid):
+                        #### you have an id and a matching memory so get the memory
+                    newmessage = f"Here is some information from someone you know. Do not say it is your memory!  {getmemorycontent(memoryid)}  Use it to answer the original users question."
+                    print(f'>>> askotheragent() retrieved memory= {newmessage}')
+                    #### we got the memory, now we need to send it back to the original agent
+                    return newmessage
 
-            mess = askotheragentresponse['choices'][0]['message']['function_call']['arguments']
-            memoryiddict = json.loads(mess)
-            memoryid = memoryiddict.get('memory_id')
-            attempts += 1
-            if attempts >= 5:
-                print(f"Failed to generate a valid memory id after 5 attempts.")
-                return 'Sorry, the clone network is is down for maintainance.'
-
-                    ####### we got an id/memory match,  now get memory content
-        
-        if not askotheragentresponse['choices'][0]['message'].get('function_call'):
-            print('/// no function call')
-            return askotheragentresponse.choices[0].message.get('content')
-        else:
-            print('/// function call')
-            newmessage = f"Here is some information from someone you know. Do not say it is your memory!  {getmemorycontent(memoryid)}  Use it to answer the original users question."
-            # print(f'>>> askagent() newcmessage with new memory= {newmessage}')
-                    ####### got new message with the memory content
-            print('/// we got the otheragents info, now we need to send it back to the original agent')
-            return newmessage
+                else:
+                    print('... in loop-memory id not valid')
+                    print(f'/// invalid memoryid= {memoryid}')
+            if i == 3:
+                    print(f"Failed to generate a valid memory id after 3 attempts.")
+                    return json.dumps({"role": "system", "content": f'No useful memories came back from this enquiry. '})
+                            #### end of loop
+                  
+            
 
     def getmemorieslist(users_id):
         print(f'+++ getmemorieslist called for user {users_id}')
@@ -256,6 +259,7 @@ def chat(request):
         memory = Memory.objects.get(id=memory_id)
 
         print(f'/// memory to be retrieved= {memory}')
+        print(f'/// will return this= {memory.content}')
         return json.dumps(memory.content)
 
     def scopedfunctions(memorieslist, otheragentsdomainslist):
@@ -310,7 +314,10 @@ def chat(request):
     print(f">>>  username  {name} id {userid}")
     memory_id = 0
     print(f'memory_id {memory_id}')
-    biographyitems=Biographyitem.objects.filter(user=request.user)
+    biographyitemsquery=Biographyitem.objects.filter(user=request.user)
+    biographyitems = {}
+    for item in biographyitemsquery:
+        biographyitems[item.item]=item.description
     print('||| biographyitems: ',biographyitems)
                 ##### list of agents
     agentsquery = User.objects.all()
@@ -321,16 +328,6 @@ def chat(request):
     print(">>> agentslist type ", type(agentslist))
     print(">>> agentslist ", agentslist)
     print(">>> agentslist[0] ", agentslist[1])
-
-
-                ####### domains objects for askotheragents() and memories page
-    # otheragentdomains = Domain.objects.all().exclude(user=userid)
-    # otheragentsdomainslist = []
-    # for domain in otheragentdomains:
-    #     otheragentsdomainslist.append(
-    #     {'agent': domain.user.username, 'domain': domain.domain})
-    # print(f'>>> otheragentdomainlist {otheragentsdomainslist}')
-    # print(f'>>> otheragentdomainlist type {type(otheragentsdomainslist)}')
 
     memorieslist = getmemorieslist(userid)
     # print('>>> memorieslist ', memorieslist)
@@ -382,7 +379,7 @@ def chat(request):
                 print('>>> userid ', userid)
                 ####### ensure there is a chat
                 if not Chat.objects.filter(user=userid).exists() or  startnewchat:
-                    print('--- there is no chat')
+                    print('--- either startnewchat or no chat exists')
                     thischat = Chat.objects.create()
                     thischat.user = request.user
                     # print("... NEW thisChat > ", thischat)
@@ -396,19 +393,18 @@ def chat(request):
                     # print("--- thischat/type ", thischat, type(thischat))
                     messagechain = thischat.messages
                     # print("--- messagechain/type ", messagechain, type(messagechain))
-                    usercontent = chatform.cleaned_data["usercontent"]
-                    # print("... usercontent ", usercontent)
-                    newusermessagedict = {"role": "user", "content": usercontent}            
-                    messagechain.append(newusermessagedict)
-                    # print("... messagechain at start   ", messagechain)
 
-                """
-                           ####### now we have a messagechain with the user's message at the end
-
-                """         
-                """
-                              #######  get the openAI first completion
-                """
+                            ####### add the user's message to the messagechain
+                usercontent = chatform.cleaned_data["usercontent"]
+                print("... usercontent ", usercontent)
+                newusermessagedict = {"role": "user", "content": usercontent}            
+                messagechain.append(newusermessagedict)
+                print("... messagechain at start   ", messagechain)
+                
+                            ####### now we have a messagechain with the user's message at the end
+                
+                            #######  get the openAI first completion
+                
                 functions = scopedfunctions(memorieslist, otheragentsdomainslist)
 
                 firstcompletion = openai.ChatCompletion.create(
@@ -462,7 +458,7 @@ def chat(request):
                     print('---: no functioncalled')
                                 ########  this goes to the html page later
                     responseforuser = firstcompletion.choices[0].message["content"]
-                    print("... responseforuser> ", responseforuser, type(responseforuser)   )
+                    # print("... responseforuser> ", responseforuser, type(responseforuser)   )
 
 
                                 ########   this will be added to the chain
@@ -481,7 +477,7 @@ def chat(request):
 
                 if tokens >3500:
                     print('...inside summary block')
-                    summariserequestmessage = {"role": "system", "content": "IMPORTANT! summarise the  conversation so far, using no more than 300 tokens. "}
+                    summariserequestmessage = {"role": "system", "content": "IMPORTANT! summarise the  conversation so far, into one paragraph. Refer to the 'assistant' as 'I. You are the assistant."}
                     messagechain = messagechain[2:]
                     messagechain.append(summariserequestmessage)
                     # print('... toolong messagechain ', messagechain)
@@ -535,12 +531,8 @@ def chat(request):
             #######    GET REQUEST, render the page with an empty form
 
     """
-    # figletheading=Figlet(font='small')
-    # figletheading=figletheading.renderText('Chat with your Ayou clone')
     heading = figlettext('Chat with your Ayou clone', 'small')
     figletsubheading = figlettext('Chat with another Ayou clone', 'small')
-    # figletsubheading=Figlet(font='small')
-    # figletsubheading=figletsubheading.renderText('Chat with another persons Ayou clone')
 
     messages.add_message(request, messages.INFO, f"{request.user.username}")
 
