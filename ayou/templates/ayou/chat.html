@@ -1,70 +1,61 @@
 {% extends 'ayou/layout.html' %}
-{% block body %}
-{% with page_class='chatpage' %}
 {% load static %}
 
-<style>
-        /* body {
-                background-image: url('{% static "ayou/imgs/red.jpg" %}');
-                background-position: RIGHT 0rem;
-                background-attachment: fixed;
-        } */
-        /* .menulayout {
-                background-image: url('{% static "ayou/imgs/red.jpg" %}' ); 
-                background-position: RIGHT 0rem; 
-                background-attachment: fixed;
-              
-    
-} */
-
-
-        /*      just layout.html needs style here       */
-</style>
-
+{% block body %}
+{% with pagebodyclass='chatbodyclass' %}
+{% with pagemenuwideclass='chatmenuwideclass' %}
+{% with pagelineheightclass='chatlineheightclass' %}
 <div class="mainpagecontainer">
         <div class="figletheading">
                 <pre>{{ heading }}</pre>
         </div>
-                <div class="response">{{ responsecontent }}</div>
-                <form action="{% url 'ayou:chat' %}" method="POST">
-                        {% csrf_token %}
-                        <!-- chatform -->
-                        <div class="form-group">
-                                <label for="chat">{{ chatform.usercontent.label }}</label>
-                                {{ chatform.usercontent }}
-                        </div>
-                     
-                        <input type="hidden" name="chatsubmit" value="chatform">
-                        <br>
-                        <div class="chatsubmit"><input type="submit"></div>
-                
-      
         <br>
-        <br>
-        <div class="form-group startnewchat">
-                <label for="chat">{{ chatform.startnewchat.label }}</label>
-        
-                {{ chatform.startnewchat }}
-                {% if tokensused %}
-                <h3>tokens used in chat: {{ tokensused }}</h3>
-                {% endif %}
-        </div>
-</form>
-                <div class="chooseclonebox">
-                        <div class="figletsubheading">
-                                <pre>{{ figletsubheading }}</pre>
-                        </div>
-               
-                        <div class="chooseclone">
-                                <form action="{% url 'ayou:chat' %}" method="POST">
-                                        {% csrf_token %}
-                                        {{ selectagentform }}
-                                        <br>
-                                        <input type="submit" value="choose clone" name="selectagentsubmit">
-                                </form>
-                        </div>
+        <div class="response">{{ responsecontent }}</div>
+        <form action="{% url 'ayou:chat' %}" method="POST">
+                {% csrf_token %}
+                <!-- chatform -->
+                <div class="form-group">
+                        <label for="chat">{{ chatform.usercontent.label }}</label>
+                        {{ chatform.usercontent }}
                 </div>
 
+                <input type="hidden" name="chatsubmit" value="chatform">
+                <br>
+                <div class="chatsubmit"><input type="submit"></div>
 
+
+                <br>
+                <br>
+                <div class="form-group startnewchat">
+                        <label for="chat">{{ chatform.startnewchat.label }}</label>
+
+                        {{ chatform.startnewchat }}
+                        {% if tokensused %}
+                        <h3>tokens used in chat: {{ tokensused }}</h3>
+                        {% endif %}
+                </div>
+        </form>
+        <br>
+        
+                <pre class="figletsubheading">{{ figletsubheading }}</pre>
+        
+        <div class="chooseclonebox">
+
+
+                <div class="chooseclone">
+                        <form action="{% url 'ayou:chat' %}" method="POST">
+                                {% csrf_token %}
+                                {{ selectagentform }}
+                                <br>
+                                <input type="submit" value="choose clone" name="selectagentsubmit">
+                        </form>
+                </div>
+        </div>
+</div>
+
+
+
+        {% endwith %}
+        {% endwith %}
         {% endwith %}
         {% endblock %}

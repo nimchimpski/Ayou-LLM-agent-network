@@ -24,7 +24,7 @@ class NewLoginForm(forms.Form):
 
 class NewChatForm(forms.Form):
   
-    usercontent = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 58, 'class': 'textarea', }), max_length=500, label="")
+    usercontent = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 58, 'class': 'textarea', 'placeholder':'Say something...'}), max_length=500, label="")
     startnewchat = forms.BooleanField(widget=forms.CheckboxInput(attrs={ 'class': 'topicboo'}),label="Start new chat?", required=False)
 
 class NewMemoryForm(forms.Form):
@@ -557,7 +557,7 @@ def chat(request):
     """
     print('>>>> GET request')
     heading = figlettext('Chat with your Ayou clone', 'small')
-    figletsubheading = figlettext('Chat with another Ayou clone', 'small')
+    figletsubheading = figlettext('Chat with someone else', 'small')
     if 'selectedagent' not in request.session:
         request.session['selectedagent'] = request.user.username
     name = request.session['selectedagent']
@@ -565,7 +565,7 @@ def chat(request):
     print('... name at GET ', name)
     messages.add_message(request, messages.INFO, f"{request.user.username}")
 
-    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'page_class': 'chatpage'})
+    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass', 'pagelineheightclass':'chatlineheightclass', 'pagelineheightclass' : 'memorieslineheightclass'})
 
 
 
@@ -594,7 +594,9 @@ def memories(request):
                 'message': message,
                 'domainslist': domainslist,
                 'domainslistform': DomainsListForm(instance=domain),
-                'heading': heading}
+                'heading': heading,
+                'pagebodyclass': 'memoriesbodyclass',
+                'pagemenuwideclass':'memoriesmenuwideclass'}
     
     if Domain.objects.filter(user=request.user).exists():
 

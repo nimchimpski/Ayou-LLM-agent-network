@@ -1,8 +1,9 @@
 {% extends 'ayou/layout.html' %}
-{% block body %}
 {% load static %}
 
-{% with page_class=indexpage %}
+{% block body %}
+{% with pagebodyclass=indexpagebodyclass %}
+{% with pagebodyclass=indexpagemenuclass %}
 
 
 <!-- index.html -->
@@ -49,6 +50,7 @@
 <br>
 
 </div
+{% endwith %}
 {% endwith %}
 {% endblock %}
 
