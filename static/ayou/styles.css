@@ -1,6 +1,5 @@
-
 body {
-    position:relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -14,7 +13,10 @@ body {
     padding-bottom: 0rem;
 }
 
-/* ///////// BODY page variables  ////////*/
+/* ///////// page variables  ////////*/
+.registerpagemenuclass {}
+
+.indexpagemenuclass {}
 
 .indexpagebodyclass {
     background-image: url("../imgs/dove.jpg");
@@ -22,6 +24,7 @@ body {
     overflow: hidden;
 }
 
+/* chat variables */
 .chatbodyclass {
     background-image: url("imgs/red.jpg");
     background-position: RIGHT 0rem;
@@ -29,6 +32,7 @@ body {
     background-size: cover;
 
 }
+
 .chatmenuwideclass {
     background-image: url("imgs/red.jpg");
     background-position: RIGHT 0rem;
@@ -36,18 +40,22 @@ body {
     background-size: cover;
     z-index: 11;
 }
+
 .chatlineheightclass {
-    height: 200rem;
+    height: 59rem;
 }
 
+
+/* memories variables */
 .memoriesbodyclass {
     background-image: url("imgs/sea.jpg");
     background-position: -20rem 0rem;
     background-attachment: fixed;
     background-size: cover;
     background-size: 160%;
-   
+
 }
+
 .memoriesmenuwideclass {
     background-image: url('imgs/sea.jpg');
     background-position: -20rem 0rem;
@@ -55,10 +63,15 @@ body {
     background-size: cover;
     background-size: 160%;
     z-index: 11;
-    
+
 
 }
+.memorieslineheightclass {
+    height: 106.6rem;
+    right: 2rem;
+}
 
+/* register variables */
 .registerpagebodyclass {
     background-size: cover;
     background-image: url("ayou/imgs/rachel.jpg");
@@ -66,7 +79,65 @@ body {
     background-attachment: fixed;
 }
 
-/* //////////  */
+/* /////////////// shared //////////////// */
+
+
+.noscroll {
+    overflow: hidden;
+    overscroll-behavior-y: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+li,
+
+label,
+.font,
+.pwdchange {
+    opacity: .7;
+}
+ul {
+    opacity:1;
+}
+a {
+    text-decoration: none;
+    color: white;
+}
+
+.heading {
+    margin-top: -2rem;
+    font-size: 3rem;
+}
+
+.figletlogo {
+    font-weight: bold;
+    padding-left: 2rem;
+}
+
+
+.mainpagecontainer {
+    padding-bottom: 6rem;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .5);
+    z-index: 0;
+}
+.chatpagecontainer {
+    padding-right: 0rem;
+    padding-left: 0rem;
+}
+.memoriespagecontainer {
+    padding-right: 2rem;
+    padding-left: 2rem;
+}
+
+/* /////////   menu/layout page  //////////// */
+
 
 .ultimatecontainer {
     display: flex;
@@ -83,106 +154,12 @@ body {
     z-index: 1;
 }
 
-.mainpagecontainer {
-    border-bottom: 1px solid rgba(255,255,255, .5);
-    /* border-left: 1px solid rgba(255,255,255, .5); */
-    /* border-right: 1px solid rgba(255,255,255, .5); */
-    padding-bottom: 6rem;
-    margin-bottom: 4rem;
-    padding-right:6.5rem;
-    padding-left: 6.5rem;
-
-    z-index: 0;
-}
-/* /////////   menu/layout page  //////////// */
-
-
-.menuwidebox {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 10;
-}
-
-.menu {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    position: relative;
-    top: 0rem;
-    border-bottom: 1px solid rgba(255,255,255, .5);
-    padding-bottom: 1rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    z-index: 20;
-}
-.borderlinebox {
-    position: absolute;
-    top: 0rem;
-    width:56rem;
-    
-}
-.lineleft {
-    border-left: 1px solid white;
-    opacity: .5;
-    width: 1rem;
-    position: absolute;
-    left: 6rem;
-    top: -1rem;
-    /* padding-bottom: 59rem; */
-    z-index: 200;
-    
-}
-.lineright {
-    border-right: 1px solid white;
-    opacity: .5;
-    width: 1rem;
-    position: absolute;
-    right: 6rem;
-    top: -1rem;
-    /* padding-bottom: 59rem; */
-    z-index: 200;
-}
-.chatlineheightclass {
-    height: 59rem;
-}
-.memorieslineheightclass {
-    height: 59rem;
-}
-/* //////// MENU page variables /////// */
-.registerpagemenuclass {}
-
-.indexpagemenuclass {}
-
-
-
-
-
-.figletheading {
-    font-size: .6rem;
-    font-weight: bold;
-    opacity: .7;
-    text-align: center;
-}
-
-/* /////////////// */
-
 .agentyou {
     position: relative;
     top: -1rem;
     right: -12rem;
     /* opacity: .2; */
 
-}
-
-.figletlogo {
-    font-weight: bold;
-    padding-left: 2rem;
 }
 
 .messages {
@@ -202,76 +179,143 @@ body {
     font-size: .8rem;
 }
 
-.noscroll {
-    overflow: hidden;
-    overscroll-behavior-y: none;
+.menuwidebox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-a,
-li,
-ul,
-label,
-.font,
-.pwdchange  {
+.menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    top: 0rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .5);
+    padding-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    z-index: 20;
+}
+
+.borderlinebox {
+    position: absolute;
+    top: 0rem;
+    width: 56rem;
+
+}
+
+.lineleft {
+    border-left: 1px solid white;
+    opacity: .5;
+    width: 1rem;
+    position: absolute;
+    left: 6rem;
+    top: -1rem;
+    /* padding-bottom: 59rem; */
+    z-index: 200;
+
+}
+
+.lineright {
+    border-right: 1px solid white;
+    opacity: .5;
+    width: 1rem;
+    position: absolute;
+    right: 6rem;
+    top: -1rem;
+    /* padding-bottom: 59rem; */
+    z-index: 200;
+}
+
+
+
+
+/* /////////////// */
+/* //////// chat page ///////// */
+.figletheading {
+    font-size: .6rem;
+    font-weight: bold;
     opacity: .7;
+    text-align: center;
 }
 
-a {
-    text-decoration: none;
-    color: white;
+.chooseclonebox {
+    position: relative;
+    /* left: 10%; */
+
 }
 
-
-
-/* buttons */
-form input[type=submit] {
-    background: -webkit-linear-gradient(-45deg, rgb(167, 158, 158), rgb(234, 137, 34));
-    /* background-color: rgb(234, 137, 34); */
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    border-radius: 0.5rem;
-    color: rgb(216, 214, 214);
+.chooseclone {
+    max-height: 10rem;
+    position: relative;
+    left: 30%;
+    overflow-y: scroll;
+    opacity: .8;
+    /* opacity: 0.8; */
 }
 
-.btn {
+.response {
     margin-top: 1rem;
-    margin-left: 1rem;
-    background: -webkit-linear-gradient(-45deg, rgb(167, 158, 158), rgb(234, 137, 34));
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    color: white;
+
+    background-image: -webkit-linear-gradient(-45deg, rgb(162, 122, 142), rgb(234, 137, 34));
+    background-size: 200% 200%;
+    max-width: 30rem;
+    color: rgb(0, 0, 0);
     padding: 0.5rem;
     border-radius: 0.5rem;
+    animation: Gradient 3s ease infinite;
+    z-index: 10;
 }
 
-.btn2 {
-    background: -webkit-linear-gradient(-45deg, rgb(167, 158, 158), rgb(234, 137, 34));
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    color: white;
-    border-radius: 0.5rem;
+.chatsubmit {
+    position: relative;
+    left: 45%;
 }
 
-/* //////// shared //////// */
-
-.heading {
-    margin-top: -2rem;
-    font-size: 3rem;
+.startnewchat {
+    position: relative;
+    /* opacity: .8; */
 }
 
 
 
-/* ////////  memories page ////////// */
+.figletsubheading {
+    font-size: .5rem;
+    font-weight: bold;
+    opacity: 0.8;
+    text-align: center;
+    /* z-index: 15; */
+}
+
+/* 
+
+.form- form {
+
+    font-family: Helvetica, sans-serif;
+} */
+
+@keyframes Gradient {
+    0% {
+        background-position: 0% 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    100% {
+        background-position: 0% 50%
+    }
+}
+/* /////////////////   end chat page */
+/* ////////////////  memories page ////////// */
 
 .configureheadingbox {
     display: flex;
@@ -325,6 +369,7 @@ form input[type=submit] {
     opacity: .7;
     border-radius: 0.5rem;
 }
+
 .topicboo {
     display: block;
 }
@@ -339,76 +384,7 @@ form input[type=submit] {
 }
 
 
-/* //////// chat page ///////// */
 
-
-.chooseclonebox {
-    position: relative;
-    /* left: 10%; */
-
-}
-
-.chooseclone {
-    max-height: 10rem;
-    position: relative;
-    left: 30%;
-    overflow-y: scroll;
-    /* opacity: 0.8; */
-}
-
-.response {
-    margin-top: 1rem;
-
-    background-image: -webkit-linear-gradient(-45deg, rgb(162, 122, 142), rgb(234, 137, 34));
-    background-size: 200% 200%;
-    max-width: 30rem;
-    color: rgb(0, 0, 0);
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    animation: Gradient 3s ease infinite;
-    z-index: 10;
-}
-
-.chatsubmit {
-    position: relative;
-    left: 45%;
-}
-
-.startnewchat {
-    position: relative;
-    /* opacity: .8; */
-}
-
-
-
-.figletsubheading {
-    font-size: .5rem;
-    font-weight: bold;
-    opacity: 0.8;
-    text-align: center;
-    /* z-index: 15; */
-}
-
-/* 
-
-.form- form {
-
-    font-family: Helvetica, sans-serif;
-} */
-
-@keyframes Gradient {
-    0% {
-        background-position: 0% 50%
-    }
-    50% {
-        background-position: 100% 50%
-    }
-    100% {
-        background-position: 0% 50%
-    }
-}
-
-/* /////// end chat page    /////// */
 
 
 
@@ -425,6 +401,41 @@ form input[type=submit] {
     margin-top: -2rem;
 
 }
+
+
+/* buttons */
+form input[type=submit] {
+    background: -webkit-linear-gradient(-45deg, rgb(167, 158, 158), rgb(234, 137, 34));
+    /* background-color: rgb(234, 137, 34); */
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    color: rgb(216, 214, 214);
+}
+
+.btn {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    background: -webkit-linear-gradient(-45deg, rgb(167, 158, 158), rgb(234, 137, 34));
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.btn2 {
+    background: -webkit-linear-gradient(-45deg, rgb(167, 158, 158), rgb(234, 137, 34));
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    border-radius: 0.5rem;
+}
+
+
 .nimchimpski {
     font-size: x-small;
     opacity: .6;

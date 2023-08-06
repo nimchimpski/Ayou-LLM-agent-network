@@ -565,7 +565,7 @@ def chat(request):
     print('... name at GET ', name)
     messages.add_message(request, messages.INFO, f"{request.user.username}")
 
-    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass', 'pagelineheightclass':'chatlineheightclass', 'pagelineheightclass' : 'memorieslineheightclass'})
+    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass', 'pagelineheightclass':'chatlineheightclass', })
 
 
 
@@ -596,7 +596,8 @@ def memories(request):
                 'domainslistform': DomainsListForm(instance=domain),
                 'heading': heading,
                 'pagebodyclass': 'memoriesbodyclass',
-                'pagemenuwideclass':'memoriesmenuwideclass'}
+                'pagemenuwideclass':'memoriesmenuwideclass',
+                'pagelineheightclass':'memorieslineheightclass'}
     
     if Domain.objects.filter(user=request.user).exists():
 

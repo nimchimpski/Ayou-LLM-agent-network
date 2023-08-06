@@ -6,12 +6,11 @@
 {% with pagemenuwideclass='memoriesmenuwideclass' %}
 {% with pagelineheightclass='memorieslineheightclass' %}
 
-<div class="mainpagecontainer">
+<div class="mainpagecontainer memoriespagecontainer">
 
     <!-- //////// heading and pwd change /////////// -->
 
-    <div class="pwdchange"><a href="{% url 'password_change' %}">Change password</a>
-    </div>
+ 
     <div class="configureheadingbox">
         <div>
             <div class="figletheading">
@@ -137,8 +136,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="{{ newmemoryform.description.id_for_label }}">{{ newmemoryform.description.label
-                        }}</label>
+                    <label for="{{ newmemoryform.description.id_for_label }}">escription</label>
                     {{ newmemoryform.description}}
                 </div>
                 <div class="form-group ">
@@ -154,9 +152,12 @@
                 <input type="submit">
             </form>
         </div>
-    </div>
+     
     <!-- end memories  -->
 
+</div>
+<div class="pwdchange"><a href="{% url 'password_change' %}">Change password</a>
+</div>
 </div>
 
 
