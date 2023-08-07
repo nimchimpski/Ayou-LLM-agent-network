@@ -18,14 +18,14 @@ body {
 /* ///////// page variables  ////////*/
 
  .indexbodyclass {
-    background-image: url("imgs/br.png");
+    background-image: url("imgs/city.jpg");
     background-attachment: fixed;
     background-size: cover;
     background-position: -22rem 0rem ;
     /* overflow: hidden; */
 } 
 .indexmenuwideclass {
-    background-image: url("imgs/br.png");
+    background-image: url("imgs/city.jpg");
     background-position: -22rem 0rem;
     background-attachment: fixed;
     background-size: cover;
@@ -60,14 +60,20 @@ body {
 /* memories variables */
 .memoriesbodyclass {
     background-image: url("imgs/sea.jpg");
-    background-position: -20rem 0rem;
+    background-position: right 0rem;
+   
+    background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
     /* background-size: 160%; */
+    /* height: 100%; */
 }
 .memoriesmenuwideclass {
     background-image: url('imgs/sea.jpg');
-    background-position: -20rem 0rem;
+    background-position: right 0rem;
+    background-repeat: no-repeat;
+
+   
     background-attachment: fixed;
     background-size: cover;
     /* background-size: 160%; */
