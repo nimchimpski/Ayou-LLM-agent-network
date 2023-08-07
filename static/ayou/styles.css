@@ -5,23 +5,24 @@ body {
     justify-content: center;
     align-items: center;
     font-family: 'Helvetica Neue', 'Zapfino';
+    top: 0rem;
 
     /* font-family: 'Helvetica Neue', 'Verdana', 'Arial', 'Trebuchet MS', 'sans-serif'; */
     color: rgb(252, 252, 252);
     font-size: 1rem;
     border-top: 0px;
     padding-bottom: 0rem;
+    background-color: black;
 }
 
 /* ///////// page variables  ////////*/
 
-
-.indexbodyclass {
+ .indexbodyclass {
     background-image: url("imgs/br.png");
     background-attachment: fixed;
     background-size: cover;
     background-position: -22rem 0rem ;
-}
+} 
 .indexmenuwideclass {
     background-image: url("imgs/br.png");
     background-position: -22rem 0rem;
@@ -30,10 +31,9 @@ body {
     z-index: 11;
 }
 
-.indexlineheightclass {
+/* .indexlineheightclass {
     height: 47rem;
-    /* right: 50rem; */
-}
+}  */
 
 /* chat variables */
 .chatbodyclass {
@@ -41,7 +41,6 @@ body {
     background-position: RIGHT 0rem;
     background-attachment: fixed;
     background-size: cover;
-
 }
 
 .chatmenuwideclass {
@@ -51,10 +50,10 @@ body {
     background-size: cover;
     z-index: 11;
 }
-
+/* 
 .chatlineheightclass {
     height: 59rem;
-}
+} */
 
 
 /* memories variables */
@@ -63,7 +62,7 @@ body {
     background-position: -20rem 0rem;
     background-attachment: fixed;
     background-size: cover;
-    background-size: 160%;
+    /* background-size: 160%; */
 
 }
 
@@ -72,15 +71,15 @@ body {
     background-position: -20rem 0rem;
     background-attachment: fixed;
     background-size: cover;
-    background-size: 160%;
+    /* background-size: 160%; */
     z-index: 11;
 
 
 }
-.memorieslineheightclass {
+/* .memorieslineheightclass {
     height: 106.6rem;
     /* right: 2rem; */
-}
+} */
 
 /* register variables */
 .registerbodyclass {
@@ -95,10 +94,10 @@ body {
     background-position: 47rem 0rem;
     background-attachment: fixed;
 }
-.registerlineheightclass {
+/* .registerlineheightclass {
     height: 55.7rem;
     right: 2rem;
-}
+} */
 
 /* /////////////// shared //////////////// */
 .figletheading {
@@ -109,10 +108,10 @@ body {
     
 }
 
-.noscroll {
+/* .noscroll {
     overflow: hidden;
     overscroll-behavior-y: none;
-}
+} */
 
 h1,
 h2,
@@ -150,7 +149,7 @@ a {
     padding: 0rem 0rem 0rem 0rem;
 }
 
-/* /////////////////////////////////////// */
+/* /////////////////////////////////////// conainers  ///////*/
 .mainpagecontainer {
     display: flex;
     flex-direction: column;
@@ -159,19 +158,20 @@ a {
     
     padding-bottom: 6rem;
     margin-bottom: 4rem;
-    border-bottom: 1px solid rgba(255, 255, 255, .5);
+    /* border-bottom: 1px solid rgba(255, 255, 255, .5); */
     z-index: 0;
 }
-.indexpagecontainer {
+/* .indexpagecontainer {
     padding-right: 13.5rem;
     padding-left: 13.5rem;
+    overflow: hidden;
     
-}
-.chatpagecontainer {
+} */
+/* .chatpagecontainer {
     padding-right: 6.5rem;
     padding-left: 6.5rem;
-}
-.memoriespagecontainer {
+} */
+/* .memoriespagecontainer {
     padding-right: 2rem;
     padding-left: 2rem;
 }
@@ -179,7 +179,7 @@ a {
     padding-right: 8rem;
     padding-left: 8rem;
     
-}
+} */
 
 /* /////////   menu/layout page  //////////// */
 
@@ -189,9 +189,10 @@ a {
 }
 }
 @media screen and (max-width: 680px)
-{ .ultimatecontainer {
-    padding-top:15rem;
-}
+{   .ultimatecontainer {
+    padding-top:15rem;}
+    .borderbox {
+    padding-bottom: 5rem;}
 }
 .ultimatecontainer {
     display: flex;
@@ -205,8 +206,38 @@ a {
     padding-right: 7rem;
     padding-bottom: 0rem;
     z-index: 1;
+    /* border: 1px solid rgba(255, 255, 255, .5); */
 }
-
+.borderbox {
+    position: absolute;
+    top: 0rem; 
+    border:1px solid rgba(255, 255, 255, 0.5);
+    width:44rem;
+    /* height:54rem; */
+    z-index: 2000;
+    background: transparent;
+    pointer-events: none;
+    
+}
+.chatborderboxclass {
+    height:56rem;
+}
+.memoriesborderboxclass {
+    height:105rem;
+}
+.indexborderboxclass {
+    height:44rem;
+}
+.registerborderboxclass {
+    height:54rem;
+}
+.nimchimpski {
+    font-size: x-small;
+    opacity: .6;
+    position: absolute;
+    left: 8rem;
+    bottom: -2rem;
+}
 .agentyou {
     position: relative;
     top: -1rem;
@@ -220,11 +251,13 @@ a {
 }
 
 .toprightbox {
-    margin-left: 2rem;
+    margin-left: 1rem;
     padding-right: 1rem;
     position: relative;
     top: .5rem;
     opacity: 1;
+    width: 4rem;
+    border: 1px solid rgba(255, 255, 255, .5);
 }
 
 .loggedin {
@@ -250,50 +283,12 @@ a {
     flex-wrap: wrap;
     position: relative;
     top: 0rem;
-    border-bottom: 1px solid rgba(255, 255, 255, .5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     padding-bottom: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
     z-index: 20;
 }
-
-.borderlinebox {
-    position: absolute;
-    top: 0rem;
-    /* width: 56rem; */
-    width: 56rem;
-    
-
-}
-.indexborderlineclass {
-    padding: 20rem;
-}
-
-.lineleft {
-    border-left: 1px solid white;
-    opacity: .5;
-    width: 1rem;
-    position: absolute;
-    left: 6rem;
-    top: -1rem;
-    /* padding-bottom: 59rem; */
-    z-index: 200;
-
-}
-
-.lineright {
-    border-right: 1px solid white;
-    opacity: .5;
-    width: 1rem;
-    position: absolute;
-    right: 6rem;
-    top: -1rem;
-    /* padding-bottom: 59rem; */
-    z-index: 200;
-}
-
-
-
 
 /* /////////////// */
 /* //////// chat page ///////// */
@@ -337,8 +332,6 @@ a {
     /* opacity: .8; */
 }
 
-
-
 .figletsubheading {
     font-size: .5rem;
     font-weight: bold;
@@ -347,22 +340,13 @@ a {
     /* z-index: 15; */
 }
 
-/* 
-
-.form- form {
-
-    font-family: Helvetica, sans-serif;
-} */
-
 @keyframes Gradient {
     0% {
         background-position: 0% 50%
     }
-
     50% {
         background-position: 100% 50%
     }
-
     100% {
         background-position: 0% 50%
     }
@@ -417,10 +401,10 @@ a {
 .textarea {
     display: block;
     min-height: 1rem;
-    min-width: 15rem;
     margin-top: .5rem;
     opacity: .7;
     border-radius: 0.5rem;
+    width:100%;
 }
 
 .topicboo {
@@ -435,19 +419,6 @@ a {
 .newmemoryform .form-group {
     width: 100%;
 }
-
-
-
-
-
-
-/* .textarea {
-    border-radius: 0.5rem;
-} */
-
-/* .inputarea {
-    border-radius: 0.5rem;
-} */
 
 /* ////////  register page  /////////// */
 .register {
@@ -503,10 +474,3 @@ form input[type=submit] {
 }
 
 
-.nimchimpski {
-    font-size: x-small;
-    opacity: .6;
-    position: relative;
-    left: -14rem;
-    top: -4rem;
-}

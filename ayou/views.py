@@ -92,14 +92,14 @@ def login_view(request):
             return render(
                 request,
                 "ayou/index.html",
-                {"form": NewLoginForm(), 'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass' },
+                {"form": NewLoginForm(), 'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pageborderboxclass':'indexborderboxclass' },
             )
 
     form = NewLoginForm()
     if not request.user.is_authenticated:
         print(">>> loginview get request : not loged in")
         messages.add_message(request, messages.INFO, "Please log in.")
-        return render(request, "ayou/index.html", {"form": NewLoginForm(),'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass', 'pageborderlneclass':'indexborderlineclass'})
+        return render(request, "ayou/index.html", {"form": NewLoginForm(),'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass' ,'pageborderboxclass':'indexborderboxclass'})
     else:
         messages.add_message(request, messages.INFO, "logged in")
         return HttpResponseRedirect(reverse("ayou:chat"))
@@ -121,7 +121,7 @@ def register_view(request):
     heading = figlettext('Sign up and start building your clone', 'small')    
     form = UserCreationForm()
     messages.add_message(request, messages.INFO, "Register")
-    return render(request, 'ayou/register.html', {'form': form, 'heading': heading,'pagebodyclass':'registerbodyclass', 'pagemenuwideclass':'registermenuwideclass','pagelineheightclass':'registerlineheightclass'})
+    return render(request, 'ayou/register.html', {'form': form, 'heading': heading,'pagebodyclass':'registerbodyclass', 'pagemenuwideclass':'registermenuwideclass','pageborderboxclass':'registerborderboxclass'})
 
 @login_required
 def logout_view(request):
@@ -545,7 +545,7 @@ def chat(request):
                             "responsecontent": responseforuser,
                             "tokensused": tokens,
                             "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,
-                             'heading': heading, 'figletsubheading': figletsubheading
+                             'heading': heading, 'figletsubheading': figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass','pageborderboxclass':'chatborderboxclass'
                         },
                     )
             # else:
@@ -566,7 +566,7 @@ def chat(request):
     print('... name at GET ', name)
     messages.add_message(request, messages.INFO, f"{request.user.username}")
 
-    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass', 'pagelineheightclass':'chatlineheightclass', })
+    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass','pageborderboxclass':'chatborderboxclass' })
 
 
 
@@ -597,8 +597,7 @@ def memories(request):
                 'domainslistform': DomainsListForm(instance=domain),
                 'heading': heading,
                 'pagebodyclass': 'memoriesbodyclass',
-                'pagemenuwideclass':'memoriesmenuwideclass',
-                'pagelineheightclass':'memorieslineheightclass'}
+                'pagemenuwideclass':'memoriesmenuwideclass','pagebodyclass': 'memoriesbodyclass',  'pagemenuwideclass': 'memoriesmenuwideclass','pageborderboxclass':'memoriesborderboxclass'}
     
     if Domain.objects.filter(user=request.user).exists():
 

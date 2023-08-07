@@ -16,6 +16,7 @@
 
 <body class="{{ pagebodyclass }}">
     <div class="ultimatecontainer">
+        <div class="borderbox {{ pageborderboxclass }}"> <p class="nimchimpski">built by nimchimpski alex@oneclearshot.com</p></div>
         <div class="menuwidebox {{ pagemenuwideclass }}">
             <div class="menu">
                 <div class="logobox">
@@ -26,9 +27,11 @@
                         <div class="agentyou font">AgentYou</div>
                     </div>
                 </div>
+                <div class="menubox">
                 <a href="{% url 'ayou:chat' %}"><button class="btn">Chat</button></a>
                 <a href="{% url 'ayou:memories' %}"><button class="btn">Configure</button></a>
                 <a href="{% url 'ayou:logout' %}"><button class="btn"> Logout</button></a>
+            </div>
                 <ul class=" toprightbox">
                     {% for message in messages %}
                     <li>
@@ -41,15 +44,15 @@
         <!-- <div class="lineleft"></div>
         <div class="lineright"></div> -->
     </div>
-    <div class="borderlinebox {{ pageborderlineclass }}">
-    <div class="lineleft {{ pagelineheightclass }}"></div>
-    <div class="lineright {{ pagelineheightclass }}"></div>
+    <!-- <div class="borderlinebox {{ pageborderlineclass }}"> -->
+    <!-- <div class="lineleft {{ pagelineheightclass }}"></div> -->
+    <!-- <div class="lineright {{ pagelineheightclass }}"></div> -->
     
 
 </div>
     {% block body %}
     {% endblock %}
-    <p class="nimchimpski">built by nimchimpski alex@oneclearshot.com</p>
+   
 
 </body>
 
