@@ -435,6 +435,7 @@ a {
 .fieldbox {
     /* width:50; */
     margin-bottom: 1rem;
+    opacity: .8;
 }
 .help {
     /* border:1px solid rgba(255, 255, 255, .5); */
