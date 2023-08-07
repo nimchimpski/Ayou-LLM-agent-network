@@ -134,7 +134,7 @@ def chat(request):
 
     def systemmessage(name, sentences=5):
         print('++++ systemmessage() called')
-        systemmessage = {"role": "system", "content": f"You are a character called {name} and here are some details about you  {biographyitems}. Of course you have memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. You  can also consult other agents for more information using the 'askotheragent' function.  Keep your answers to about {sentences} sentences.  Please always reply in character, and never say you are an A.I.!]"}
+        systemmessage = {"role": "system", "content": f"You are a character called {name} and here are some details about you  {biographyitems}. Of course you have memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. You  can also consult other agents for more information using the 'askotheragent' function.  .  ALWAYS reply as {name}, and NEVER say you are an AI assistant !]"}
         return systemmessage
     
     def exampleassistantmessage(name):
@@ -169,7 +169,7 @@ def chat(request):
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messagechain,
-                max_tokens=1000,
+                # max_tokens=1000,
                 temperature=1,
                 functions=otheragentsfunctions,
                 function_call="auto",

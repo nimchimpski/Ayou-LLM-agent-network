@@ -4,10 +4,8 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: 'Helvetica Neue', 'Zapfino';
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     top: 0rem;
-
-    /* font-family: 'Helvetica Neue', 'Verdana', 'Arial', 'Trebuchet MS', 'sans-serif'; */
     color: rgb(252, 252, 252);
     font-size: 1rem;
     border-top: 0px;
@@ -22,7 +20,6 @@ body {
     background-attachment: fixed;
     background-size: cover;
     background-position: -22rem 0rem ;
-    /* overflow: hidden; */
 } 
 .indexmenuwideclass {
     background-image: url("imgs/city.jpg");
@@ -31,10 +28,6 @@ body {
     background-size: cover;
     z-index: 11;
 }
-
-/* .indexlineheightclass {
-    height: 47rem;
-}  */
 
 /* chat variables */
 .chatbodyclass {
@@ -51,32 +44,21 @@ body {
     background-size: cover;
     z-index: 11;
 }
-/* 
-.chatlineheightclass {
-    height: 59rem;
-} */
-
 
 /* memories variables */
 .memoriesbodyclass {
     background-image: url("imgs/sea.jpg");
     background-position: right 0rem;
-   
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
-    /* background-size: 160%; */
-    /* height: 100%; */
 }
 .memoriesmenuwideclass {
     background-image: url('imgs/sea.jpg');
     background-position: right 0rem;
     background-repeat: no-repeat;
-
-   
     background-attachment: fixed;
     background-size: cover;
-    /* background-size: 160%; */
     z-index: 11;
 }
 /* register variables */
@@ -94,12 +76,12 @@ body {
 }
 
 /* /////////////// shared //////////////// */
+
 .figletheading {
     font-size: .6rem;
     font-weight: bold;
     opacity: .7;
     text-align: center;
-    
 }
 
 h1,
@@ -138,39 +120,16 @@ a {
     padding: 0rem 0rem 0rem 0rem;
 }
 
-/* /////////////////////////////////////// conainers  ///////*/
 .mainpagecontainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    /* padding: 0 6.5rem; */
     padding-bottom: 0rem;
     margin-bottom: 0rem;
-    /* border-left: 1px solid rgba(255, 255, 255, 0.5);
-    border-right: 1px solid rgba(255, 255, 255, 0.5);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5); */
     z-index: 0;
 }
-.indexpagecontainer {
- 
-    
-    
-}
-/* .chatpagecontainer {
-    padding-right: 6.5rem;
-    padding-left: 6.5rem;
-} */
-/* .memoriespagecontainer {
-    padding-right: 2rem;
-    padding-left: 2rem;
-}
-.registerpagecontainer {
-    padding-right: 8rem;
-    padding-left: 8rem;
-    
-} */
 
 /* /////////   menu/layout page  //////////// */
 
@@ -182,7 +141,6 @@ a {
 @media screen and (max-width: 45rem)
 {   .ultimatecontainer {
     padding-top:15rem;}
-  
 }
 .ultimatecontainer {
     display: flex;
@@ -193,37 +151,12 @@ a {
     max-width: 44rem;
     position: relative;
     top: 0rem;;
-    /* padding-left: 7rem;
-    padding-right: 7rem; */
     padding-bottom: 4rem;
     z-index: 1;
     border: 1px solid rgba(255, 255, 255, 0.5);
     margin-bottom: 4rem;
 }
-/* .borderbox {
-    position: absolute;
-    top: 0rem; 
-    border-left:1px solid rgba(255, 255, 255, 0.5);
-    border-right:1px solid rgba(255, 255, 255, 0.5);
-    width:44rem;
-    height:20rem;
-    z-index: 2000;
-    background: transparent;
-    pointer-events: none;
-    
-} */
-/* .chatborderboxclass {
-    height:56rem;
-}
-.memoriesborderboxclass {
-    height:105rem;
-}
-.indexborderboxclass {
-    height:44rem;
-}
-.registerborderboxclass {
-    height:54rem;
-} */
+
 .nimchimpski {
     font-size: x-small;
     opacity: .6;
@@ -235,8 +168,6 @@ a {
     position: relative;
     top: -1rem;
     right: -12rem;
-    /* opacity: .2; */
-
 }
 
 .messages {
@@ -292,8 +223,6 @@ a {
 
 .chooseclonebox {
     position: relative;
-    /* left: 10%; */
-
 }
 
 .chooseclone {
@@ -302,12 +231,10 @@ a {
     left: 30%;
     overflow-y: scroll;
     opacity: .8;
-    /* opacity: 0.8; */
 }
 
 .response {
     margin-top: 1rem;
-
     background-image: -webkit-linear-gradient(-45deg, rgb(162, 122, 142), rgb(234, 137, 34));
     background-size: 200% 200%;
     max-width: 30rem;
@@ -326,13 +253,11 @@ a {
     padding: 0 1rem;
 }
 
-
 .figletsubheading {
     font-size: .5rem;
     font-weight: bold;
     opacity: 0.8;
     text-align: center;
-    /* z-index: 15; */
 }
 
 @keyframes Gradient {
@@ -375,7 +300,6 @@ a {
 
 .inner {
     margin-bottom: -3rem;
-    /* border: 1px solid rgba(255, 255, 255, 0.5); */
 }
 
 .pwdchange {
@@ -408,7 +332,6 @@ a {
 
 .form-group {
     justify-self: right;
-
 }
 
 .newmemoryform .form-group {
@@ -416,9 +339,9 @@ a {
 }
 
 /* ////////  register page  /////////// */
+
 .register {
     margin-top: -2rem;
-
 }
 .registerbox {
     
@@ -428,19 +351,17 @@ a {
     width: 24rem;
 }
 .fieldbox {
-    /* width:50; */
     margin-bottom: 1rem;
     opacity: .8;
 }
 .help {
-    /* border:1px solid rgba(255, 255, 255, .5); */
     opacity: .7;
 }
 
 /* buttons */
+
 form input[type=submit] {
     background: -webkit-linear-gradient(-45deg, rgb(167, 158, 158), rgb(234, 137, 34));
-    /* background-color: rgb(234, 137, 34); */
     text-decoration: none;
     border: none;
     cursor: pointer;
