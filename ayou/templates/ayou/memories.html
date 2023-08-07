@@ -1,183 +1,169 @@
 {% extends 'ayou/layout.html' %}
+{% load static %}
 
 {% block body %}
+{% with pagebodyclass='memoriesbodyclass' %}
+{% with pagemenuwideclass='memoriesmenuwideclass' %}
+{% with pageborderboxclass='memoriesborderboxclass' %}
 
-{% load static %}
-       <style>
-
-body {
-    /* background-color: aqua; */
-    background-image: url('{% static "ayou/imgs/sea.jpg" %}' );
-    /* background-position: right; */
-    background-position: -20rem 0rem;
-    background-attachment: fixed;
-    background-size: cover;
-    background-size: 160%;
-}
-.menulayout {
-       background-image: url('{% static "ayou/imgs/sea.jpg" %}' );
-       background-position: -20rem 0rem;
-       background-attachment: fixed;
-    background-size: cover;
-    background-size: 160%;
-    
-}
-</style>
-       
 <div class="mainpagecontainer">
 
-<!-- //////// heading and pwd change /////////// -->
+    <!-- //////// heading and pwd change /////////// -->
 
-<div class="pwdchange"><a href="{% url 'password_change' %}">Change password</a>
-</div>
-<div class="configureheadingbox">
-    <div>
-        <div class="figletheading"><pre>{{ heading }}</pre>
+ 
+    <div class="configureheadingbox">
+        <div>
+            <div class="figletheading">
+                <pre>{{ heading }}</pre>
+            </div>
+            <p>{{ message }}</p>
         </div>
-        <p>{{ message }}</p>
     </div>
-</div>
-<!-- end heading-->
+    <!-- end heading-->
 
-<!-- //////// domains /////////// -->
+    <!-- //////// domains /////////// -->
 
-<div class="configurebox">
-    <p class="text1">Ayou's knowledge area</p>
+    <div class="configurebox">
+        <p class="text1">Ayou's knowledge area</p>
 
-    <form  method="POST" class="form1">
-    {% csrf_token %}
-    {{ domainslistform }}
-    <input type="hidden" name="formname" value="domainslistform">
-    <br>
-    <input type="submit" value="Update" >
-    </form>
-</div>
-
-<!-- //////// bio items ////////// -->
-
-<!-- edit the bio items -->
- <div class="configurebox">
-    <p class="text1">Facts about Ayou</p>
-    {% if  biographyitems %}
-    
-    
-
-    <!-- list the bio items -->
-    <div class="configurescrollbox">
-    <ul>{% for item in biographyitems %}
-    <li>{{ item.item }} : {{ item.description}} 
-
-        <!-- delete biography item -->
-    <form action="{% url 'ayou:memories' %}" method="POST">
-        {% csrf_token %}
-        {{  deletebioform  }}
-        <input type="hidden" name="id" value="{{ item.id }}">
-        <input type="hidden" name="formname" value="deletebioform">
-        <input type="submit" name="confirm" value="confirm">
-     </form>
-  
-    </li>
-    {% endfor %}
-    </ul> 
+        <form method="POST" class="form1">
+            {% csrf_token %}
+            {{ domainslistform }}
+            <input type="hidden" name="formname" value="domainslistform">
+            <br>
+            <input type="submit" value="Update">
+        </form>
     </div>
-    {% endif %}
-<!-- add new -->
-<p class="text1">Add new fact</p>
 
-<form action="{% url 'ayou:memories' %}" method="POST">
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="{{ newbioform.item.id_for_label }}">{{ newbioform.item.label }}</label>
-        {{ newbioform.item }}
+    <!-- //////// bio items ////////// -->
+
+    <!-- edit the bio items -->
+    <div class="configurebox">
+        <p class="text1">Facts about Ayou</p>
+        {% if biographyitems %}
+
+
+
+        <!-- list the bio items -->
+        <div class="configurescrollbox">
+            <ul>{% for item in biographyitems %}
+                <li>{{ item.item }} : {{ item.description}}
+
+                    <!-- delete biography item -->
+                    <form action="{% url 'ayou:memories' %}" method="POST">
+                        {% csrf_token %}
+                        {{ deletebioform }}
+                        <input type="hidden" name="id" value="{{ item.id }}">
+                        <input type="hidden" name="formname" value="deletebioform">
+                        <input type="submit" name="confirm" value="confirm">
+                    </form>
+
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <!-- add new -->
+        <p class="text1">Add new fact</p>
+
+        <form action="{% url 'ayou:memories' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ newbioform.item.id_for_label }}">{{ newbioform.item.label }}</label>
+                {{ newbioform.item }}
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="{{ newbioform.description.id_for_label }}">{{ newbioform.description.label }}</label>
+                {{ newbioform.description }}
+            </div>
+            <input type="hidden" name="formname" value="newbioform">
+            <br>
+            <input type="submit" value="Submit">
+        </form>
     </div>
-    <br> 
-    <div class="form-group">
-        <label for="{{ newbioform.description.id_for_label }}">{{ newbioform.description.label }}</label>
-        {{ newbioform.description }}
-    </div>
-    <input type="hidden" name="formname" value="newbioform">
-    <br>
-    <input type="submit" value="Submit">
-</form>
-</div>
-<!-- end add new -->
+    <!-- end add new -->
 
 
 
-<!-- ///////// memories /////////// -->
-
-            
-<!-- list memories -->
-<div class="configurebox">
-    {% if memories %}
-<p class="text1">Ayou's memories      {{ memorymessage}}</p>
-           
-<div class="configurescrollbox mem"> 
-<div class="inner">
-<ul>{% for memory in memories%}
-<li>{{ memory.date }} : {{ memory.description}} : {{memory.emotion}} 
-    <!-- delete memory -->
-    <form action="{% url 'ayou:memories' %}" method="POST">
-        {% csrf_token %}
-        {{  deletememoryform  }}
-        <input type="hidden" name="formname" value="deletememoryform">
-        <input type="hidden" name="id" value="{{ memory.id }}">
-        <input type="submit" name="confirm" value="confirm">
-    </form>
-     <!-- end delete-->
-    <br>
-    </li>
-{% endfor %}
-</ul>
-</div>
-</div>
-{% endif %}
-<!-- end list memories -->
+    <!-- ///////// memories /////////// -->
 
 
+    <!-- list memories -->
+    <div class="configurebox">
+        {% if memories %}
+        <p class="text1">Ayou's memories {{ memorymessage}}</p>
 
-<br>
+        <div class="configurescrollbox mem">
+            <div class="inner">
+                <ul>{% for memory in memories%}
+                    <li>{{ memory.date }} : {{ memory.description}} : {{memory.emotion}}
+                        <!-- delete memory -->
+                        <form action="{% url 'ayou:memories' %}" method="POST">
+                            {% csrf_token %}
+                            {{ deletememoryform }}
+                            <input type="hidden" name="formname" value="deletememoryform">
+                            <input type="hidden" name="id" value="{{ memory.id }}">
+                            <input type="submit" name="confirm" value="confirm">
+                        </form>
+                        <!-- end delete-->
+                        <br>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        <!-- end list memories -->
 
-<p class="text1">Add new memory</p>
 
-    
-    <!-- add a memory -->
-    
-   <div class="memoryinputcontainer">
-<form action="{% url 'ayou:memories' %}" method="POST" class="memoryinputform">
-    {% csrf_token %}
- 
-  
-    <div class="form-group">
-        <label for="{{ newmemoryform.date.id_for_label }}">{{ newmemoryform.date.label}}</label>
-        {{ newmemoryform.date }}
-    </div>
- 
-    <div class="form-group">
-        <label for="{{ newmemoryform.description.id_for_label }}">{{ newmemoryform.description.label }}</label>
-        {{ newmemoryform.description}}
-    </div>
-    <div class="form-group ">
-        <label for="{{ newmemoryform.content.id_for_label }}">{{ newmemoryform.content.label }}</label>
-        {{ newmemoryform.content }}
-    </div>
-    <div class="form-group">
-        <label for="{{ newmemoryform.emotion.id_for_label }}">{{ newmemoryform.emotion.label }}</label>
-        {{ newmemoryform.emotion }}
-    </div>
-    <input type="hidden" name="formname" value="newmemoryform">
-    <br>
-    <input type="submit">
-</form>
-</div>
-</div>
+
+        <br>
+
+        <p class="text1">Add new memory</p>
+
+
+        <!-- add a memory -->
+
+        <div class="memoryinputcontainer">
+            <form action="{% url 'ayou:memories' %}" method="POST" class="memoryinputform">
+                {% csrf_token %}
+
+
+                <div class="form-group">
+                    <label for="{{ newmemoryform.date.id_for_label }}">{{ newmemoryform.date.label}}</label>
+                    {{ newmemoryform.date }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ newmemoryform.description.id_for_label }}">escription</label>
+                    {{ newmemoryform.description}}
+                </div>
+                <div class="form-group ">
+                    <label for="{{ newmemoryform.content.id_for_label }}">{{ newmemoryform.content.label }}</label>
+                    {{ newmemoryform.content }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ newmemoryform.emotion.id_for_label }}">{{ newmemoryform.emotion.label }}</label>
+                    {{ newmemoryform.emotion }}
+                </div>
+                <input type="hidden" name="formname" value="newmemoryform">
+                <br>
+                <input type="submit">
+            </form>
+        </div>
+     
     <!-- end memories  -->
 
 </div>
+<div class="pwdchange"><a href="{% url 'password_change' %}">Change password</a>
+</div>
+</div>
 
 
 
 
-
+{% endwith %}
+{% endwith %}
+{% endwith %}
 {% endblock %}
-

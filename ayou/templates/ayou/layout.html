@@ -3,46 +3,57 @@
 
 <!DOCTYPE html>
 <html lang="eng">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="{% static 'ayou/styles.css' %}" rel="stylesheet">
 
-        <title>layout</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'ayou/styles.css' %}" rel="stylesheet">
 
-        
-    </head>
-    <body>
-        <div class="ultimatecontainer">
-        <style>
-            menu {background-image: url('{% static "ayou/imgs/sea.jpg" %}' );}
-        </style>
+    <title>layout</title>
 
-<div class="menulayout">
-    <div class="logobox">
-   <div class="figletlogo">
-        <a href="{% url 'ayou:chat' %}"><pre>{{ figletlogo }}</pre></a>
-        <div class="agentyou">AgentYou</div>
-    </div> 
-</div>
-    <a href="{% url 'ayou:chat' %}"><button class="btn">Chat</button></a>
-    <a href="{% url 'ayou:memories' %}"><button class="btn">Configure</button></a>
-    <a href="{% url 'ayou:logout' %}"><button class="btn"> Logout</button></a>
-   <div toprightboxbox>
-    <div class="toprightbox">
-    <ul class="messages">
-        {% for message in messages %}
-        <li><p class="loggedin">{{ message|linebreaksbr }}</p></li>
-        {% endfor %}
-    </ul>  
-  
+
+</head>
+
+<body class="{{ pagebodyclass }}">
+    <div class="ultimatecontainer">
+        <div class="borderbox {{ pageborderboxclass }}"> <p class="nimchimpski">built by nimchimpski alex@oneclearshot.com</p></div>
+        <div class="menuwidebox {{ pagemenuwideclass }}">
+            <div class="menu">
+                <div class="logobox">
+                    <div class="figletlogo">
+                        <a href="{% url 'ayou:chat' %}">
+                            <pre>{{ figletlogo }}</pre>
+                        </a>
+                        <div class="agentyou font">AgentYou</div>
+                    </div>
+                </div>
+                <div class="menubox">
+                <a href="{% url 'ayou:chat' %}"><button class="btn">Chat</button></a>
+                <a href="{% url 'ayou:memories' %}"><button class="btn">Configure</button></a>
+                <a href="{% url 'ayou:logout' %}"><button class="btn"> Logout</button></a>
+            </div>
+                <ul class=" toprightbox">
+                    {% for message in messages %}
+                    <li>
+                        <p class="loggedin">{{ message|linebreaksbr }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <!-- <div class="lineleft"></div>
+        <div class="lineright"></div> -->
+    </div>
+    <!-- <div class="borderlinebox {{ pageborderlineclass }}"> -->
+    <!-- <div class="lineleft {{ pagelineheightclass }}"></div> -->
+    <!-- <div class="lineright {{ pagelineheightclass }}"></div> -->
+    
 
 </div>
-</div>
-</div>
+    {% block body %}
+    {% endblock %}
+   
 
-{% block body %}
-{% endblock %}
-</div>
-    </body>
+</body>
+
 </html>

@@ -1,23 +1,16 @@
 {% extends 'ayou/layout.html' %}
 {% load static %}
 
-
 {% block body %}
-<!-- register.html -->
-<style>
-body {
-    background-size: cover;
-    background-image: url('{% static "ayou/imgs/rachel.jpg" %}' );
-    background-position: 63rem   0rem;
-    background-attachment: fixed;
-  overflow: hidden;
-    
-}
+{% with pagebodyclass='registerbodyclass' %}
+{% with pagemenuwideclass='registermenuwideclass' %}
+{% with pageborderboxclass='registerborderboxclass' %}
 
-</style>
 
-<div class="mainpagecontainer">
-<h2>Welcome to Ayou</h2>
+<div class="mainpagecontainer registerpagecontainer">
+    <div class="figletheading">
+        <pre>{{ heading }}</pre>
+</div>
 <br>
 <!-- {% if messages %}
     <ul class="messages">
@@ -27,23 +20,40 @@ body {
     </ul>
 {% endif %} -->
 
+
 <div class="registerbox">
 <form action="{% url 'ayou:register' %}" method="POST" >
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="register">
+{% csrf_token %}
+{% for field in form %}
+    <div class="fieldbox">
+        {{ field.label_tag }} {{ field }}
+        {% if field.help_text %}
+        <br>
+            <small class="help">{{ field.help_text }}</small>
+        {% endif %}
+        {% if field.errors %}%;
+            <div class="errors">
+        {{ field.errors.as_text }}
+    </div>
+        {% endif %}
+    </div>
+{% endfor %}
+<button type="submit">Sign up</button>
 </form>
+</div>
 <br>
 <br>
 <div> Or log in 
 
 <button class='btn register'><a href = "{% url 'ayou:login' %}">Log in</a></button>
 </div>
-</div>
+
 
  <br>
 </div>
 
-
+{% endwith %}
+{% endwith %}
+{% endwith %}
 {% endblock %}
 
