@@ -14,14 +14,25 @@ body {
 }
 
 /* ///////// page variables  ////////*/
-.registerpagemenuclass {}
 
-.indexpagemenuclass {}
 
-.indexpagebodyclass {
-    background-image: url("../imgs/dove.jpg");
-    background-position: 60rem 60rem;
-    overflow: hidden;
+.indexbodyclass {
+    background-image: url("imgs/br.png");
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: -22rem 0rem ;
+}
+.indexmenuwideclass {
+    background-image: url("imgs/br.png");
+    background-position: -22rem 0rem;
+    background-attachment: fixed;
+    background-size: cover;
+    z-index: 11;
+}
+
+.indexlineheightclass {
+    height: 47rem;
+    /* right: 50rem; */
 }
 
 /* chat variables */
@@ -68,19 +79,35 @@ body {
 }
 .memorieslineheightclass {
     height: 106.6rem;
-    right: 2rem;
+    /* right: 2rem; */
 }
 
 /* register variables */
-.registerpagebodyclass {
+.registerbodyclass {
     background-size: cover;
-    background-image: url("ayou/imgs/rachel.jpg");
-    background-position: 63rem 0rem;
+    background-image: url("imgs/rachel.jpg");
+    background-position: 47rem 0rem;
     background-attachment: fixed;
+}
+.registermenuwideclass {
+    background-size: cover;
+    background-image: url("imgs/rachel.jpg");
+    background-position: 47rem 0rem;
+    background-attachment: fixed;
+}
+.registerlineheightclass {
+    height: 55.7rem;
+    right: 2rem;
 }
 
 /* /////////////// shared //////////////// */
-
+.figletheading {
+    font-size: .6rem;
+    font-weight: bold;
+    opacity: .7;
+    text-align: center;
+    
+}
 
 .noscroll {
     overflow: hidden;
@@ -119,26 +146,53 @@ a {
     font-weight: bold;
     padding-left: 2rem;
 }
+.indexformcontainer {
+    padding: 0rem 0rem 0rem 0rem;
+}
 
-
+/* /////////////////////////////////////// */
 .mainpagecontainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
     padding-bottom: 6rem;
     margin-bottom: 4rem;
     border-bottom: 1px solid rgba(255, 255, 255, .5);
     z-index: 0;
 }
+.indexpagecontainer {
+    padding-right: 13.5rem;
+    padding-left: 13.5rem;
+    
+}
 .chatpagecontainer {
-    padding-right: 0rem;
-    padding-left: 0rem;
+    padding-right: 6.5rem;
+    padding-left: 6.5rem;
 }
 .memoriespagecontainer {
     padding-right: 2rem;
     padding-left: 2rem;
 }
+.registerpagecontainer {
+    padding-right: 8rem;
+    padding-left: 8rem;
+    
+}
 
 /* /////////   menu/layout page  //////////// */
 
-
+@media screen and (min-width: 680px)
+{ .ultimatecontainer {
+    padding-top:10rem;
+}
+}
+@media screen and (max-width: 680px)
+{ .ultimatecontainer {
+    padding-top:15rem;
+}
+}
 .ultimatecontainer {
     display: flex;
     flex-direction: column;
@@ -146,8 +200,7 @@ a {
     align-items: center;
     max-width: 1200px;
     position: relative;
-    top: 0rem;
-    padding-top: 10rem;
+    top: 0rem;;
     padding-left: 7rem;
     padding-right: 7rem;
     padding-bottom: 0rem;
@@ -207,8 +260,13 @@ a {
 .borderlinebox {
     position: absolute;
     top: 0rem;
+    /* width: 56rem; */
     width: 56rem;
+    
 
+}
+.indexborderlineclass {
+    padding: 20rem;
 }
 
 .lineleft {
@@ -239,12 +297,7 @@ a {
 
 /* /////////////// */
 /* //////// chat page ///////// */
-.figletheading {
-    font-size: .6rem;
-    font-weight: bold;
-    opacity: .7;
-    text-align: center;
-}
+
 
 .chooseclonebox {
     position: relative;
@@ -401,7 +454,21 @@ a {
     margin-top: -2rem;
 
 }
-
+.registerbox {
+    
+    border: 1px solid rgba(255, 255, 255, .5);
+    padding: 2rem 2rem 2rem 2rem;
+    margin-bottom: 1rem;
+    width: 24rem;
+}
+.fieldbox {
+    /* width:50; */
+    margin-bottom: 1rem;
+}
+.help {
+    /* border:1px solid rgba(255, 255, 255, .5); */
+    opacity: .7;
+}
 
 /* buttons */
 form input[type=submit] {

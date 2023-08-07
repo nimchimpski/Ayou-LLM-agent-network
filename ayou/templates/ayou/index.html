@@ -2,27 +2,21 @@
 {% load static %}
 
 {% block body %}
-{% with pagebodyclass=indexpagebodyclass %}
-{% with pagebodyclass=indexpagemenuclass %}
+{% with pagebodyclass='indexbodyclass' %}
+{% with pagemenuwideclass='indexmenuwideclass' %}
+{% with pagelineheightclass='indexlineheightclass' %}
+{% with pageborderlineclass='indexborderlineclass' %}
 
 
 <!-- index.html -->
-       <style>
 
-/* body {
-    background-image: url('{% static "ayou/imgs/dove.jpg" %}' );
-    background-position: 60rem 60rem;
- 
-    overflow: hidden;
-} */
-       </style>
 
-<div class="mainpagecontainer">
+<div class="mainpagecontainer indexpagecontainer">
 <h1>Welcome to Ayou</h1>
 
 
-
-<form action="{% url 'ayou:login' %}" method="POST" >
+<div class="indexformcontainer">
+<form class="indexform" action="{% url 'ayou:login' %}" method="POST" >
     {% csrf_token %}
    <div class="form-group">
     <label for="username">Username:</label>
@@ -35,6 +29,7 @@
     <br>
     <input type="submit" value="login">
 </form>
+</div>
 <br>
 <br>
 <button class="btn2"><a href="{% url 'password_reset' %}">Forgot password?</a></button>
@@ -49,7 +44,9 @@
 <br>
 <br>
 
-</div
+</div>
+{% endwith %}
+{% endwith %}
 {% endwith %}
 {% endwith %}
 {% endblock %}

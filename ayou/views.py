@@ -82,24 +82,24 @@ def login_view(request):
                     defaultdomain = Domain(domain='general',user=request.user)
                     defaultdomain.save()
                 return HttpResponseRedirect(reverse("ayou:chat"))
-            else:
-                return render(
-                    request,
-                    "ayou/index.html",
-                    {"form": NewLoginForm()},
-                )
+            # else:
+            #     return render(
+            #         request,
+            #         "ayou/index.html",
+            #         {"form": NewLoginForm()},
+            #     )
         else:
             return render(
                 request,
                 "ayou/index.html",
-                {"form": NewLoginForm(), },
+                {"form": NewLoginForm(), 'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass' },
             )
 
     form = NewLoginForm()
     if not request.user.is_authenticated:
         print(">>> loginview get request : not loged in")
         messages.add_message(request, messages.INFO, "Please log in.")
-        return render(request, "ayou/index.html", {"form": NewLoginForm()})
+        return render(request, "ayou/index.html", {"form": NewLoginForm(),'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass', 'pageborderlneclass':'indexborderlineclass'})
     else:
         messages.add_message(request, messages.INFO, "logged in")
         return HttpResponseRedirect(reverse("ayou:chat"))
@@ -118,9 +118,10 @@ def register_view(request):
             messages.add_message(request, messages.INFO, "Fill in the form correctly")
             return render(request, 'ayou/register.html', {'form': form})
         
+    heading = figlettext('Sign up and start building your clone', 'small')    
     form = UserCreationForm()
-    messages.add_message(request, messages.INFO, "Register to begin making your clone")
-    return render(request, 'ayou/register.html', {'form': form, 'message': 'Please enter your details to register'})
+    messages.add_message(request, messages.INFO, "Register")
+    return render(request, 'ayou/register.html', {'form': form, 'heading': heading,'pagebodyclass':'registerbodyclass', 'pagemenuwideclass':'registermenuwideclass','pagelineheightclass':'registerlineheightclass'})
 
 @login_required
 def logout_view(request):
