@@ -22,6 +22,7 @@ body {
     background-attachment: fixed;
     background-size: cover;
     background-position: -22rem 0rem ;
+    /* overflow: hidden; */
 } 
 .indexmenuwideclass {
     background-image: url("imgs/br.png");
@@ -146,12 +147,11 @@ a {
     border-bottom: 1px solid rgba(255, 255, 255, 0.5); */
     z-index: 0;
 }
-/* .indexpagecontainer {
-    padding-right: 13.5rem;
-    padding-left: 13.5rem;
-    overflow: hidden;
+.indexpagecontainer {
+ 
     
-} */
+    
+}
 /* .chatpagecontainer {
     padding-right: 6.5rem;
     padding-left: 6.5rem;
@@ -176,8 +176,7 @@ a {
 @media screen and (max-width: 680px)
 {   .ultimatecontainer {
     padding-top:15rem;}
-    .borderbox {
-    padding-bottom: 5rem;}
+  
 }
 .ultimatecontainer {
     display: flex;
@@ -224,7 +223,7 @@ a {
     opacity: .6;
     position: absolute;
     left: 2rem;
-    bottom: 2rem;
+    bottom: -2rem;
 }
 .agentyou {
     position: relative;
