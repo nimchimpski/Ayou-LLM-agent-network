@@ -24,7 +24,7 @@
     <!-- //////// domains /////////// -->
 
     <div class="configurebox">
-        <p class="text1">Ayou's knowledge area</p>
+        <p class="text1">{{ name }}'s  knowledge area</p>
 
         <form method="POST" class="form1">
             {% csrf_token %}
@@ -39,7 +39,7 @@
 
     <!-- edit the bio items -->
     <div class="configurebox">
-        <p class="text1">Facts about Ayou</p>
+        <p class="text1">Facts about {{ name }}</p>
         {% if biographyitems %}
 
 
@@ -92,7 +92,7 @@
     <!-- list memories -->
     <div class="configurebox">
         {% if memories %}
-        <p class="text1">Ayou's memories {{ memorymessage}}</p>
+        <p class="text1">{{ name }}'s memories {{ memorymessage}}</p>
 
         <div class="configurescrollbox mem">
             <div class="inner">
@@ -136,7 +136,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="{{ newmemoryform.description.id_for_label }}">escription</label>
+                    <label for="{{ newmemoryform.description.id_for_label }}">description</label>
                     {{ newmemoryform.description}}
                 </div>
                 <div class="form-group ">

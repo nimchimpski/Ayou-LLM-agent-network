@@ -16,8 +16,6 @@ from dotenv import load_dotenv
 from .models import Memory, Biographyitem, Chat, Domain
 
 
-
-
 class NewLoginForm(forms.Form):
     username = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="username")
     password = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="Password")
@@ -60,7 +58,6 @@ class SelectAgentForm(forms.Form):
             widget=forms.RadioSelect,
             required=False, label='',
         )
-
 
 
 load_dotenv()
@@ -134,7 +131,7 @@ def chat(request):
 
     def systemmessage(name, sentences=5):
         print('++++ systemmessage() called')
-        systemmessage = {"role": "system", "content": f"You are a character called {name} and here are some details about you  {biographyitems}. Of course you have memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. You  can also consult other agents for more information using the 'askotheragent' function.  Keep your answers to about {sentences} sentences.  Please always reply in character, and never say you are an A.I.!]"}
+        systemmessage = {"role": "system", "content": f"You are a character called {name} and here are some details about you  {biographyitems}. Of course you have memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. You  can also consult other agents for more information using the 'askotheragent' function.  .  ALWAYS reply as {name}, and NEVER say you are an AI assistant !]"}
         return systemmessage
     
     def exampleassistantmessage(name):
@@ -169,7 +166,7 @@ def chat(request):
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messagechain,
-                max_tokens=1000,
+                # max_tokens=1000,
                 temperature=1,
                 functions=otheragentsfunctions,
                 function_call="auto",
@@ -320,16 +317,16 @@ def chat(request):
         for item in biographyitemsquery:
             biographyitems[item.item]=item.description
         return biographyitems
-    """
-               the variables we need
-    """
-                ### create the selectedagent object
+    
+                ##### the variables we need
     
     userid = request.user.id
     # print(f">>>  username  {name} id {userid}")
     memory_id = 0
     print(f'memory_id {memory_id}')
+
                 ##### make list of agents
+
     agentsquery = User.objects.all()
     agentslist = []
     for agent in agentsquery:
@@ -337,19 +334,19 @@ def chat(request):
         agentslist.append(agent.username)
     print(">>> agentslist type ", type(agentslist))
     print(">>> agentslist ", agentslist)
-    '''
 
-                POST REQUEST
+                    #####  POST REQUEST
 
-    '''
     if request.method == "POST":
         print('\n XXXXXXXXXXXXXXX POST request XXXXXXXXXXXXXXXXX \n')
         print('request=', request.POST)
         print(">>> request.session['selectedagent']= ", request.session['selectedagent'])
         name=request.session['selectedagent']
         print('>>>name= ',name)
-        selectedagentobject = User.objects.get(username=name)
-        
+
+                       ##### create the selectedagent object
+
+        selectedagentobject = User.objects.get(username=name)       
         biographyitems = biographyitems(selectedagentobject)
         print('||| biographyitems: ',biographyitems)
         print('||| biographyitems type: ',type(biographyitems))
@@ -357,7 +354,8 @@ def chat(request):
         print('>>> memorieslist ', memorieslist)
         otheragentsdomainslist = otheragentdomainsfunction(userid)
         
-        #### check if different agent selected  
+                        #### check if different agent selected  
+
         if 'selectagentsubmit' in request.POST:
             print('... Different agent selected')
             selectagentform = SelectAgentForm(request.POST, agentslist=agentslist)
@@ -378,6 +376,9 @@ def chat(request):
                 print('>>> name before selectedagent render= ', name)
                 selectedagentheading = figlettext(name, 'small')
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
+
+                                ###### RETURN RENDER
+
                 return render(
                         request,
                         "ayou/chat.html",
@@ -386,16 +387,10 @@ def chat(request):
                             "responsecontent": responseforuser,
                             "tokensused": tokens,
                             "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 
-                            'heading': heading, 'selectedagentheading': selectedagentheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass' 
+                            'heading': heading, 'selectedagentheading': selectedagentheading 
                         },
                     )
                 
-            # else:
-            #     print('... selectagentform not valid')
-            #     print(chatform.errors)
-                
-
-
         elif 'chatsubmit' in request.POST:
             name=request.session['selectedagent']
             print('>>> name,  ', name)
@@ -403,10 +398,11 @@ def chat(request):
             if chatform.is_valid():
                 startnewchat = chatform.cleaned_data["startnewchat"]
                 print("... startnewchat? ", startnewchat)
-                ####### ensure there is a chat
+
+                            ####### ensure there is a chat
+
                 if not Chat.objects.filter(user=selectedagentobject.id).exists() or  startnewchat:
-                    print('--- either startnewchat or no chat exists')
-                   
+                    print('--- either startnewchat or no chat exists')    
                     thischat = Chat.objects.create(user=selectedagentobject)
                     print("... NEW thisChat > ", thischat)
                     messagechain = []
@@ -421,6 +417,7 @@ def chat(request):
                     # print("--- messagechain/type ", messagechain, type(messagechain))
 
                             ####### add the user's message to the messagechain
+
                 usercontent = chatform.cleaned_data["usercontent"]
                 print("... usercontent ", usercontent)
                 newusermessagedict = {"role": "user", "content": usercontent}            
@@ -432,7 +429,6 @@ def chat(request):
                             #######  get the openAI first completion
                 
                 functions = scopedfunctions(memorieslist, otheragentsdomainslist)
-
                 firstcompletion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messagechain,
@@ -444,18 +440,16 @@ def chat(request):
                 completionmessage = firstcompletion["choices"][0]["message"]
                 print("... 1st completionmessage  type= ", type(completionmessage) )
                 print("... 1st completionmessage  ",completionmessage, )
-                """
+        
                               #######  if functioncall in response , call it and append result to messagesforcompletion
-                '"""
+            
                 if completionmessage.get("function_call"):
                     print("... function_call in completionmessage - will now call dealwithfunctionrequest()")
                     messagechain = dealwithfunctionrequest()
                     print("...now out of dealwithfunctionrequest())")
-                    """
 
                               ####### make second primary agent call with function results
 
-                    """
                     completionwithfunctionresults = openai.ChatCompletion.create(
                         model="gpt-3.5-turbo",
                     messages=messagechain,
@@ -467,10 +461,12 @@ def chat(request):
                     # print("... 2nd completion> ", completionwithfunctionresults, type(completionwithfunctionresults))
 
                                 ########  extract agent response from  secondcompletion
+
                     responseforuser = completionwithfunctionresults.choices[0].message["content"]
                     # print("... fn responseforuser> ", responseforuser,    type(responseforuser))
 
                                 ########  make a dict of all the messages
+
                     secondresponsedict = completionwithfunctionresults.choices[0]['message']
                     # print(f'... fn responsedict type= {type(secondresponsedict)} ++++ {secondresponsedict}')
                     tokens = completionwithfunctionresults.usage.total_tokens
@@ -478,41 +474,37 @@ def chat(request):
                     messagechain.append(secondresponsedict)
 
                 else:
-                    '''
-                          #######     if no functioncall in response 
-                    '''
+                                #######     if no functioncall in response 
+
                     print('---: no functioncalled')
+
                                 ########  this goes to the html page later
+
                     responseforuser = firstcompletion.choices[0].message["content"]
                     # print("... responseforuser> ", responseforuser, type(responseforuser)   )
 
-
                                 ########   this will be added to the chain
-                    firstresponsedict = {'role': 'assistant', 'content': f'{firstcompletion.choices[0].message["content"]}'}    
 
+                    firstresponsedict = {'role': 'assistant', 'content': f'{firstcompletion.choices[0].message["content"]}'}    
                     tokens = firstcompletion.usage.total_tokens
                     print("--- total_tokens ", tokens)
                     messagechain.append(firstresponsedict)
                     # print("--- messagechain b4 save ", messagechain)
 
                 # print('... messagechain b4 IF summary ', messagechain)
-
-                """
-                        #######        before saving, is the chain too long?
-                """
-
+               
+                                #######   before saving, is the chain too long?
+                
                 if tokens >3500:
                     print('...inside summary block')
                     summariserequestmessage = {"role": "system", "content": "IMPORTANT! summarise the  conversation so far, into one paragraph. Refer to the 'assistant' as 'I. You are the assistant."}
                     messagechain = messagechain[2:]
                     messagechain.append(summariserequestmessage)
                     # print('... toolong messagechain ', messagechain)
-
-                    """
-                                completion to summarise the chain 
-                                loose the first 2 dicts in the chain!
-
-                    """
+                  
+                                #####  completion to summarise the chain 
+                                #####    loose the first 2 dicts in the chain!
+                 
                     summarycompletion = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
                     messages=messagechain,
@@ -521,10 +513,12 @@ def chat(request):
                     # print('... summarycompletion ', summarycompletion)
                     summarisedtokencount = summarycompletion.usage.total_tokens
                     print('... summarisedtokencount ', summarisedtokencount)
-
                     summarycompletioncontent = summarycompletion.choices[0].message
                     # print('... summarycompletioncontent ', summarycompletioncontent)
                     summarycompletionmessage = {"role": "assistant", "content": f"This is what you were talking about: {summarycompletioncontent}"}
+
+                                ##### make the new chain
+
                     messagechain = []
                     messagechain.append(systemmessage(name))
                     messagechain.append(exampleassistantmessage(name))
@@ -534,13 +528,15 @@ def chat(request):
                     # print('... messagechain after summaryblock ', messagechain)
                 thischat.messages = messagechain
                 thischat.save()
-
-                """
-                                    render the page with the last agent response
-                """
+                
+                                ######   render the page with the last agent response
+                
                 heading = figlettext('Chat with your Ayou clone', 'small')
                 figletsubheading = figlettext('Chat with another Ayou clone', 'small')
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
+
+                                ###### RETURN RENDER
+
                 return render(
                         request,
                         "ayou/chat.html",
@@ -549,17 +545,12 @@ def chat(request):
                             "responsecontent": responseforuser,
                             "tokensused": tokens,
                             "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,
-                             'heading': heading, 'figletsubheading': figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass'
+                             'heading': heading, 'figletsubheading': figletsubheading
                         },
                     )
-            # else:
-            #     return HttpResponse("FORM ERROR")
-   
-    """
 
             #######    GET REQUEST, render the page with an empty form
 
-    """
     print('>>>> GET request')
     
     heading = figlettext('Chat with your Ayou clone', 'small')
@@ -571,22 +562,25 @@ def chat(request):
     print('... name at GET ', name)
     messages.add_message(request, messages.INFO, f"{request.user.username}")
 
-    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass','pageborderboxclass':'chatborderboxclass' })
+                        ###### RETURN RENDER
 
-
+    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading,  })
 
 
 @login_required
 def memories(request):
     message = ""
+                ##### check area of knowledge
     try:
         domain = Domain.objects.get(user=request.user)
     except Domain.DoesNotExist:
         print('... no domain for this user' )
         domain = Domain.objects.create(user=request.user, domain='unspecified')
     
+                ##### variables we need
 
     heading = figlettext('Configure Ayou', 'small')
+    name = request.user.username
     
 
     def pagevariables(request, message):
@@ -602,10 +596,10 @@ def memories(request):
                 'domainslistform': DomainsListForm(instance=domain),
                 'heading': heading,
                 'pagebodyclass': 'memoriesbodyclass',
-                'pagemenuwideclass':'memoriesmenuwideclass','pagebodyclass': 'memoriesbodyclass',  'pagemenuwideclass': 'memoriesmenuwideclass','pageborderboxclass':'memoriesborderboxclass'}
+                'pagemenuwideclass':'memoriesmenuwideclass',
+                'name': name}
     
     if Domain.objects.filter(user=request.user).exists():
-
         domainsquery = Domain.objects.filter(user=request.user)
         # print(f'... domainsquery  {domainsquery} type {type(domainsquery)}')
                 # mylist
@@ -615,21 +609,18 @@ def memories(request):
             # print(f'... domain.domain {domain.domain} type {type(domain.domain)}')  
             domainslist.append(domain.domain)   
         # print(f'... domainslist 2 {domainslist} type {type(domainslist[0])}')
-        #         #endmylist
         
     if request.method == "POST":
         print(">>> POST request ", request.POST)
         print('>>> POST request content>', request.POST)
-        """
-            make a function for these is_valid() checks
+
+                    ######  are we adding a new bio item?
     
-        """
         if request.POST.get("formname") == "newbioform":
             print(">>> nnewbioform request")
             newbioform = NewBioForm(request.POST)
             if newbioform.is_valid():
-                print(">>> newbioform is valid ")
-                
+                print(">>> newbioform is valid ")             
                 item = newbioform.cleaned_data['item']
                 print('... item ', item)
                 description = newbioform.cleaned_data['description']
@@ -642,6 +633,9 @@ def memories(request):
             else:
                 print('... newbioform not valid', newbioform.errors)
                 message = "Biography item not added. Correct the form and try again."
+
+                            ##### RENDER  PAGE
+
                 return render(request, "ayou/memories.html", pagevariables(request, message))
             
         elif request.POST.get("formname") == "deletebioform":
@@ -660,6 +654,9 @@ def memories(request):
             else:
                 # print('... deletebioform not valid', deletebioform.errors)
                 message = "Biography item not deleted. Correct the form and try again."
+
+                                    ##### RENDER PAGE
+
                 return render(request, "ayou/memories.html", pagevariables(request, message))
             
         elif request.POST.get("formname") == "newmemoryform":
@@ -677,6 +674,9 @@ def memories(request):
             else:
                 # print('... newmemoryform not valid', newmemoryform.errors)
                 message = "Memory not added. Correct the form and try again."
+
+                                ##### RENDER PAGE               
+
                 return render(request, "ayou/memories.html", pagevariables(request, message))
             
         elif request.POST.get("formname") == "deletememoryform":
@@ -700,17 +700,19 @@ def memories(request):
                 print('updated domain? ',Domain.objects.get(user=request.user))
                 message='knowledge area updated'
 
-        print('rendering')     
-        
         messages.add_message(request, messages.INFO, f" {request.user.username}")
-        return render(request, "ayou/memories.html", pagevariables(request, message))
-    """
-                if here by GET
-    """
-    print('request path ', request.path)
-    
+        print('rendering after domainslist processing')
+
+                            ##### RENDER PAGE
   
+        return render(request, "ayou/memories.html", pagevariables(request, message))
     
+                        ##### if here by GET
+    
+    print('request path ', request.path)
+
+                        ##### RENDER PAGE
+
     messages.add_message(request, messages.INFO, f" {request.user.username}")
     return render(request, "ayou/memories.html", pagevariables(request, message), )
  
