@@ -22,6 +22,7 @@ body {
     background-attachment: fixed;
     background-size: cover;
     background-position: -22rem 0rem ;
+    /* overflow: hidden; */
 } 
 .indexmenuwideclass {
     background-image: url("imgs/br.png");
@@ -63,9 +64,7 @@ body {
     background-attachment: fixed;
     background-size: cover;
     /* background-size: 160%; */
-
 }
-
 .memoriesmenuwideclass {
     background-image: url('imgs/sea.jpg');
     background-position: -20rem 0rem;
@@ -73,14 +72,7 @@ body {
     background-size: cover;
     /* background-size: 160%; */
     z-index: 11;
-
-
 }
-/* .memorieslineheightclass {
-    height: 106.6rem;
-    /* right: 2rem; */
-} */
-
 /* register variables */
 .registerbodyclass {
     background-size: cover;
@@ -94,10 +86,6 @@ body {
     background-position: 47rem 0rem;
     background-attachment: fixed;
 }
-/* .registerlineheightclass {
-    height: 55.7rem;
-    right: 2rem;
-} */
 
 /* /////////////// shared //////////////// */
 .figletheading {
@@ -107,11 +95,6 @@ body {
     text-align: center;
     
 }
-
-/* .noscroll {
-    overflow: hidden;
-    overscroll-behavior-y: none;
-} */
 
 h1,
 h2,
@@ -155,18 +138,20 @@ a {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
-    padding-bottom: 6rem;
-    margin-bottom: 4rem;
-    /* border-bottom: 1px solid rgba(255, 255, 255, .5); */
+    flex-grow: 1;
+    /* padding: 0 6.5rem; */
+    padding-bottom: 0rem;
+    margin-bottom: 0rem;
+    /* border-left: 1px solid rgba(255, 255, 255, 0.5);
+    border-right: 1px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5); */
     z-index: 0;
 }
-/* .indexpagecontainer {
-    padding-right: 13.5rem;
-    padding-left: 13.5rem;
-    overflow: hidden;
+.indexpagecontainer {
+ 
     
-} */
+    
+}
 /* .chatpagecontainer {
     padding-right: 6.5rem;
     padding-left: 6.5rem;
@@ -191,35 +176,37 @@ a {
 @media screen and (max-width: 680px)
 {   .ultimatecontainer {
     padding-top:15rem;}
-    .borderbox {
-    padding-bottom: 5rem;}
+  
 }
 .ultimatecontainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 1200px;
+    width:100%;
+    max-width: 44rem;
     position: relative;
     top: 0rem;;
-    padding-left: 7rem;
-    padding-right: 7rem;
-    padding-bottom: 0rem;
+    /* padding-left: 7rem;
+    padding-right: 7rem; */
+    padding-bottom: 4rem;
     z-index: 1;
-    /* border: 1px solid rgba(255, 255, 255, .5); */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    margin-bottom: 4rem;
 }
-.borderbox {
+/* .borderbox {
     position: absolute;
     top: 0rem; 
-    border:1px solid rgba(255, 255, 255, 0.5);
+    border-left:1px solid rgba(255, 255, 255, 0.5);
+    border-right:1px solid rgba(255, 255, 255, 0.5);
     width:44rem;
-    /* height:54rem; */
+    height:20rem;
     z-index: 2000;
     background: transparent;
     pointer-events: none;
     
-}
-.chatborderboxclass {
+} */
+/* .chatborderboxclass {
     height:56rem;
 }
 .memoriesborderboxclass {
@@ -230,12 +217,12 @@ a {
 }
 .registerborderboxclass {
     height:54rem;
-}
+} */
 .nimchimpski {
     font-size: x-small;
     opacity: .6;
     position: absolute;
-    left: 8rem;
+    left: 2rem;
     bottom: -2rem;
 }
 .agentyou {
@@ -284,9 +271,12 @@ a {
     position: relative;
     top: 0rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    border-left: 1px solid rgba(255, 255, 255, 0.5);
+    border-right: 1px solid rgba(255, 255, 255, 0.5);
     padding-bottom: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
+    margin: 0 .5rem;
     z-index: 20;
 }
 
