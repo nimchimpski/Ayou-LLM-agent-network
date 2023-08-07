@@ -16,8 +16,6 @@ from dotenv import load_dotenv
 from .models import Memory, Biographyitem, Chat, Domain
 
 
-
-
 class NewLoginForm(forms.Form):
     username = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="username")
     password = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="Password")
@@ -60,7 +58,6 @@ class SelectAgentForm(forms.Form):
             widget=forms.RadioSelect,
             required=False, label='',
         )
-
 
 
 load_dotenv()
@@ -570,8 +567,6 @@ def chat(request):
     return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading,  })
 
 
-
-
 @login_required
 def memories(request):
     message = ""
@@ -605,7 +600,6 @@ def memories(request):
                 'name': name}
     
     if Domain.objects.filter(user=request.user).exists():
-
         domainsquery = Domain.objects.filter(user=request.user)
         # print(f'... domainsquery  {domainsquery} type {type(domainsquery)}')
                 # mylist
@@ -615,7 +609,6 @@ def memories(request):
             # print(f'... domain.domain {domain.domain} type {type(domain.domain)}')  
             domainslist.append(domain.domain)   
         # print(f'... domainslist 2 {domainslist} type {type(domainslist[0])}')
-        #         #endmylist
         
     if request.method == "POST":
         print(">>> POST request ", request.POST)
@@ -640,7 +633,9 @@ def memories(request):
             else:
                 print('... newbioform not valid', newbioform.errors)
                 message = "Biography item not added. Correct the form and try again."
-                
+
+                            ##### RENDER  PAGE
+
                 return render(request, "ayou/memories.html", pagevariables(request, message))
             
         elif request.POST.get("formname") == "deletebioform":
