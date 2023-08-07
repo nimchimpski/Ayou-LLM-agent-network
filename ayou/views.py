@@ -575,14 +575,17 @@ def chat(request):
 @login_required
 def memories(request):
     message = ""
+                ##### check area of knowledge
     try:
         domain = Domain.objects.get(user=request.user)
     except Domain.DoesNotExist:
         print('... no domain for this user' )
         domain = Domain.objects.create(user=request.user, domain='unspecified')
     
+                ##### variables we need
 
     heading = figlettext('Configure Ayou', 'small')
+    name = request.user.username
     
 
     def pagevariables(request, message):
@@ -598,7 +601,8 @@ def memories(request):
                 'domainslistform': DomainsListForm(instance=domain),
                 'heading': heading,
                 'pagebodyclass': 'memoriesbodyclass',
-                'pagemenuwideclass':'memoriesmenuwideclass','pagebodyclass': 'memoriesbodyclass',  'pagemenuwideclass': 'memoriesmenuwideclass','pageborderboxclass':'memoriesborderboxclass'}
+                'pagemenuwideclass':'memoriesmenuwideclass',
+                'name': name}
     
     if Domain.objects.filter(user=request.user).exists():
 
@@ -616,16 +620,14 @@ def memories(request):
     if request.method == "POST":
         print(">>> POST request ", request.POST)
         print('>>> POST request content>', request.POST)
-        """
-            make a function for these is_valid() checks
+
+                    ######  are we adding a new bio item?
     
-        """
         if request.POST.get("formname") == "newbioform":
             print(">>> nnewbioform request")
             newbioform = NewBioForm(request.POST)
             if newbioform.is_valid():
-                print(">>> newbioform is valid ")
-                
+                print(">>> newbioform is valid ")             
                 item = newbioform.cleaned_data['item']
                 print('... item ', item)
                 description = newbioform.cleaned_data['description']
@@ -638,6 +640,7 @@ def memories(request):
             else:
                 print('... newbioform not valid', newbioform.errors)
                 message = "Biography item not added. Correct the form and try again."
+                
                 return render(request, "ayou/memories.html", pagevariables(request, message))
             
         elif request.POST.get("formname") == "deletebioform":
@@ -656,6 +659,9 @@ def memories(request):
             else:
                 # print('... deletebioform not valid', deletebioform.errors)
                 message = "Biography item not deleted. Correct the form and try again."
+
+                                    ##### RENDER PAGE
+
                 return render(request, "ayou/memories.html", pagevariables(request, message))
             
         elif request.POST.get("formname") == "newmemoryform":
@@ -673,6 +679,9 @@ def memories(request):
             else:
                 # print('... newmemoryform not valid', newmemoryform.errors)
                 message = "Memory not added. Correct the form and try again."
+
+                                ##### RENDER PAGE               
+
                 return render(request, "ayou/memories.html", pagevariables(request, message))
             
         elif request.POST.get("formname") == "deletememoryform":
@@ -696,17 +705,19 @@ def memories(request):
                 print('updated domain? ',Domain.objects.get(user=request.user))
                 message='knowledge area updated'
 
-        print('rendering')     
-        
         messages.add_message(request, messages.INFO, f" {request.user.username}")
-        return render(request, "ayou/memories.html", pagevariables(request, message))
-    """
-                if here by GET
-    """
-    print('request path ', request.path)
-    
+        print('rendering after domainslist processing')
+
+                            ##### RENDER PAGE
   
+        return render(request, "ayou/memories.html", pagevariables(request, message))
     
+                        ##### if here by GET
+    
+    print('request path ', request.path)
+
+                        ##### RENDER PAGE
+
     messages.add_message(request, messages.INFO, f" {request.user.username}")
     return render(request, "ayou/memories.html", pagevariables(request, message), )
  
