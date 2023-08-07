@@ -374,6 +374,9 @@ def chat(request):
                 else:
                     request.session['selectedagent'] = 'request.user.username'
                     name= request.user.username
+                heading = figlettext('Chat with ', 'small')
+                print('>>> name before selectedagent render= ', name)
+                selectedagentheading = figlettext(name, 'small')
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
                 return render(
                         request,
@@ -382,7 +385,8 @@ def chat(request):
                             "chatform": NewChatForm(),
                             "responsecontent": responseforuser,
                             "tokensused": tokens,
-                            "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist),  
+                            "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 
+                            'heading': heading, 'selectedagentheading': selectedagentheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass' 
                         },
                     )
                 
@@ -545,7 +549,7 @@ def chat(request):
                             "responsecontent": responseforuser,
                             "tokensused": tokens,
                             "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,
-                             'heading': heading, 'figletsubheading': figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass','pageborderboxclass':'chatborderboxclass'
+                             'heading': heading, 'figletsubheading': figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass'
                         },
                     )
             # else:
@@ -557,6 +561,7 @@ def chat(request):
 
     """
     print('>>>> GET request')
+    
     heading = figlettext('Chat with your Ayou clone', 'small')
     figletsubheading = figlettext('Chat with someone else', 'small')
     if 'selectedagent' not in request.session:

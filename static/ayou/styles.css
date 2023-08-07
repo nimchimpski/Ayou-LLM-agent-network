@@ -168,12 +168,12 @@ a {
 
 /* /////////   menu/layout page  //////////// */
 
-@media screen and (min-width: 680px)
+@media screen and (min-width: 45rem)
 { .ultimatecontainer {
     padding-top:10rem;
 }
 }
-@media screen and (max-width: 680px)
+@media screen and (max-width: 45rem)
 {   .ultimatecontainer {
     padding-top:15rem;}
   
@@ -316,11 +316,10 @@ a {
     position: relative;
     left: 45%;
 }
-
-.startnewchat {
-    position: relative;
-    /* opacity: .8; */
+.chatbox {
+    padding: 0 1rem;
 }
+
 
 .figletsubheading {
     font-size: .5rem;

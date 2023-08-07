@@ -7,11 +7,11 @@
 {% with pageborderboxclass='chatborderboxclass' %}
 <div class="mainpagecontainer chatpagecontainer">
         <div class="figletheading">
-                <pre>{{ heading }}</pre>
+                <pre>{{ heading }} {{ selectedagentheading }}</pre>
         </div>
         <br>
         <div class="response">{{ responsecontent }}</div>
-        <form action="{% url 'ayou:chat' %}" method="POST">
+        <form class="chatbox" action="{% url 'ayou:chat' %}" method="POST">
                 {% csrf_token %}
                 <!-- chatform -->
                 <div class="form-group">
