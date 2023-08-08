@@ -1,12 +1,11 @@
-
-text.text
+notes/
 
 .env
 
 final3venv/
 
 db.sqlite3
-§
+
 #  cause conflicts and can be regenerated
 */migrations/*
 
@@ -16,7 +15,11 @@ __pycache__/
 
 zignore/
 
-# Ignore the Mac OS X .DS_Store files
+notes/
+
 .DS_Store
 
 final3.code-workspace
+
+#   filetoignore: This pattern will ignore any file or directory named filetoignore anywhere in the project.
+#   *.log: This pattern will ignore all files with the .log extension, no matter where they are in the project.
