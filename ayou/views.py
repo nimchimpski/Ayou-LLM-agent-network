@@ -78,13 +78,7 @@ def login_view(request):
                 if not Domain.objects.filter(user=request.user).exists():
                     defaultdomain = Domain(domain='general',user=request.user)
                     defaultdomain.save()
-                return HttpResponseRedirect(reverse("ayou:chat"))
-            # else:
-            #     return render(
-            #         request,
-            #         "ayou/index.html",
-            #         {"form": NewLoginForm()},
-            #     )
+                return HttpResponseRedirect(reverse("ayou:memories"))
         else:
             return render(
                 request,
