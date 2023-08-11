@@ -15,65 +15,81 @@ body {
 
 /* ///////// page variables  ////////*/
 
- .indexbodyclass {
-    background-image: url("imgs/city.jpg");
+ .indexbodyclass, .indexmenuwideclass {
+    background-image: url("imgs/city2.jpg");
     background-attachment: fixed;
     background-size: cover;
-    background-position: -22rem 0rem ;
+    /* background-position: -22rem 0rem ; */
+    animation: movebackground 100s infinite;
 } 
-.indexmenuwideclass {
-    background-image: url("imgs/city.jpg");
-    background-position: -22rem 0rem;
+@keyframes movebackground {
+    0% {
+        background-position: 0% 50% 
+    }
+    50% {
+        background-position: 100% 50%
+    }
+    100% {
+        background-position: 0% 50%
+    }
+}
+/* .indexmenuwideclass {
+    background-image: url("imgs/city2.jpg");
     background-attachment: fixed;
     background-size: cover;
     z-index: 11;
-}
+    animation: movebackground 100s infinite;
+} */
 
 /* chat variables */
-.chatbodyclass {
+.chatbodyclass, .chatmenuwideclass {
     background-image: url("imgs/red.jpg");
     background-position: RIGHT 0rem;
     background-attachment: fixed;
     background-size: cover;
 }
 
-.chatmenuwideclass {
+/* .chatmenuwideclass {
     background-image: url("imgs/red.jpg");
     background-position: RIGHT 0rem;
     background-attachment: fixed;
     background-size: cover;
     z-index: 11;
-}
+} */
 
 /* memories variables */
-.memoriesbodyclass {
+.memoriesbodyclass, .memoriesmenuwideclass {
     background-image: url("imgs/sea.jpg");
     background-position: right 0rem;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
 }
-.memoriesmenuwideclass {
+/* .memoriesmenuwideclass {
     background-image: url('imgs/sea.jpg');
     background-position: right 0rem;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
     z-index: 11;
-}
+} */
 /* register variables */
-.registerbodyclass {
+
+
+.registermenuwideclass, .registerbodyclass {
     background-size: cover;
     background-image: url("imgs/rachel.jpg");
-    background-position: 47rem 0rem;
+    background-position: -40rem 0rem;
     background-attachment: fixed;
+    background-repeat: no-repeat;
+    /* height: 100vh; */
 }
-.registermenuwideclass {
-    background-size: cover;
-    background-image: url("imgs/rachel.jpg");
-    background-position: 47rem 0rem;
-    background-attachment: fixed;
+@media screen and (min-width: 45rem)
+{ .registermenuwideclass, .registerbodyclass {
+    background-position: -25rem 0rem;
 }
+}
+
 
 /* /////////////// shared //////////////// */
 

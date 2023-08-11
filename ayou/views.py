@@ -18,7 +18,7 @@ from .models import Memory, Biographyitem, Chat, Domain
 
 class NewLoginForm(forms.Form):
     username = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="username")
-    password = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="Password")
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="Password")
 
 class NewChatForm(forms.Form):
   
@@ -72,8 +72,12 @@ def login_view(request):
             password = form.cleaned_data["password"]
             print(">>> username ", username)
             user = authenticate(request, username=username, password=password)
+
+            ##### authenticated user?
+
             if user:
                 login(request, user)
+                request.session['selectedagent'] = request.user.username
                 # domainslist
                 if not Domain.objects.filter(user=request.user).exists():
                     defaultdomain = Domain(domain='general',user=request.user)
@@ -83,19 +87,22 @@ def login_view(request):
             return render(
                 request,
                 "ayou/index.html",
-                {"form": NewLoginForm(), 'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pageborderboxclass':'indexborderboxclass' },
+                {"form": NewLoginForm(), 'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass', },
             )
-
+        
+                ##### GET request   
+                        
     form = NewLoginForm()
     if not request.user.is_authenticated:
         print(">>> loginview get request : not loged in")
         messages.add_message(request, messages.INFO, "Please log in.")
-        return render(request, "ayou/index.html", {"form": NewLoginForm(),'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass' ,'pageborderboxclass':'indexborderboxclass'})
+        return render(request, "ayou/index.html", {"form": NewLoginForm(),'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass' })
     else:
         messages.add_message(request, messages.INFO, "logged in")
         return HttpResponseRedirect(reverse("ayou:chat"))
 
 def register_view(request):
+    heading = figlettext('Sign up and start building your clone', 'small') 
     
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -107,12 +114,12 @@ def register_view(request):
             return HttpResponseRedirect(reverse( 'ayou:login'))
         else:
             messages.add_message(request, messages.INFO, "Fill in the form correctly")
-            return render(request, 'ayou/register.html', {'form': form})
+            return render(request, 'ayou/register.html', {'form': form, 'heading': heading, 'pagebodyclass':'registerbodyclass', 'pagemenuwideclass':'registermenuwideclass'})
         
-    heading = figlettext('Sign up and start building your clone', 'small')    
+       
     form = UserCreationForm()
     messages.add_message(request, messages.INFO, "Register")
-    return render(request, 'ayou/register.html', {'form': form, 'heading': heading,'pagebodyclass':'registerbodyclass', 'pagemenuwideclass':'registermenuwideclass','pageborderboxclass':'registerborderboxclass'})
+    return render(request, 'ayou/register.html', {'form': form, 'heading': heading,'pagebodyclass':'registerbodyclass', 'pagemenuwideclass':'registermenuwideclass'})
 
 @login_required
 def logout_view(request):
@@ -125,7 +132,7 @@ def chat(request):
 
     def systemmessage(name, sentences=5):
         print('++++ systemmessage() called')
-        systemmessage = {"role": "system", "content": f"You are a character called {name} and here are some details about you  {biographyitems}. Of course you have memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. You  can also consult other agents for more information using the 'askotheragent' function.  .  ALWAYS reply as {name}, and NEVER say you are an AI assistant !]"}
+        systemmessage = {"role": "system", "content": f"You are a character called {name} Look at this list which describes you:  {biographyitems}. Act in the manner suggested by these details. You have human like memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. Some memories may be painful. You  can also consult other agents for any information you are asked about, using the 'askotheragent' function.  .  ALWAYS reply as {name}, and NEVER say you are an AI assistant !]"}
         return systemmessage
     
     def exampleassistantmessage(name):
@@ -321,6 +328,9 @@ def chat(request):
 
                 ##### make list of agents
 
+                # probably this should only be done once per session?
+                # so store in user object
+
     agentsquery = User.objects.all()
     agentslist = []
     for agent in agentsquery:
@@ -356,7 +366,7 @@ def chat(request):
             if selectagentform.is_valid():
                 selectedagent = selectagentform.cleaned_data["agent"]
                 print(f'... validform agentname= {selectedagent}')
-                responseforuser = f"Hi there - my name's {selectedagent}, I just woke up"
+                responseforuser = f"Hi there - my name's {selectedagent}, I just woke up. So, what do you want to talk about?"
                 tokens = 0  
                 if selectedagent != request.user.username :
                     print('>>> =', selectedagent, '>>> is not =', request.user.username)
@@ -371,7 +381,7 @@ def chat(request):
                 selectedagentheading = figlettext(name, 'small')
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
 
-                                ###### RETURN RENDER
+                                ###### RETURN RENDER 1
 
                 return render(
                         request,
@@ -416,7 +426,10 @@ def chat(request):
                 print("... usercontent ", usercontent)
                 newusermessagedict = {"role": "user", "content": usercontent}            
                 messagechain.append(newusermessagedict)
-                # print("... messagechain at start   ", messagechain)
+                # dodgy?????
+                messagechain.append( messagechain[0])
+                print("... messagechain at start   ", messagechain[0])
+                # ??????
                 
                             ####### now we have a messagechain with the user's message at the end
                 
@@ -426,7 +439,7 @@ def chat(request):
                 firstcompletion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messagechain,
-                max_tokens=200,
+                max_tokens=300,
                 temperature=1,
                 functions=functions,
                 function_call="auto",
@@ -524,12 +537,12 @@ def chat(request):
                 thischat.save()
                 
                                 ######   render the page with the last agent response
-                
-                heading = figlettext('Chat with your Ayou clone', 'small')
-                figletsubheading = figlettext('Chat with another Ayou clone', 'small')
+                heading, selectedagentheading, figletsubheading = figletheadings(request, name)
+                # heading = figlettext('Chat with your Ayou clone', 'small')
+                # figletsubheading = figlettext('Chat with someone else', 'small')
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
 
-                                ###### RETURN RENDER
+                                ###### RETURN RENDER 2
 
                 return render(
                         request,
@@ -547,18 +560,49 @@ def chat(request):
 
     print('>>>> GET request')
     
-    heading = figlettext('Chat with your Ayou clone', 'small')
-    figletsubheading = figlettext('Chat with someone else', 'small')
-    if 'selectedagent' not in request.session:
-        request.session['selectedagent'] = request.user.username
     name = request.session['selectedagent']
+    heading, selectedagentheading, figletsubheading = figletheadings(request, name)
+
+    # figletsubheading = figlettext('Chat with someone else', 'small')
+    # if 'selectedagent' not in request.session:
+    #     request.session['selectedagent'] = request.user.username
+    
+    # if request.user.username != name:
+    #     selectedagentheading = figlettext(name, 'small')        
+    #     heading = figlettext('Chat with ', 'small')
+    # else:
+    #     selectedagentheading = ''
+    #     heading = figlettext('Chat with your Ayou clone', 'small')
+
+
+    # def figletheadings(request, name)
+    #     if request.user.username != name:
+    #         selectedagentheading = figlettext(name, 'small')        
+    #         heading = figlettext('Chat with ', 'small')
+    #     else:
+    #         selectedagentheading = ''
+    #         heading = figlettext('Chat with your Ayou clone', 'small')
+    #     figletsubheading = figlettext('Chat with someone else', 'small')
+    #     return selectedagentheading, heading
+
+
     print('>>> reqest.session[selectedagent] ', request.session['selectedagent'])
     print('... name at GET ', name)
     messages.add_message(request, messages.INFO, f"{request.user.username}")
+    
+                        ###### RETURN RENDER 3
 
-                        ###### RETURN RENDER
+    def chatcontext():
+        return {'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'selectedagentheading': selectedagentheading, 'selectagentform': SelectAgentForm(agentslist=agentslist)}    
+                    
 
-    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading,  })
+    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'selectedagentheading': selectedagentheading })
+
+
+
+
+# context = chatcontext(request)
+
 
 
 @login_required
