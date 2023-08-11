@@ -1,13 +1,20 @@
 from pyfiglet import Figlet 
 
 
+# def globalvariables(request):
+#     figletlogo=Figlet(font='bulbhead')
+#     renderedlogo=figletlogo.renderText('Ayou')
+
+#     heading = figlettext('Chat with your Ayou clone', 'small')
+#     figletsubheading = figlettext('Chat with another Ayou clone', 'small')
+#     return {'figletlogo':renderedlogo,'heading':heading,'figletsubheading':figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass'  }
+
 def globalvariables(request):
     figletlogo=Figlet(font='bulbhead')
     renderedlogo=figletlogo.renderText('Ayou')
 
-    heading = figlettext('Chat with your Ayou clone', 'small')
-    figletsubheading = figlettext('Chat with another Ayou clone', 'small')
-    return {'figletlogo':renderedlogo,'heading':heading,'figletsubheading':figletsubheading, 'pagebodyclass': 'chatbodyclass',  'pagemenuwideclass': 'chatmenuwideclass'  }
+   
+    return {'figletlogo':renderedlogo }
 
 def figlettext(text, font):
     figlet=Figlet(font=font)
@@ -24,16 +31,12 @@ def figletheadings(request, name):
     figletsubheading = figlettext('Chat with someone else', 'small')
     return  heading, selectedagentheading, figletsubheading
     
-    '''
-chat variables
-
-selectagentforms()
-agentslist
-figletsubheading
-
-message to me
 
 
+
+
+
+'''
 
 
 global variables

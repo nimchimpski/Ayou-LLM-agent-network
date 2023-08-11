@@ -52,6 +52,7 @@ class DomainsListForm(forms.ModelForm):
 
 class SelectAgentForm(forms.Form):
     def __init__(self, *args, agentslist=[], **kwargs):
+        print('>>>||| slectagentform agentslist> ', agentslist)
         super(SelectAgentForm, self).__init__(*args, **kwargs)
         self.fields['agent'] = forms.ChoiceField(
             choices=[(agentname, agentname) for i, agentname in enumerate(agentslist)],
@@ -321,6 +322,18 @@ def chat(request):
     
                 ##### the variables we need
     
+    def chatcontext(name):
+        
+        heading, selectedagentheading, figletsubheading = figletheadings(request, name)
+        return {'selectagentform':SelectAgentForm(agentslist=agentslist), 'agentslist':agentslist,
+            'figletsubheading':figletsubheading, 
+            'heading':heading, 
+            'selectedagentheading':selectedagentheading, 
+            'pagebodyclass': 'chatbodyclass',  
+            'pagemenuwideclass': 'chatmenuwideclass',
+            
+            }
+    
     userid = request.user.id
     # print(f">>>  username  {name} id {userid}")
     memory_id = 0
@@ -344,7 +357,7 @@ def chat(request):
     if request.method == "POST":
         print('\n XXXXXXXXXXXXXXX POST request XXXXXXXXXXXXXXXXX \n')
         print('request=', request.POST)
-        print(">>> request.session['selectedagent']= ", request.session['selectedagent'])
+        print(">>> request.session['selectedagent'], B4 processing any new select= ", request.session['selectedagent'])
         name=request.session['selectedagent']
         print('>>>name= ',name)
 
@@ -361,7 +374,7 @@ def chat(request):
                         #### check if different agent selected  
 
         if 'selectagentsubmit' in request.POST:
-            print('... Different agent selected')
+            print('\n... Different agent selected\n')
             selectagentform = SelectAgentForm(request.POST, agentslist=agentslist)
             if selectagentform.is_valid():
                 selectedagent = selectagentform.cleaned_data["agent"]
@@ -374,25 +387,28 @@ def chat(request):
                     print('>>> session[selectedagent] = ', request.session['selectedagent'])
                     name=selectedagent
                 else:
-                    request.session['selectedagent'] = 'request.user.username'
+                    request.session['selectedagent'] = request.user.username
                     name= request.user.username
+                    
+                    print('>>>b4 render 1: session[selectedagent] = ', request.session['selectedagent'])
+                    print('>>>b4 render 1: name= ', name)
                 heading = figlettext('Chat with ', 'small')
                 print('>>> name before selectedagent render= ', name)
                 selectedagentheading = figlettext(name, 'small')
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
 
                                 ###### RETURN RENDER 1
+                name=request.session['selectedagent']
+                print('>>> name b4 render 1,  ', name)
+                context = chatcontext(name)
+                context.update ({  "chatform": NewChatForm(),
+                            "responsecontent": responseforuser,
+                            "tokensused": tokens,})
 
                 return render(
                         request,
                         "ayou/chat.html",
-                        {
-                            "chatform": NewChatForm(),
-                            "responsecontent": responseforuser,
-                            "tokensused": tokens,
-                            "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 
-                            'heading': heading, 'selectedagentheading': selectedagentheading 
-                        },
+                        context
                     )
                 
         elif 'chatsubmit' in request.POST:
@@ -537,72 +553,42 @@ def chat(request):
                 thischat.save()
                 
                                 ######   render the page with the last agent response
-                heading, selectedagentheading, figletsubheading = figletheadings(request, name)
-                # heading = figlettext('Chat with your Ayou clone', 'small')
-                # figletsubheading = figlettext('Chat with someone else', 'small')
+
+                # heading, selectedagentheading, figletsubheading = figletheadings(request, name)
+            
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
 
-                                ###### RETURN RENDER 2
+                                 ###### RETURN RENDER 2
+                name = request.session['selectedagent']
+                context = chatcontext(name)   
+                context.update( {
+                            "chatform": chatform,
+                            "responsecontent": responseforuser,
+                            "tokensused": tokens,
+                        })
 
                 return render(
                         request,
                         "ayou/chat.html",
-                        {
-                            "chatform": chatform,
-                            "responsecontent": responseforuser,
-                            "tokensused": tokens,
-                            "name": name,'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,
-                             'heading': heading, 'figletsubheading': figletsubheading
-                        },
-                    )
+                        context,
+                    )                
+
 
             #######    GET REQUEST, render the page with an empty form
 
     print('>>>> GET request')
-    
-    name = request.session['selectedagent']
-    heading, selectedagentheading, figletsubheading = figletheadings(request, name)
-
-    # figletsubheading = figlettext('Chat with someone else', 'small')
-    # if 'selectedagent' not in request.session:
-    #     request.session['selectedagent'] = request.user.username
-    
-    # if request.user.username != name:
-    #     selectedagentheading = figlettext(name, 'small')        
-    #     heading = figlettext('Chat with ', 'small')
-    # else:
-    #     selectedagentheading = ''
-    #     heading = figlettext('Chat with your Ayou clone', 'small')
-
-
-    # def figletheadings(request, name)
-    #     if request.user.username != name:
-    #         selectedagentheading = figlettext(name, 'small')        
-    #         heading = figlettext('Chat with ', 'small')
-    #     else:
-    #         selectedagentheading = ''
-    #         heading = figlettext('Chat with your Ayou clone', 'small')
-    #     figletsubheading = figlettext('Chat with someone else', 'small')
-    #     return selectedagentheading, heading
-
-
     print('>>> reqest.session[selectedagent] ', request.session['selectedagent'])
-    print('... name at GET ', name)
-    messages.add_message(request, messages.INFO, f"{request.user.username}")
+    
+    messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
     
                         ###### RETURN RENDER 3
 
-    def chatcontext():
-        return {'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'selectedagentheading': selectedagentheading, 'selectagentform': SelectAgentForm(agentslist=agentslist)}    
+    name = request.session['selectedagent']
+    context = chatcontext(name)  
+    context.update({"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information"})
+    print('... name at GET ', name)
                     
-
-    return render(request, "ayou/chat.html", {"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information",  'selectagentform': SelectAgentForm(agentslist=agentslist), 'agentslist': agentslist,  'heading': heading, 'figletsubheading': figletsubheading, 'selectedagentheading': selectedagentheading })
-
-
-
-
-# context = chatcontext(request)
-
+    return render(request, "ayou/chat.html", context)
 
 
 @login_required
@@ -751,6 +737,6 @@ def memories(request):
 
                         ##### RENDER PAGE
 
-    messages.add_message(request, messages.INFO, f" {request.user.username}")
+    messages.add_message(request, messages.INFO, f" logged in as {request.user.username}")
     return render(request, "ayou/memories.html", pagevariables(request, message), )
  
