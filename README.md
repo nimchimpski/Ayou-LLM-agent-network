@@ -1,15 +1,9 @@
 # 'AYOU' (Artificial You)
 
-design decisions - no javascript, no css framework pure
-keep a minimum of pages.
-OpenAI chat completions API has no memory, (ala chatGPT) so the first goal was to implement chat history storage and retrieval.
+#### VIDEO DEMO:  [http://217.174.244.37/ayou.mp4](http://217.174.244.37/ayou.mp4)
+Note on the video. Because it would not be clear if an agent was actually contacting another, or just accessing the LLM training data, I decided to make somewhat ridiculous agent examples, such that when they returned memory information to a calling agent, it was clear it had to have come from them. 
+Eg. (as far as I know) there is no Fat Constants Theory!
 
-#### CODE USED
-python, html, css
-#### frameworks used
-Django
-
-#### Video Demo:  <URL HERE>
 
 ## DESCRIPTION / AIM:
 A web application where users can create of a personalised, configurable chatbot, 
@@ -43,9 +37,11 @@ If already uploaded, these are presented as lists.
 1 a 'knowledge area'. This is one record per agent, which can contain a string describing what knowledge (stored as memories) the agent has.
 This is shared with all agents. 
 This can be edited.
+
 2 'biographical fact's'. arbitrary number of items describing the person, such as adress, age, hair colour, personality.
 Option to delete items.
 This is personal.
+
 3 'memories'. arbitrary number of items, each with a date, short description, main content, and an emotion.
 These are personal, but can be recalled if wanted , and shared with other agents if requested.
 Option to delete items
@@ -65,6 +61,12 @@ These can be selected to chat with. Naturally, the initial loggen in user remain
 The name of the agent, if not ones own, is displayed in Figlet font.
 
 ------
+
+
+#### PROJECT CODE USED
+python, html, css
+#### FRAMEWORKS USED
+Django
 
 ## CODE/FRONTEND
 
@@ -164,11 +166,14 @@ the sqlite3 database tables. (Chat, Memory, BiographyItem, Domain)
 
 # DESIGN CHOICES
 
+design decisions - no javascript, no css framework just plain css.
+Keep a minimum of pages.
+**IMPORTANT** OpenAI chat completions API has no memory, (ala chatGPT) so the first goal was to implement chat history storage and retrieval.
+
 ## original ideas, not implemented due to time constraints
 
-Things I didnt add just because I ran out of time:
-Old chat retieval. 
-User Email input.
 A 'Social' page, where the agent could be configured to , eg, via Twitter API, read certain tweets and post. Respond to certain emails, and reply to specific Whatsapp messages.
 A message with eg. "Thinking" displayed instead of the previous agent response once the user submits a question. This could be via AJAX/fetch.
 Seperation of chats not carried out with the owner of that agent.
+Old chat retieval. 
+User Email input.
