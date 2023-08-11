@@ -1,4 +1,4 @@
-# AYou
+# 'AYOU' (Artificial You)
 
 design decisions - no javascript, no css framework pure
 keep a minimum of pages.
@@ -11,34 +11,32 @@ Django
 
 #### Video Demo:  <URL HERE>
 
-#### Description:
-
-
-# PROJECT AIM:
-Create a web application where users can create of a personalised, configurable chatbot, 
+## DESCRIPTION / AIM:
+A web application where users can create of a personalised, configurable chatbot, 
 which can recall the history of a conversation.
 The agent can be configures with biographical details and memories. These can be retrieved as and when deemed necessary by the agent.
 It can ask other agents to share information stored in their memories. Likewise, if asked, it can share its own memories
 The user can select other users' agents to chat to.
 
----
+-----
 
-# USER INTERFACE -  (FRONT-END) EXPERIENCE
+## USER INTERFACE -  (FRONT-END) EXPERIENCE
 Each user has their own agent, who they are confronted with once logged in.
 The page collapses to a small width with one breakpoint.
 There are 3 menu buttons at the top; Chat, Configure and Logout.
 Messages per the loggin-status appear top right.
 
-## index.html (login)
+### index.html (login)
 A simple username/password login, using Django authentication.
 The login page background-image is animated to slowly pan from side to side.
 Option to have forgotten passwords emailed (if an email adress has been added by Admin), or to  go to...
 
-## registration.html
+### registration.html
 Django built in registration form, with name and complexity checked password.
+User is initially redirected to...
 
-## memories.html (configure page) 
-User is initially redirected here. 
+### memories.html (configure page) 
+ 
 There are 3 categories of data which can be inputed here.
 If already uploaded, these are presented as lists.
 
@@ -56,7 +54,7 @@ Password can be reset on this page.
 
 Clicking the menu Chat button leads to...
 
-## chat.html 
+### chat.html 
 here the agent can be talked to by inputing text, following on from a previous conversation which is automatically retrieved.
 If preferred a 'new chat' option can be selected.
 The agent response appears above the user input field.
@@ -66,9 +64,9 @@ Below, there is a list of all the other agents that have been created.
 These can be selected to chat with. Naturally, the initial loggen in user remains the same.
 The name of the agent, if not ones own, is displayed in Figlet font.
 
----
+------
 
-# THE CODE/FRONTEND
+## CODE/FRONTEND
 
 There is a main 'layout'html' template carrying the menu.
 
@@ -85,11 +83,11 @@ Unfortunately at smaller sizes, and for the text I needed, it was not sufficient
 
 
 
-# THE CODE/BACKEND
+## CODE/BACKEND
 
 all the main code is in views.py,
 
-## REGISTRATIOM / LOGIN VIEW
+### REGISTRATIOM / LOGIN VIEW
 This is done  using Django's built in registration and authentication system. Passwords must meet a criteria of complexity and are stored as hashes.
 
 On creation a couple of things happen.
@@ -98,7 +96,7 @@ The user.object has a field called 'selectedagent' set to the user.
 (this is crucial to how parts of the program will know which agent it is dealing with)
 
 
-## CHAT VIEW
+### CHAT VIEW
 On receiving a POST request (in this case carrying user chat input and optional new-chat selection);
 From the database:
 A list of the other agents
@@ -135,7 +133,7 @@ Another API call is made, with the agent identity now set back as the original '
 If the chat exceeds a specified length, it is sent to the agent to be summarised, and the result is saved in place of the original chain.
 The API charges by Token use, so the length is important. Also once it gets too long , writing it to memory every conversational turn has too high a time cost. This is also a chance to put the full system message back into focus to the agent, by appending to the  start of the new chain.
 
-## MEMORIES VIEW (CONFIGURE)
+### MEMORIES VIEW (CONFIGURE)
 
 The database has 3 models accessable through the forms on this page.
 Domain (knowledge area), BiographicalItem, and Memory.
@@ -145,31 +143,32 @@ A message confirms creation or deletion of entries.
 
 Forms are all created with Django form classes, using widgets to specify css-classes
 
----
+-----
 
-Helpers.py
+## other files
 
+#### Helpers.py
+a globalvariables function, for the Figlet font headings
 
-# CSS
-
-styls.css
+#### styls.css
 Basic css file.
 Used flex where possible
 One media query breakpoint to collapse the menu and reposition the background picture.
 
-# HELPERS
+#### index.html, memories.html, chat.html, register.html, layout.html,
+simple html.pages, as described above.
 
-some global variables.
-
-
+#### models.py
+the sqlite3 database tables. (Chat, Memory, BiographyItem, Domain)
 
 
 # DESIGN CHOICES
 
-## original ideas, abandoned
+## original ideas, not implemented due to time constraints
 
 Things I didnt add just because I ran out of time:
 Old chat retieval. 
 User Email input.
 A 'Social' page, where the agent could be configured to , eg, via Twitter API, read certain tweets and post. Respond to certain emails, and reply to specific Whatsapp messages.
-A message with eg. "Thinking" displayed instead of the previous agent response once the user submits a question. This would be via AJAX/fetch.
+A message with eg. "Thinking" displayed instead of the previous agent response once the user submits a question. This could be via AJAX/fetch.
+Seperation of chats not carried out with the owner of that agent.
