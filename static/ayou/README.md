@@ -2,15 +2,12 @@
 
 design decisions - no javascript, no css framework pure
 keep a minimum of pages.
-OpenAI API has no memory, so the first goal was to implement chat history storage and retrieval.
-### NOTE ON VIDEO PRESENTATION
-Because I want to demonstrate that an agent could ask another agent for information (as opposed to getting that info from its training data), I created fictional agents whereby their memories would not be semthing publicly known. For instance, the Fat Constants Theory does not exist.
-
+OpenAI chat completions API has no memory, (ala chatGPT) so the first goal was to implement chat history storage and retrieval.
 
 #### CODE USED
 python, html, css
 #### frameworks used
-Django, Jinja, 
+Django
 
 #### Video Demo:  <URL HERE>
 
@@ -18,27 +15,36 @@ Django, Jinja,
 
 
 # PROJECT AIM:
-Allow the creation of a personalised, configurable chatbot, based on the user,
+Create a web application where users can create of a personalised, configurable chatbot, 
 which can recall the history of a conversation.
-The agent potentially has access to details about itself, and to extensive memories.
+The agent can be configures with biographical details and memories. These can be retrieved as and when deemed necessary by the agent.
 It can ask other agents to share information stored in their memories. Likewise, if asked, it can share its own memories
-
 The user can select other users' agents to chat to.
 
+---
 
-# FUNCTION: FRONT - END EXPERIENCE
-Each user has their own agent, who they are confronted with once logged in
+# USER INTERFACE -  (FRONT-END) EXPERIENCE
+Each user has their own agent, who they are confronted with once logged in.
+The page collapses to a small width with one breakpoint.
+There are 3 menu buttons at the top; Chat, Configure and Logout.
+Messages per the loggin-status appear top right.
+
 ## index.html (login)
-A simple username/password login, using Django authentication
-Option to have forgotten passwords emailed (if an email adress has been added by Admin - I didnt add this field), or to  go to...
-## registration.html
-Django built in registration form, with name and password .
+A simple username/password login, using Django authentication.
+The login page background-image is animated to slowly pan from side to side.
+Option to have forgotten passwords emailed (if an email adress has been added by Admin), or to  go to...
 
-## memories.html (configure) 
-There are 3 categories of data which can be inputed on the 'configure' page
+## registration.html
+Django built in registration form, with name and complexity checked password.
+
+## memories.html (configure page) 
+User is initially redirected here. 
+There are 3 categories of data which can be inputed here.
+If already uploaded, these are presented as lists.
 
 1 a 'knowledge area'. This is one record per agent, which can contain a string describing what knowledge (stored as memories) the agent has.
-This is shared with all agents. This can be edited.
+This is shared with all agents. 
+This can be edited.
 2 'biographical fact's'. arbitrary number of items describing the person, such as adress, age, hair colour, personality.
 Option to delete items.
 This is personal.
@@ -48,24 +54,30 @@ Option to delete items
 
 Password can be reset on this page.
 
+Clicking the menu Chat button leads to...
+
 ## chat.html 
 here the agent can be talked to by inputing text, following on from a previous conversation which is automatically retrieved.
 If preferred a 'new chat' option can be selected.
-There is a list of all the agents that have been created. 
-These can be selected to chat to.
-The login page background is animated to slowly pan from side to side.
-The agent response field subtley pulsates with a css animation
+The agent response appears above the user input field.
+It slowsly and subtly pulsates with a reversing orange/blue gradient
 
+Below, there is a list of all the other agents that have been created. 
+These can be selected to chat with. Naturally, the initial loggen in user remains the same.
+The name of the agent, if not ones own, is displayed in Figlet font.
 
-
+---
 
 # THE CODE/FRONTEND
 
-The main framework is Django.
 There is a main 'layout'html' template carrying the menu.
 
-The HTML'CSS is all pure. No framework for this beyond Djangos templating.
+The HTML'CSS is all vanilla. No framework for this beyond whats included in Django.
 Css body classes are passed to individual  html template pages to control the background image which is used for the menu as well, thus creating a 'transparent' menu bar effect, under which content, as normal,  scrolls invisibly.
+
+As mentioned, there are 2 animations.
+Login page sci-fi city background-image pans slowly.
+Agent response box 'pulsates' by animating a color-gradient reversal.
 
 Figlet 'Bulbhead' font is used for the main Ayou logo.
 Unfortunately at smaller sizes, and for the text I needed, it was not sufficiently legible, so for the other headings I used Figlet 'small'.
@@ -75,7 +87,7 @@ Unfortunately at smaller sizes, and for the text I needed, it was not sufficient
 
 # THE CODE/BACKEND
 
-views.py
+all the main code is in views.py,
 
 ## REGISTRATIOM / LOGIN VIEW
 This is done  using Django's built in registration and authentication system. Passwords must meet a criteria of complexity and are stored as hashes.
@@ -110,18 +122,18 @@ The initial call to the OpenaI API is made with the chat chain and the function 
 The response is checked for any function requests.
 If necessary, a memory content is retrieved and sent directly back to the agent (nothing yet goes to the webpage) for processing.
 Or if required another agent is contacted.
-This is done inside a function which switches the current agnet name accordingly, such that bio items and memory list all now pertain to the second agent. Of course it now needs to request one of its own memories,
+This is done inside a function which switches the current agent name accordingly, such that bio items and memory list all now pertain to the second agent. Of course it now needs to request one of its own memories,
 before it can send the information back to the oringinal agent, who in turn can ultimately answer the initiating question from the user.
 
 I limited the attempts allowed for the called agent to respond with a meaingful memory request, to avoid non-ending loops.
 
 I would like to implement this recursively, but with just one level of requests I think there would be no benefit.
 
-finally the memory content from the called agent is appended to the (original) message chain, with a system message explaining how to use it
-and another API call is made, with the agent identity now firmly back as the 'selectedagent'. The relevant response content from this is passed to the html page for the user.
+Finally the memory content from the called agent is appended to the (original) message chain, with a system message explaining how to use it.
+Another API call is made, with the agent identity now set back as the original 'selectedagent'. The relevant response content from this is passed to the html page for the user.
 
 If the chat exceeds a specified length, it is sent to the agent to be summarised, and the result is saved in place of the original chain.
-The API charges by Token use, so the length is important. Also once it gets too long , writing it to memory every conversational turn has too high a time cost. This is also a chance to put the full system message back into focus. 
+The API charges by Token use, so the length is important. Also once it gets too long , writing it to memory every conversational turn has too high a time cost. This is also a chance to put the full system message back into focus to the agent, by appending to the  start of the new chain.
 
 ## MEMORIES VIEW (CONFIGURE)
 
@@ -132,6 +144,10 @@ Bio items and memories can be deleted, but not edited.
 A message confirms creation or deletion of entries.
 
 Forms are all created with Django form classes, using widgets to specify css-classes
+
+---
+
+Helpers.py
 
 
 # CSS
@@ -144,11 +160,6 @@ One media query breakpoint to collapse the menu and reposition the background pi
 # HELPERS
 
 some global variables.
-
-
-
-
-
 
 
 

@@ -357,7 +357,7 @@ def chat(request):
     if request.method == "POST":
         print('\n XXXXXXXXXXXXXXX POST request XXXXXXXXXXXXXXXXX \n')
         print('request=', request.POST)
-        print(">>> request.session['selectedagent']= ", request.session['selectedagent'])
+        print(">>> request.session['selectedagent'], B4 processing any new select= ", request.session['selectedagent'])
         name=request.session['selectedagent']
         print('>>>name= ',name)
 
@@ -374,7 +374,7 @@ def chat(request):
                         #### check if different agent selected  
 
         if 'selectagentsubmit' in request.POST:
-            print('... Different agent selected')
+            print('\n... Different agent selected\n')
             selectagentform = SelectAgentForm(request.POST, agentslist=agentslist)
             if selectagentform.is_valid():
                 selectedagent = selectagentform.cleaned_data["agent"]
@@ -387,15 +387,19 @@ def chat(request):
                     print('>>> session[selectedagent] = ', request.session['selectedagent'])
                     name=selectedagent
                 else:
-                    request.session['selectedagent'] = 'request.user.username'
+                    request.session['selectedagent'] = request.user.username
                     name= request.user.username
+                    
+                    print('>>>b4 render 1: session[selectedagent] = ', request.session['selectedagent'])
+                    print('>>>b4 render 1: name= ', name)
                 heading = figlettext('Chat with ', 'small')
                 print('>>> name before selectedagent render= ', name)
                 selectedagentheading = figlettext(name, 'small')
                 messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
 
                                 ###### RETURN RENDER 1
-
+                name=request.session['selectedagent']
+                print('>>> name b4 render 1,  ', name)
                 context = chatcontext(name)
                 context.update ({  "chatform": NewChatForm(),
                             "responsecontent": responseforuser,
