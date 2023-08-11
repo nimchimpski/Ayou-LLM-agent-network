@@ -24,3 +24,22 @@ def figletheadings(request, name):
     figletsubheading = figlettext('Chat with someone else', 'small')
     return  heading, selectedagentheading, figletsubheading
     
+    '''
+chat variables
+
+selectagentforms()
+agentslist
+figletsubheading
+
+message to me
+
+
+
+
+global variables
+
+name
+heading
+
+
+'''
