@@ -1,6 +1,6 @@
 # 'AYOU' (Artificial You)
 
-#### VIDEO DEMO:  [http://217.174.244.37/ayou.mp4](http://217.174.244.37/ayou.mp4)
+#### VIDEO DEMO:  [http://nimchimpski.com/ayou.mp4](http://nimchimpski.com/ayou.mp4)
 Note on the video. Because it would not be clear if an agent was actually contacting another, or just accessing the LLM training data, I decided to make somewhat ridiculous agent examples, such that when they returned memory information to a calling agent, it was clear it had to have come from them. 
 Eg. (as far as I know) there is no Fat Constants Theory!
 
