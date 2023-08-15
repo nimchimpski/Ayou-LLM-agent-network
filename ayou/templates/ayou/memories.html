@@ -2,12 +2,11 @@
 {% load static %}
 
 {% block body %}
-<!-- {% with pagebodyclass='memoriesbodyclass' %}
-{% with pagemenuwideclass='memoriesmenuwideclass' %} -->
+
 
 <div class="mainpagecontainer">
 
-    <!-- //////// heading and pwd change /////////// -->
+    {# //////// heading and pwd change /////////// #}
 
  
     <div class="configureheadingbox">
@@ -18,9 +17,9 @@
             <p>{{ message }}</p>
         </div>
     </div>
-    <!-- end heading-->
+    {# end heading#}
 
-    <!-- //////// domains /////////// -->
+    {# //////// domains /////////// #}
 
     <div class="configurebox">
         <p class="text1">{{ name }}'s  knowledge area</p>
@@ -34,21 +33,21 @@
         </form>
     </div>
 
-    <!-- //////// bio items ////////// -->
+    {# //////// bio items ////////// #}
 
-    <!-- edit the bio items -->
+    {# edit the bio items #}
     <div class="configurebox">
         <p class="text1">Facts about {{ name }}</p>
         {% if biographyitems %}
 
 
 
-        <!-- list the bio items -->
+        {# list the bio items #}
         <div class="configurescrollbox">
             <ul>{% for item in biographyitems %}
                 <li>{{ item.item }} : {{ item.description}}
 
-                    <!-- delete biography item -->
+                    {# delete biography item #}
                     <form action="{% url 'ayou:memories' %}" method="POST">
                         {% csrf_token %}
                         {{ deletebioform }}
@@ -62,7 +61,7 @@
             </ul>
         </div>
         {% endif %}
-        <!-- add new -->
+        {# add new #}
         <p class="text1">Add new fact</p>
 
         <form action="{% url 'ayou:memories' %}" method="POST">
@@ -81,14 +80,14 @@
             <input type="submit" value="Submit">
         </form>
     </div>
-    <!-- end add new -->
+    {# end add new #}
 
 
 
-    <!-- ///////// memories /////////// -->
+    {# ///////// memories /////////// #}
 
 
-    <!-- list memories -->
+    {# list memories #}
     <div class="configurebox">
         {% if memories %}
         <p class="text1">{{ name }}'s memories {{ memorymessage}}</p>
@@ -97,7 +96,7 @@
             <div class="inner">
                 <ul>{% for memory in memories%}
                     <li>{{ memory.date }} : {{ memory.description}} : {{memory.emotion}}
-                        <!-- delete memory -->
+                        {# delete memory #}
                         <form action="{% url 'ayou:memories' %}" method="POST">
                             {% csrf_token %}
                             {{ deletememoryform }}
@@ -105,7 +104,7 @@
                             <input type="hidden" name="id" value="{{ memory.id }}">
                             <input type="submit" name="confirm" value="confirm">
                         </form>
-                        <!-- end delete-->
+                        {# end delete#}
                         <br>
                     </li>
                     {% endfor %}
@@ -113,7 +112,7 @@
             </div>
         </div>
         {% endif %}
-        <!-- end list memories -->
+        {# end list memories #}
 
 
 
@@ -122,7 +121,7 @@
         <p class="text1">Add new memory</p>
 
 
-        <!-- add a memory -->
+        {# add a memory #}
 
         <div class="memoryinputcontainer">
             <form action="{% url 'ayou:memories' %}" method="POST" class="memoryinputform">
@@ -152,7 +151,7 @@
             </form>
         </div>
      
-    <!-- end memories  -->
+    {# end memories  #}
 
 </div>
 <div class="pwdchange"><a href="{% url 'password_change' %}">Change password</a>
@@ -162,6 +161,5 @@
 
 
 
-<!-- {% endwith %}
-{% endwith %} -->
+
 {% endblock %}

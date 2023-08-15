@@ -2,8 +2,7 @@
 {% load static %}
 
 {% block body %}
-<!-- {% with pagebodyclass='chatbodyclass' %}
-{% with pagemenuwideclass='chatmenuwideclass' %} -->
+
 <div class="mainpagecontainer chatpagecontainer">
         <div class="figletheading">
                 <pre>{{ heading }} {{ selectedagentheading }}</pre>
@@ -12,7 +11,7 @@
         <div class="response">{{ responsecontent }}</div>
         <form class="chatbox" action="{% url 'ayou:chat' %}" method="POST">
                 {% csrf_token %}
-                <!-- chatform -->
+          
                 <div class="form-group">
                         <label for="chat">{{ chatform.usercontent.label }}</label>
                         {{ chatform.usercontent }}
@@ -54,6 +53,5 @@
 
 
 
-        {% endwith %}
-        {% endwith %}
+     
         {% endblock %}
