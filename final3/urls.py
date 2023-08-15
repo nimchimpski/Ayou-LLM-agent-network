@@ -1,3 +1,5 @@
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 """
 URL configuration for final3 project.
 
@@ -22,6 +24,5 @@ urlpatterns = [
     path('ayou/', include('ayou.urls')),
     path('account/', include('django.contrib.auth.urls')),
 
-    
-
 ]
+urlpatterns += staticfiles_urlpatterns()
