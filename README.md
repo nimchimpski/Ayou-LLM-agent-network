@@ -7,8 +7,8 @@ Eg. (as far as I know) there is no Fat Constants Theory!
 
 ## DESCRIPTION / AIM:
 A web application where users can create of a personalised, configurable chatbot, 
-which can recall the history of a conversation.
-The agent can be configures with biographical details and memories. These can be retrieved as and when deemed necessary by the agent.
+which can recall the history of a conversation. Note: the OpenAI completions API has no initial memory function.
+The agent can be configured with biographical details and memories. These can be retrieved as and when deemed necessary by the agent.
 It can ask other agents to share information stored in their memories. Likewise, if asked, it can share its own memories
 The user can select other users' agents to chat to.
 
