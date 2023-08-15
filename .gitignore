@@ -4,7 +4,7 @@
 
 final3venv/
 
-db.sqlite3
+
 
 #  cause conflicts and can be regenerated
 */migrations/*
