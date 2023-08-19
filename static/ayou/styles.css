@@ -130,16 +130,17 @@ a {
 
 /* /////////   menu/layout page  //////////// */
 
-@media screen and (min-width: 45rem)
+/* @media screen and (min-width: 45rem)
 { .ultimatecontainer {
     padding-top:10rem;
 }
-}
-@media screen and (max-width: 45rem)
+} */
+/* @media screen and (max-width: 45rem)
 {   .ultimatecontainer {
     padding-top:15rem;}
-}
+} */
 .ultimatecontainer {
+    padding-top: 10rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -172,10 +173,11 @@ a {
 }
 
 .toprightbox {
-    margin-left: 1rem;
-    padding-right: 1rem;
+   display: flex;
+   justify-content: center;
+   align-items: center;
     position: relative;
-    top: .5rem;
+    padding-left: .25rem;
     opacity: 1;
     width: 4rem;
     border: 1px solid rgba(255, 255, 255, .5);
@@ -194,7 +196,7 @@ a {
     top: 0;
     width: 100%;
     z-index: 10;
-    /* border: 1px solid red; */
+    /* border: 1px solid rgb(222, 245, 16); */
 }
 
 .mymenu {

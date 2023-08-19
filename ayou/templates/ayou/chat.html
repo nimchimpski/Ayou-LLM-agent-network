@@ -40,14 +40,16 @@
         <div class="chooseclonebox">
 
 
-                <div class="chooseclone">
+                
                         <form action="{% url 'ayou:chat' %}" method="POST">
                                 {% csrf_token %}
+                                <div class="chooseclone">
                                 {{ selectagentform }}
                                 <br>
+                        </div>
                                 <input type="submit" value="choose clone" name="selectagentsubmit">
                         </form>
-                </div>
+                
         </div>
 </div>
 
