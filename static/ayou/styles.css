@@ -20,7 +20,7 @@ body {
     background-attachment: fixed;
     background-size: cover;
     /* background-position: -22rem 0rem ; */
-    animation: movebackground 100s infinite;
+    animation: movebackground 1000s infinite;
 } 
 @keyframes movebackground {
     0% {
@@ -33,13 +33,7 @@ body {
         background-position: 0% 50%
     }
 }
-/* .indexmenuwideclass {
-    background-image: url("imgs/city2.jpg");
-    background-attachment: fixed;
-    background-size: cover;
-    z-index: 11;
-    animation: movebackground 100s infinite;
-} */
+
 
 /* chat variables */
 .chatbodyclass, .chatmenuwideclass {
@@ -49,13 +43,7 @@ body {
     background-size: cover;
 }
 
-/* .chatmenuwideclass {
-    background-image: url("imgs/red.jpg");
-    background-position: RIGHT 0rem;
-    background-attachment: fixed;
-    background-size: cover;
-    z-index: 11;
-} */
+
 
 /* memories variables */
 .memoriesbodyclass, .memoriesmenuwideclass {
@@ -65,14 +53,7 @@ body {
     background-attachment: fixed;
     background-size: cover;
 }
-/* .memoriesmenuwideclass {
-    background-image: url('imgs/sea.jpg');
-    background-position: right 0rem;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    z-index: 11;
-} */
+
 /* register variables */
 
 
@@ -213,9 +194,10 @@ a {
     top: 0;
     width: 100%;
     z-index: 10;
+    /* border: 1px solid red; */
 }
 
-.menu {
+.mymenu {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -232,6 +214,16 @@ a {
     margin: 0 .5rem;
     z-index: 20;
 }
+.navbar {
+  
+border: 1px solid rgba(255, 255, 255, 0.5);
+color:white;
+z-index: 20;
+max-width: 44rem;
+width:100%;
+
+} 
+
 
 /* /////////////// */
 /* //////// chat page ///////// */
