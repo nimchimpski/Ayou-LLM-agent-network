@@ -395,7 +395,7 @@ def chat(request):
                 heading = figlettext('Chat with ', 'small')
                 print('>>> name before selectedagent render= ', name)
                 selectedagentheading = figlettext(name, 'small')
-                messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
+                messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
 
                                 ###### RETURN RENDER 1
                 name=request.session['selectedagent']

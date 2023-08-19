@@ -50,7 +50,7 @@
                 </ul>
             </div>
         </div> -->
-            <nav class="navbar  navbar-dark  navbar-expand-lg bg-body-tertiary"  data-bs-theme="dark">
+            <nav class="navbar  navbar-dark  navbar-expand-md bg-body-tertiary"  data-bs-theme="dark">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="{% url 'ayou:chat' %}">
                         <pre>{{ figletlogo }}</pre>
@@ -63,9 +63,16 @@
                     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <div class="navbar-nav">
                             <!-- <a class="nav-link active" aria-current="page" href="#">Home</a> -->
-                            <a class="nav-link" href="#">Chat</a>
-                            <a class="nav-link" href="#">Configure</a>
-                            <a class="nav-link" href="#">Logout</a>
+                            <a class="nav-link" href="{% url 'ayou:chat' %}"><button class="btn">Chat</button></a>
+                            <a class="nav-link" href="{% url 'ayou:memories' %}"><button class="btn">Configure</button></a>
+                            <a class="nav-link" href="{% url 'ayou:logout' %}"><button class="btn"> Logout</button></a>
+                            <div class=" toprightbox">
+                                {% for message in messages %}
+                                <li>
+                                    <div class="loggedin">{{ message|linebreaksbr }}</div>
+                                </li>
+                                {% endfor %}
+                            </div>
                         
                         </div>
                     </div>
