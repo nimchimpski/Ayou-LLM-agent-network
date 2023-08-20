@@ -41,9 +41,9 @@
                     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <div class="navbar-nav">
                         
-                            <a class="nav-link" href="{% url 'ayou:chat' %}"><button class="btn">Chat</button></a>
-                            <a class="nav-link" href="{% url 'ayou:memories' %}"><button class="btn">Configure</button></a>
-                            <a class="nav-link" href="{% url 'ayou:logout' %}"><button class="btn"> Logout</button></a>
+                            <a class="nav-link" href="{% url 'ayou:chat' %}"><button class="btn navbtn">Chat</button></a>
+                            <a class="nav-link" href="{% url 'ayou:memories' %}"><button class="btn navbtn">Configure</button></a>
+                            <a class="nav-link" href="{% url 'ayou:logout' %}"><button class="btn navbtn"> Logout</button></a>
                             <div class=" toprightbox">
                                 {% for message in messages %}
                                 <li>
