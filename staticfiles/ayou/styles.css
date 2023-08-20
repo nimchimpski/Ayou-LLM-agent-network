@@ -239,6 +239,7 @@ a {
 
 .chooseclonebox {
     position: relative;
+    border: 1px solid white;
 }
 
 .chooseclone {
@@ -247,6 +248,7 @@ a {
     left: 30%;
     overflow-y: scroll;
     opacity: .8;
+    border: 1px solid white;
 }
 
 .response {
