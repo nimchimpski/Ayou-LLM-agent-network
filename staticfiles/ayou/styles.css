@@ -13,7 +13,7 @@ body {
     background-color: black;
 }
 
-/* ///////// page variables  ////////*/
+/* ///////// page variables  new ////////*/
 
  .indexbodyclass, .indexmenuwideclass {
     background-image: url("imgs/city2.jpg");
@@ -33,13 +33,7 @@ body {
         background-position: 0% 50%
     }
 }
-/* .indexmenuwideclass {
-    background-image: url("imgs/city2.jpg");
-    background-attachment: fixed;
-    background-size: cover;
-    z-index: 11;
-    animation: movebackground 100s infinite;
-} */
+
 
 /* chat variables */
 .chatbodyclass, .chatmenuwideclass {
@@ -49,13 +43,6 @@ body {
     background-size: cover;
 }
 
-/* .chatmenuwideclass {
-    background-image: url("imgs/red.jpg");
-    background-position: RIGHT 0rem;
-    background-attachment: fixed;
-    background-size: cover;
-    z-index: 11;
-} */
 
 /* memories variables */
 .memoriesbodyclass, .memoriesmenuwideclass {
@@ -65,14 +52,7 @@ body {
     background-attachment: fixed;
     background-size: cover;
 }
-/* .memoriesmenuwideclass {
-    background-image: url('imgs/sea.jpg');
-    background-position: right 0rem;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    z-index: 11;
-} */
+
 /* register variables */
 
 
@@ -149,15 +129,7 @@ a {
 
 /* /////////   menu/layout page  //////////// */
 
-@media screen and (min-width: 45rem)
-{ .ultimatecontainer {
-    padding-top:10rem;
-}
-}
-@media screen and (max-width: 45rem)
-{   .ultimatecontainer {
-    padding-top:15rem;}
-}
+
 .ultimatecontainer {
     display: flex;
     flex-direction: column;
@@ -239,6 +211,7 @@ a {
 
 .chooseclonebox {
     position: relative;
+    border: 1px solid rgb(233, 13, 13);
 }
 
 .chooseclone {
@@ -247,6 +220,7 @@ a {
     left: 30%;
     overflow-y: scroll;
     opacity: .8;
+    border: 1px solid rgb(52, 246, 18);
 }
 
 .response {
