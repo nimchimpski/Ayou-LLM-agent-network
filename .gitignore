@@ -19,6 +19,8 @@ zignore/
 
 
 .DS_Store
+.DS_Store/
+
 
 final3.code-workspace
 
