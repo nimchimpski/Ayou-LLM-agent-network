@@ -3,7 +3,8 @@
 
 {% block body %}
 
-<div class="mainpagecontainer chatpagecontainer">
+<div class="mainpagecontainer">
+        
         <div class="figletheading">
                 <pre>{{ heading }} {{ selectedagentheading }}</pre>
         </div>
@@ -41,13 +42,13 @@
 
 
                 
-                        <form action="{% url 'ayou:chat' %}" method="POST">
+                        <form class="cloneform" action="{% url 'ayou:chat' %}" method="POST">
                                 {% csrf_token %}
                                 <div class="chooseclone">
                                 {{ selectagentform }}
                                 <br>
                         </div>
-                                <input type="submit" value="choose clone" name="selectagentsubmit">
+                                <input type="submit" value="choose clone" class="clonebutton" name="selectagentsubmit">
                         </form>
                 
         </div>

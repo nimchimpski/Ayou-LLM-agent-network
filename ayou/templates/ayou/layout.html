@@ -27,29 +27,7 @@
     <div class="ultimatecontainer">
       
             <div class="menuwidebox {{ pagemenuwideclass }}">
-           <!--  <div class="mymenu">
-                <div class="logobox">
-                    <div class="figletlogo">
-                        <a href="{% url 'ayou:chat' %}">
-                            <pre>{{ figletlogo }}</pre>
-                        </a>
-                        <div class="agentyou font">AgentYou</div>
-                    </div>
-                </div>
-                <div class="menubox">
-                <a href="{% url 'ayou:chat' %}"><button class="btn">Chat</button></a>
-                <a href="{% url 'ayou:memories' %}"><button class="btn">Configure</button></a>
-                <a href="{% url 'ayou:logout' %}"><button class="btn"> Logout</button></a>
-            </div>
-                <ul class=" toprightbox">
-                    {% for message in messages %}
-                    <li>
-                        <p class="loggedin">{{ message|linebreaksbr }}</p>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div> -->
+
             <nav class="navbar  navbar-dark  navbar-expand-md bg-body-tertiary"  data-bs-theme="dark">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="{% url 'ayou:chat' %}">
@@ -62,10 +40,10 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <div class="navbar-nav">
-                            <!-- <a class="nav-link active" aria-current="page" href="#">Home</a> -->
-                            <a class="nav-link" href="{% url 'ayou:chat' %}"><button class="btn">Chat</button></a>
-                            <a class="nav-link" href="{% url 'ayou:memories' %}"><button class="btn">Configure</button></a>
-                            <a class="nav-link" href="{% url 'ayou:logout' %}"><button class="btn"> Logout</button></a>
+                        
+                            <a class="nav-link" href="{% url 'ayou:chat' %}"><button class="btn navbtn">Chat</button></a>
+                            <a class="nav-link" href="{% url 'ayou:memories' %}"><button class="btn navbtn">Configure</button></a>
+                            <a class="nav-link" href="{% url 'ayou:logout' %}"><button class="btn navbtn"> Logout</button></a>
                             <div class=" toprightbox">
                                 {% for message in messages %}
                                 <li>

@@ -13,7 +13,7 @@ body {
     background-color: black;
 }
 
-/* ///////// page variables  ////////*/
+/* ///////// page variables  new ////////*/
 
  .indexbodyclass, .indexmenuwideclass {
     background-image: url("imgs/city2.jpg");
@@ -42,7 +42,6 @@ body {
     background-attachment: fixed;
     background-size: cover;
 }
-
 
 
 /* memories variables */
@@ -130,15 +129,6 @@ a {
 
 /* /////////   menu/layout page  //////////// */
 
-/* @media screen and (min-width: 45rem)
-{ .ultimatecontainer {
-    padding-top:10rem;
-}
-} */
-/* @media screen and (max-width: 45rem)
-{   .ultimatecontainer {
-    padding-top:15rem;}
-} */
 .ultimatecontainer {
     padding-top: 10rem;
     display: flex;
@@ -233,6 +223,7 @@ width:100%;
 
 .chooseclonebox {
     position: relative;
+    border: 1px solid rgb(233, 13, 13);
 }
 
 .chooseclone {
@@ -241,6 +232,7 @@ width:100%;
     left: 30%;
     overflow-y: scroll;
     opacity: .8;
+    border: 1px solid rgb(52, 246, 18);
 }
 
 .response {
