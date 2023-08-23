@@ -21,6 +21,8 @@ zignore/
 .DS_Store
 .DS_Store/
 
+db.sqlite3
+
 
 final3.code-workspace
 
