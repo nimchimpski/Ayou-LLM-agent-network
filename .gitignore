@@ -20,6 +20,10 @@ zignore/
 
 .DS_Store
 .DS_Store/
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7d876114639a0abacdb6ffa4c1ac7dd8b8c04d33
 
 final3.code-workspace
 
