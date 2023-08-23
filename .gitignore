@@ -1,0 +1,30 @@
+ notes/
+
+.env
+
+final3venv/
+
+venv/
+
+
+
+#  cause conflicts and can be regenerated
+*/migrations/*
+
+__pycache__/
+
+.vscode/
+
+zignore/
+
+
+.DS_Store
+.DS_Store/
+
+db.sqlite3
+
+
+final3.code-workspace
+
+#   filetoignore: This pattern will ignore any file or directory named filetoignore anywhere in the project.
+#   *.log: This pattern will ignore all files with the .log extension, no matter where they are in the project.
