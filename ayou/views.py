@@ -22,7 +22,7 @@ class NewLoginForm(forms.Form):
 
 class NewChatForm(forms.Form):
   
-    usercontent = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 58, 'class': 'textarea', 'placeholder':'Say something...'}), max_length=500, label="")
+    usercontent = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 30, 'class': 'textarea', 'placeholder':'Say something...'}), max_length=500, label="")
     startnewchat = forms.BooleanField(widget=forms.CheckboxInput(attrs={ 'class': 'topicboo'}),label="Start new chat?", required=False)
 
 class NewMemoryForm(forms.Form):
