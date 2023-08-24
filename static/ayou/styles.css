@@ -66,19 +66,19 @@ body {
 .registerbodyclass {
     background-size: cover;
     background-image: url("imgs/rachel.jpg");
-    background-position: -40rem 0rem;
+    background-position: -50rem 0rem;
     background-attachment: fixed;
     background-repeat: no-repeat;
     /* height: 100vh; */
 }
 
-@media screen and (min-width: 45rem) {
+/* @media screen and (min-width: 600px) {
 
     .registermenuwideclass,
     .registerbodyclass {
-        background-position: -25rem 0rem;
+        background-position: -60rem 0rem;
     }
-}
+} */
 
 
 /* /////////////// shared //////////////// */
@@ -129,16 +129,21 @@ a {
     padding: 0rem 0rem 0rem 0rem;
 }
 
+@media screen and (min-width: 992px) {
+    
+}
 .mainpagecontainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-grow: 1;
+    /* flex-grow: 1; */
     padding-bottom: 0rem;
     margin-bottom: 0rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     z-index: 0;
-    padding-top: 10rem;
+    padding-top: 15rem;
 }
 
 /* /////////   menu/layout page  //////////// */
@@ -244,7 +249,7 @@ a {
     text-align: center;
 }
 .response {
-    margin-top: 1rem;
+    margin: 1rem;
     background-image: -webkit-linear-gradient(-45deg, rgb(162, 122, 142), rgb(234, 137, 34));
     background-size: 200% 200%;
     max-width: 30rem;
@@ -266,11 +271,24 @@ a {
     padding: 0 1rem;
 }
 
+.figsubbox {
+    padding-right:2rem;
+    padding-left:2rem;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 .figletsubheading {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     font-size: .4rem;
     font-weight: bold;
     opacity: 0.8;
     text-align: center;
+
 }
 
 @keyframes Gradient {
@@ -360,6 +378,7 @@ a {
 }
 
 /* ////////  register page  /////////// */
+
 
 .register {
     margin-top: -2rem;

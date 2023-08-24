@@ -32,7 +32,11 @@ class Chat(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
    
     def __str__(self):
-        return f'{self.user.username} : {self.messages}'
+        username = self.user.username if self.user else 'No Field'
+        messages = self.messages if self.messages else 'No messages'
+        
+        return f'{username} : {messages}'
+
     
 class Domain(models.Model):
     domain = models.CharField(max_length=64)
