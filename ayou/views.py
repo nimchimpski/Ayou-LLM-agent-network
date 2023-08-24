@@ -94,10 +94,11 @@ def login_view(request):
                 ##### GET request   
                         
     form = NewLoginForm()
+    heading = figlettext('Welcome to Ayou', 'standard')
     if not request.user.is_authenticated:
         print(">>> loginview get request : not loged in")
         messages.add_message(request, messages.INFO, "Please log in.")
-        return render(request, "ayou/index.html", {"form": NewLoginForm(),'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass' })
+        return render(request, "ayou/index.html", {"form": NewLoginForm(),'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass', 'heading': heading })
     else:
         messages.add_message(request, messages.INFO, "logged in")
         return HttpResponseRedirect(reverse("ayou:chat"))
