@@ -20,11 +20,11 @@ class Biographyitem(models.Model):
     description = models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
+
     def __str__(self):
         username = self.user.username if self.user else 'No Field'
-        item = self.user.item if self.user else 'No Field'
-        description = self.user.description if self.user else 'No Field'
         return f'{username}: {self.item} : {self.description}'
+
 
 
 class Chat(models.Model):
