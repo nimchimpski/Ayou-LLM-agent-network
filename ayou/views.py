@@ -583,7 +583,7 @@ def chat(request):
     
                         ###### RETURN RENDER 3
 
-    name = request.session['selectedagent']
+    name = request.session.get['selectedagent']
     context = chatcontext(name)  
     context.update({"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information"})
     print('... name at GET ', name)
