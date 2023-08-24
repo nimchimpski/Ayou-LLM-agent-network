@@ -579,7 +579,7 @@ def chat(request):
             #######    GET REQUEST, render the page with an empty form
 
     print('>>>> GET request')
-    print('>>> reqest.session[selectedagent] ', request.session('selectedagent'))
+    print('>>> reqest.session[selectedagent] ', request.session.get('selectedagent'))
     
     messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
     
