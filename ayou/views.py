@@ -94,7 +94,7 @@ def login_view(request):
                 ##### GET request   
                         
     form = NewLoginForm()
-    heading = figlettext('Welcome to Ayou', 'standard')
+    heading = figlettext('Welcome to Ayou', 'small')
     subheading = figlettext('Not registered?', 'small')
     if not request.user.is_authenticated:
         print(">>> loginview get request : not loged in")
