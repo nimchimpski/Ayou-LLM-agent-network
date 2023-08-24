@@ -95,10 +95,11 @@ def login_view(request):
                         
     form = NewLoginForm()
     heading = figlettext('Welcome to Ayou', 'standard')
+    subheading = figlettext('Not registered?', 'small')
     if not request.user.is_authenticated:
         print(">>> loginview get request : not loged in")
         messages.add_message(request, messages.INFO, "Please log in.")
-        return render(request, "ayou/index.html", {"form": NewLoginForm(),'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass', 'heading': heading })
+        return render(request, "ayou/index.html", {"form": NewLoginForm(),'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass', 'heading': heading, 'subheading':subheading })
     else:
         messages.add_message(request, messages.INFO, "logged in")
         return HttpResponseRedirect(reverse("ayou:chat"))
@@ -578,7 +579,7 @@ def chat(request):
             #######    GET REQUEST, render the page with an empty form
 
     print('>>>> GET request')
-    print('>>> reqest.session[selectedagent] ', request.session['selectedagent'])
+    print('>>> reqest.session[selectedagent] ', request.session('selectedagent'))
     
     messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
     
