@@ -35,8 +35,8 @@ class DeleteMemoryForm(forms.Form):
     deletememoryboo = forms.BooleanField(label="Forget?" )
 
 class NewBioForm(forms.Form):
-    item = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="item")
-    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 10, 'class': 'textarea'}),label="description")
+    item = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 40, 'class': 'textarea'}),label="item")
+    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 40, 'class': 'textarea'}),label="description")
 
 class DeleteBioForm(forms.Form):
     deletebioboo = forms.BooleanField(label="delete this fact?" )
@@ -81,7 +81,7 @@ def login_view(request):
                 request.session['selectedagent'] = request.user.username
                 # domainslist
                 if not Domain.objects.filter(user=request.user).exists():
-                    
+
                     defaultdomain = Domain(domain='general',user=request.user)
                     defaultdomain.save()
                 return HttpResponseRedirect(reverse("ayou:memories"))
