@@ -6,7 +6,7 @@ final3venv/
 
 venv/
 
-staticfiles/
+staticfiles/ayou/
 
 #  cause conflicts and can be regenerated
 */migrations/*
