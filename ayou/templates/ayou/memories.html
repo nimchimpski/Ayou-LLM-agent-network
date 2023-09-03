@@ -23,8 +23,10 @@
 
     {# //////// domains /////////// #}
 
-    <div class="configurebox">
-        <p class="text1">{{ name }}'s  knowledge area</p>
+    <div class="configurebox domainbox">
+        <p class="text1">{{ name }}'s  knowledge area <span id ="domaintxt" class = "instructionstxt" >instructions</span></p>
+    
+        <div id="domaininstructions" class="instructions">A single comma seperated list of the topics that this agent is knowledgeable about. Use it to let other agents know what this agent can be asked about.</div>
 
         <form method="POST" class="form1">
             {% csrf_token %}
@@ -39,10 +41,9 @@
 
     {# edit the bio items #}
     <div class="configurebox">
-        <p class="text1">Facts about {{ name }}</p>
+        <p class="text1">Facts about {{ name }}<span id ="factstxt" class="instructionstxt">instructions</span></p>
+        <div id="factsinstructions" class="instructions">Short, individual biographical items describing the agent, eg. age, residence, gender etc</div>
         {% if biographyitems %}
-
-
 
         {# list the bio items #}
         <div class="configurescrollbox">
@@ -92,7 +93,8 @@
     {# list memories #}
     <div class="configurebox">
         {% if memories %}
-        <p class="text1">{{ name }}'s memories {{ memorymessage}}</p>
+        <p class="text1">{{ name }}'s memories {{ memorymessage}}<span id ="memoriestxt" class = "instructionstxt" >instructions</span></p>
+        <div id="memoriesinstructions" class="instructions">This is the important stuff. Entries can be long, and should describe memories of events, or knowledge that the agent should have, eg an article they have written. The content will be recalled in a chat only if the description indicates that it will be usefull for the conversation. If the agent is contacted by another, in request of information it may have according to its knowledge area (above), the memory may be recalled if the description sounds relevant. So ensure the desription is appropriate! </div>
 
         <div class="configurescrollbox mem">
             <div class="inner">

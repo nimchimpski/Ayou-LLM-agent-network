@@ -330,10 +330,15 @@ a {
 }
 
 .configurebox {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
     border: 1px solid rgba(255, 255, 255, .5);
-    padding: 0rem 2rem 2rem 2rem;
+    padding: 1rem 2rem 2rem 2rem;
     margin-bottom: 1rem;
 }
+
 
 .configurescrollbox {
     display: flex;
@@ -362,7 +367,27 @@ a {
     height: 1rem;
     padding: .5rem .5rem .5rem .5rem;
 }
-
+.instructionstxt {
+    position: relative;
+    margin-left: 2rem;
+    color: rgba(234, 137, 34, 1);
+    border: 1px solid rgb(234, 137, 34);
+    cursor: pointer;
+}
+.instructions {
+    color: rgba(234, 137, 34, .8);
+    margin-bottom: 1rem;
+}
+#domaininstructions {
+    /* display: none; */
+}
+#factsinstructions  {
+    /* display: none; */
+}
+.domainbox {
+    position: relative;
+    top:0rem;
+}
 .domainfield {
     width: 20rem;
 }
@@ -413,6 +438,8 @@ a {
 }
 
 /* buttons */
+
+
 
 form input[type=submit] {
     background: -webkit-linear-gradient(-45deg, rgb(167, 158, 158), rgb(234, 137, 34));

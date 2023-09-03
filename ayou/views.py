@@ -81,6 +81,7 @@ def login_view(request):
                 request.session['selectedagent'] = request.user.username
                 # domainslist
                 if not Domain.objects.filter(user=request.user).exists():
+                    
                     defaultdomain = Domain(domain='general',user=request.user)
                     defaultdomain.save()
                 return HttpResponseRedirect(reverse("ayou:memories"))
