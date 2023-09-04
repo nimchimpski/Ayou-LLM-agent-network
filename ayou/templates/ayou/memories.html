@@ -26,7 +26,7 @@
     <div class="configurebox domainbox">
         <p class="text1">{{ name }}'s  knowledge area <span id ="domaintxt" class = "instructionstxt" >instructions</span></p>
     
-        <div id="domaininstructions" class="instructions">A single comma seperated list of the topics that this agent is knowledgeable about. Use it to let other agents know what this agent can be asked about.</div>
+        <div id="domaininstructions" class="instructions">A single comma seperated list of the topics that this agent is knowledgeable about. Use it to let other agents know what this agent can be asked about. ONLY SUBMIT ONE FORM AT A TIME</div>
 
         <form method="POST" class="form1">
             {% csrf_token %}
@@ -37,17 +37,17 @@
         </form>
     </div>
 
-    {# //////// bio items ////////// #}
+    {# //////// PERSONALITY ////////// #}
 
     {# edit the bio items #}
     <div class="configurebox">
-        <p class="text1">Facts about {{ name }}<span id ="factstxt" class="instructionstxt">instructions</span></p>
-        <div id="factsinstructions" class="instructions">Short, individual biographical items describing the agent, eg. age, residence, gender etc</div>
-        {% if biographyitems %}
+        <p class="text1">{{ name }}'s personality<span id ="factstxt" class="instructionstxt">instructions</span></p>
+        <div id="factsinstructions" class="instructions">Short, individual personality traits, which will instruct the agent how to behave</div>
+        {% if personality %}
 
         {# list the bio items #}
         <div class="configurescrollbox">
-            <ul>{% for item in biographyitems %}
+            <ul>{% for item in personality %}
                 <li>{{ item.item }} : {{ item.description}}
 
                     {# delete biography item #}
@@ -65,7 +65,7 @@
         </div>
         {% endif %}
         {# add new #}
-        <p class="text1">Add new fact</p>
+        <p class="text1"><br>Add new personality trait</p>
 
         <form action="{% url 'ayou:memories' %}" method="POST">
             {% csrf_token %}

@@ -136,7 +136,7 @@ def chat(request):
 
     def systemmessage(name, sentences=5):
         # print('++++ systemmessage() called')
-        systemmessage = {"role": "system", "content": f"You are a character called {name} Look at this list which describes you:  {biographyitems}. Act in the manner suggested by these details. You have human like memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. Some memories may be painful. You  can also consult other agents for any information you are asked about, using the 'askotheragent' function.  .  ALWAYS reply as {name}, and NEVER say you are an AI assistant !]"}
+        systemmessage = {"role": "system", "content": f"You are a character called {name} you will respond with the personality described here:  {personality}. Act in the manner suggested by these details. You have human like memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. Talk about the memory in a way that suits to the emotion atached to it. You  can also consult other agents for any information you are asked about, using the 'askotheragent' function.  .  ALWAYS reply as {name}, and NEVER say you are an AI assistant !]"}
         return systemmessage
     
     def exampleassistantmessage(name):
@@ -318,10 +318,10 @@ def chat(request):
    
     def biographyitems(userobject):
         biographyitemsquery=Biographyitem.objects.filter(user=userobject)
-        biographyitems = {}
+        personality = {}
         for item in biographyitemsquery:
-            biographyitems[item.item]=item.description
-        return biographyitems
+            personality[item.item]=item.description
+        return personality
     
                 ##### the variables we need
     
@@ -367,9 +367,9 @@ def chat(request):
                        ##### create the selectedagent object
 
         selectedagentobject = User.objects.get(username=name)       
-        biographyitems = biographyitems(selectedagentobject)
-        # print('||| biographyitems: ',biographyitems)
-        # print('||| biographyitems type: ',type(biographyitems))
+        personality = biographyitems(selectedagentobject)
+        # print('||| biographyitems: ',personality)
+        # print('||| biographyitems type: ',type(personality))
         memorieslist = getmemorieslist(selectedagentobject.id)
         # print('>>> memorieslist ', memorieslist)
         otheragentsdomainslist = otheragentdomainsfunction(userid)
@@ -615,7 +615,7 @@ def memories(request):
     
 
     def pagevariables(request, message):
-        return  {"biographyitems": Biographyitem.objects.filter(user=request.user),    
+        return  {"personality": Biographyitem.objects.filter(user=request.user),    
                 "memories": Memory.objects.filter(user=request.user),
                 "chats": Chat.objects.filter(user=request.user),
                 "newmemoryform": NewMemoryForm(),
