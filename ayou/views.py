@@ -52,7 +52,7 @@ class DomainsListForm(forms.ModelForm):
 
 class SelectAgentForm(forms.Form):
     def __init__(self, *args, agentslist=[], **kwargs):
-        print('>>>||| slectagentform agentslist> ', agentslist)
+        # print('>>>||| slectagentform agentslist> ', agentslist)
         super(SelectAgentForm, self).__init__(*args, **kwargs)
         self.fields['agent'] = forms.ChoiceField(
             choices=[(agentname, agentname) for i, agentname in enumerate(agentslist)],
@@ -66,12 +66,12 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def login_view(request):
     if request.method == "POST":
-        print(">>> loginview POST")
+        # print(">>> loginview POST")
         form = NewLoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
-            print(">>> username ", username)
+            # print(">>> username ", username)
             user = authenticate(request, username=username, password=password)
 
             ##### authenticated user?
@@ -98,7 +98,7 @@ def login_view(request):
     heading = figlettext('Welcome to Ayou', 'small')
     subheading = figlettext('Not registered?', 'small')
     if not request.user.is_authenticated:
-        print(">>> loginview get request : not loged in")
+        # print(">>> loginview get request : not loged in")
         messages.add_message(request, messages.INFO, "Please log in.")
         return render(request, "ayou/index.html", {"form": NewLoginForm(),'pagebodyclass':'indexbodyclass', 'pagemenuwideclass':'indexmenuwideclass','pagelineheightclass':'indexlineheightclass', 'heading': heading, 'subheading':subheading })
     else:
@@ -114,7 +114,7 @@ def register_view(request):
             form.save()
             username = form.cleaned_data["username"]
             messages.success(request, f'New account created. Now you can log-in as {username}')
-            print(f'>>> in registerview : account created for {username}')
+            # print(f'>>> in registerview : account created for {username}')
             return HttpResponseRedirect(reverse( 'ayou:login'))
         else:
             messages.add_message(request, messages.INFO, "Fill in the form correctly")
@@ -135,23 +135,23 @@ def logout_view(request):
 def chat(request):
 
     def systemmessage(name, sentences=5):
-        print('++++ systemmessage() called')
+        # print('++++ systemmessage() called')
         systemmessage = {"role": "system", "content": f"You are a character called {name} Look at this list which describes you:  {biographyitems}. Act in the manner suggested by these details. You have human like memories and  feelings. If the user asks you about a memory, you can look at your 'getmemorycontent' function. Some memories may be painful. You  can also consult other agents for any information you are asked about, using the 'askotheragent' function.  .  ALWAYS reply as {name}, and NEVER say you are an AI assistant !]"}
         return systemmessage
     
     def exampleassistantmessage(name):
-        print('+++++ exampleassistantmessage() called')
+        # print('+++++ exampleassistantmessage() called')
         result ={"role": "assistant", "content": f"Hello! My names {name}.  I remember quite a bit about my past. Not all my memories are happy, but I'm willing to share them with you. I'm also happy to answer any questions you have about what I'm doing now, or about my past.I can also ask other clones for information about their memories."}
         return result
     
     def dealwithfunctionrequest():
-        print('+++ dealwithfunctionrequest() called')
+        # print('+++ dealwithfunctionrequest() called')
         possfunctions = {"getmemorycontent": getmemorycontent, "askotheragent": askotheragent}
         functionname = completionmessage["function_call"]["name"]
         functiontocall = possfunctions[functionname]
-        print('... functiontocall ', functiontocall)
+        # print('... functiontocall ', functiontocall)
         functionargs = json.loads(completionmessage["function_call"]["arguments"])
-        print('... functionargs ', functionargs)
+        # print('... functionargs ', functionargs)
                     ##### completion call here!
         functionresponse = functiontocall(**functionargs)
         # print('... functionresponse= ', functionresponse, type(functionresponse))
@@ -167,7 +167,7 @@ def chat(request):
     def askotheragent(agentname, question):
   
         def askotheragentcompletion(callfunction='auto'):
-            print('+++ askotheragentcompletion() called')
+            # print('+++ askotheragentcompletion() called')
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=messagechain,
@@ -182,69 +182,69 @@ def chat(request):
         redefine variables and chat, with local scope, to the other agent
         """        
         attempts = 0
-        print(f'+++ askotheragent() called= {agentname}')
-        print(f'+++ with this question= {question}')
+        # print(f'+++ askotheragent() called= {agentname}')
+        # print(f'+++ with this question= {question}')
         otheragentid= User.objects.get(username=agentname).id
-        print(f'/// otheragentid ={otheragentid}')
+        # print(f'/// otheragentid ={otheragentid}')
         memorieslist = getmemorieslist(otheragentid)
         otheragentsdomainslist = otheragentdomainsfunction(otheragentid)
         otheragentsfunctions = scopedfunctions(memorieslist, otheragentsdomainslist)
-        print(f'/// {agentname}"s functions ={otheragentsfunctions}')
-        print(f'/// {agentname}s memorieslist ={memorieslist}')
+        # print(f'/// {agentname}"s functions ={otheragentsfunctions}')
+        # print(f'/// {agentname}s memorieslist ={memorieslist}')
         messagechain = []
         messagechain.append(systemmessage(agentname))
         messagechain.append({"role": "system", "content": "IMPORTANT! Make sure you have the correct id for the memory you want to retrieve"})
         messagechain.append(exampleassistantmessage(agentname))
       
-        print(f'/// {agentname}s messagechain {messagechain}')
-        print('///////  about to make the first completion to otheragent')
+        # print(f'/// {agentname}s messagechain {messagechain}')
+        # print('///////  about to make the first completion to otheragent')
                     
 
                     ###### if no request for a memory+id, loop until you get one
 
         for i in range(5):
             askotheragentresponse  = (askotheragentcompletion())
-            print(f'/// askotheragentresponse = {askotheragentresponse}')
-            print(f'/// askotheragentresponse type = {type(askotheragentresponse)}')
+            # print(f'/// askotheragentresponse = {askotheragentresponse}')
+            # print(f'/// askotheragentresponse type = {type(askotheragentresponse)}')
             functioncall =  askotheragentresponse['choices'][0]['message'].get('function_call')
-            print(f'/// functioncall = {functioncall}')
+            # print(f'/// functioncall = {functioncall}')
             arguments = askotheragentresponse['choices'][0]['message']['function_call']['arguments']
-            print(f'/// arguments = {arguments}')
+            # print(f'/// arguments = {arguments}')
             # is a string
-            print(f'/// arguments type = {type(arguments)}')
+            # print(f'/// arguments type = {type(arguments)}')
             argumentsdict= json.loads(arguments)
-            print(f'/// argumentsdict = {argumentsdict}')
+            # print(f'/// argumentsdict = {argumentsdict}')
             memoryid=argumentsdict['memory_id']
-            print(f'/// memoryid = {memoryid}')
+            # print(f'/// memoryid = {memoryid}')
                     ##### check if there is both memory and id
             if (functioncall is not None) and (memoryid is not None):
-                print('/// response has function call and id')
+                # print('/// response has function call and id')
                         ##### check id matches a memory 
                             ##### destringify the args    
                 argsstring = askotheragentresponse['choices'][0]['message']['function_call']['arguments']
                 argsdict = json.loads(argsstring)
-                print(f'/// argsdict = {argsdict}')
+                # print(f'/// argsdict = {argsdict}')
                 memoryid = argsdict.get('memory_id')
                 if  Memory.objects.filter(id=memoryid):
                         #### you have an id and a matching memory so get the memory
                     newmessage = f"Here is some information from someone you know. Do not say it is your memory!  {getmemorycontent(memoryid)}  Use it to answer the original users question."
-                    print(f'>>> askotheragent() retrieved memory= {newmessage}')
+                    # print(f'>>> askotheragent() retrieved memory= {newmessage}')
                     #### we got the memory, now we need to send it back to the original agent
                     return newmessage
 
                 else:
-                    print('... in loop-memory id not valid')
-                    print(f'/// invalid memoryid= {memoryid}')
+                    # print('... in loop-memory id not valid')
+                    # print(f'/// invalid memoryid= {memoryid}')
             if i == 3:
-                    print(f"Failed to generate a valid memory id after 3 attempts.")
+                    # print(f"Failed to generate a valid memory id after 3 attempts.")
                     return json.dumps({"role": "system", "content": f'No useful memories came back from this enquiry. '})
                             #### end of loop
                   
     def getmemorieslist(users_id):
-        print(f'+++ getmemorieslist called for user {users_id}')
+        # print(f'+++ getmemorieslist called for user {users_id}')
         rememberingagentquery=User.objects.filter(id=users_id)
         rememberingagentname=rememberingagentquery[0].username
-        print(f'/// with name {rememberingagentname}')
+        # print(f'/// with name {rememberingagentname}')
 
         memoryquery = Memory.objects.filter(user=users_id)
         # print("/// memoryquery mmfn ", memoryquery)
@@ -261,19 +261,19 @@ def chat(request):
         return memories
     
     def getmemorycontent(memory_id):
-        print(f'+++ getmemorycontent called. id= {memory_id}')
+        # print(f'+++ getmemorycontent called. id= {memory_id}')
                 ####### check memory id is valid
         if not Memory.objects.filter(id=memory_id):
-            print('.../// memory id not valid')
+            # print('.../// memory id not valid')
             return json.dumps({"role": "system", "content": f'No useful memories came back from this enquiry. '})
         memory = Memory.objects.get(id=memory_id)
 
-        print(f'/// memory to be retrieved= {memory}')
-        print(f'/// will return this= {memory.content}')
+        # print(f'/// memory to be retrieved= {memory}')
+        # print(f'/// will return this= {memory.content}')
         return json.dumps(memory.content)
 
     def scopedfunctions(memorieslist, otheragentsdomainslist):
-        print('+++ scopedfunctions called')
+        # print('+++ scopedfunctions called')
         result = [
                         {
                             "name": "getmemorycontent",
@@ -306,7 +306,7 @@ def chat(request):
         return result
    
     def otheragentdomainsfunction(userid):
-        print('+++ otheragentdomainsfunction called')
+        # print('+++ otheragentdomainsfunction called')
         otheragentdomains = Domain.objects.all().exclude(user=userid)
         otheragentsdomainslist = []
         for domain in otheragentdomains:
@@ -340,7 +340,7 @@ def chat(request):
     userid = request.user.id
     # print(f">>>  username  {name} id {userid}")
     memory_id = 0
-    print(f'memory_id {memory_id}')
+    # print(f'memory_id {memory_id}')
 
                 ##### make list of agents
 
@@ -352,57 +352,57 @@ def chat(request):
     for agent in agentsquery:
         # print('>>> agent type=', type(agent))
         agentslist.append(agent.username)
-    print(">>> agentslist type ", type(agentslist))
-    print(">>> agentslist ", agentslist)
+    # print(">>> agentslist type ", type(agentslist))
+    # print(">>> agentslist ", agentslist)
 
                     #####  POST REQUEST
 
     if request.method == "POST":
-        print('\n XXXXXXXXXXXXXXX POST request XXXXXXXXXXXXXXXXX \n')
-        print('request=', request.POST)
-        print(">>> request.session['selectedagent'], B4 processing any new select= ", request.session['selectedagent'])
+        # print('\n XXXXXXXXXXXXXXX POST request XXXXXXXXXXXXXXXXX \n')
+        # print('request=', request.POST)
+        # print(">>> request.session['selectedagent'], B4 processing any new select= ", request.session['selectedagent'])
         name=request.session['selectedagent']
-        print('>>>name= ',name)
+        # print('>>>name= ',name)
 
                        ##### create the selectedagent object
 
         selectedagentobject = User.objects.get(username=name)       
         biographyitems = biographyitems(selectedagentobject)
-        print('||| biographyitems: ',biographyitems)
-        print('||| biographyitems type: ',type(biographyitems))
+        # print('||| biographyitems: ',biographyitems)
+        # print('||| biographyitems type: ',type(biographyitems))
         memorieslist = getmemorieslist(selectedagentobject.id)
-        print('>>> memorieslist ', memorieslist)
+        # print('>>> memorieslist ', memorieslist)
         otheragentsdomainslist = otheragentdomainsfunction(userid)
         
                         #### check if different agent selected  
 
         if 'selectagentsubmit' in request.POST:
-            print('\n... Different agent selected\n')
+            # print('\n... Different agent selected\n')
             selectagentform = SelectAgentForm(request.POST, agentslist=agentslist)
             if selectagentform.is_valid():
                 selectedagent = selectagentform.cleaned_data["agent"]
-                print(f'... validform agentname= {selectedagent}')
+                # print(f'... validform agentname= {selectedagent}')
                 responseforuser = f"Hi there - my name's {selectedagent}, I just woke up. So, what do you want to talk about?"
                 tokens = 0  
                 if selectedagent != request.user.username :
-                    print('>>> =', selectedagent, '>>> is not =', request.user.username)
+                    # print('>>> =', selectedagent, '>>> is not =', request.user.username)
                     request.session['selectedagent'] = selectedagent
-                    print('>>> session[selectedagent] = ', request.session['selectedagent'])
+                    # print('>>> session[selectedagent] = ', request.session['selectedagent'])
                     name=selectedagent
                 else:
                     request.session['selectedagent'] = request.user.username
                     name= request.user.username
                     
-                    print('>>>b4 render 1: session[selectedagent] = ', request.session['selectedagent'])
-                    print('>>>b4 render 1: name= ', name)
+                    # print('>>>b4 render 1: session[selectedagent] = ', request.session['selectedagent'])
+                    # print('>>>b4 render 1: name= ', name)
                 heading = figlettext('Chat with ', 'small')
-                print('>>> name before selectedagent render= ', name)
+                # print('>>> name before selectedagent render= ', name)
                 selectedagentheading = figlettext(name, 'small')
                 messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
 
                                 ###### RETURN RENDER 1
                 name=request.session['selectedagent']
-                print('>>> name b4 render 1,  ', name)
+                # print('>>> name b4 render 1,  ', name)
                 context = chatcontext(name)
                 context.update ({  "chatform": NewChatForm(),
                             "responsecontent": responseforuser,
@@ -416,24 +416,24 @@ def chat(request):
                 
         elif 'chatsubmit' in request.POST:
             name=request.session['selectedagent']
-            print('>>> name,  ', name)
+            # print('>>> name,  ', name)
             chatform = NewChatForm(request.POST)
             if chatform.is_valid():
                 startnewchat = chatform.cleaned_data["startnewchat"]
-                print("... startnewchat? ", startnewchat)
+                # print("... startnewchat? ", startnewchat)
 
                             ####### ensure there is a chat
 
                 if not Chat.objects.filter(user=selectedagentobject.id).exists() or  startnewchat:
-                    print('--- either startnewchat or no chat exists')    
+                    # print('--- either startnewchat or no chat exists')    
                     thischat = Chat.objects.create(user=selectedagentobject)
-                    print("... NEW thisChat > ", thischat)
+                    # print("... NEW thisChat > ", thischat)
                     messagechain = []
                     messagechain.append(systemmessage(name))
                     messagechain.append(exampleassistantmessage(name))
-                    print("... newly created messagechain ", messagechain, type(messagechain))
+                    # print("... newly created messagechain ", messagechain, type(messagechain))
                 else:
-                    print('--- there is a chat')
+                    # print('--- there is a chat')
                     thischat = Chat.objects.filter(user=selectedagentobject).order_by("id").last()
                     # print("--- thischat/type ", thischat, type(thischat))
                     messagechain = thischat.messages
@@ -442,12 +442,12 @@ def chat(request):
                             ####### add the user's message to the messagechain
 
                 usercontent = chatform.cleaned_data["usercontent"]
-                print("... usercontent ", usercontent)
+                # print("... usercontent ", usercontent)
                 newusermessagedict = {"role": "user", "content": usercontent}            
                 messagechain.append(newusermessagedict)
                 # dodgy?????
                 messagechain.append( messagechain[0])
-                print("... messagechain at start   ", messagechain[0])
+                # print("... messagechain at start   ", messagechain[0])
                 # ??????
                 
                             ####### now we have a messagechain with the user's message at the end
@@ -464,15 +464,15 @@ def chat(request):
                 function_call="auto",
                 )   
                 completionmessage = firstcompletion["choices"][0]["message"]
-                print("... 1st completionmessage  type= ", type(completionmessage) )
-                print("... 1st completionmessage  ",completionmessage, )
+                # print("... 1st completionmessage  type= ", type(completionmessage) )
+                # print("... 1st completionmessage  ",completionmessage, )
         
                               #######  if functioncall in response , call it and append result to messagesforcompletion
             
                 if completionmessage.get("function_call"):
-                    print("... function_call in completionmessage - will now call dealwithfunctionrequest()")
+                    # print("... function_call in completionmessage - will now call dealwithfunctionrequest()")
                     messagechain = dealwithfunctionrequest()
-                    print("...now out of dealwithfunctionrequest())")
+                    # print("...now out of dealwithfunctionrequest())")
 
                               ####### make second primary agent call with function results
 
@@ -496,13 +496,13 @@ def chat(request):
                     secondresponsedict = completionwithfunctionresults.choices[0]['message']
                     # print(f'... fn responsedict type= {type(secondresponsedict)} ++++ {secondresponsedict}')
                     tokens = completionwithfunctionresults.usage.total_tokens
-                    print("...> total_tokens ", tokens)
+                    # print("...> total_tokens ", tokens)
                     messagechain.append(secondresponsedict)
 
                 else:
                                 #######     if no functioncall in response 
 
-                    print('---: no functioncalled')
+                    # print('---: no functioncalled')
 
                                 ########  this goes to the html page later
 
@@ -513,7 +513,7 @@ def chat(request):
 
                     firstresponsedict = {'role': 'assistant', 'content': f'{firstcompletion.choices[0].message["content"]}'}    
                     tokens = firstcompletion.usage.total_tokens
-                    print("--- total_tokens ", tokens)
+                    # print("--- total_tokens ", tokens)
                     messagechain.append(firstresponsedict)
                     # print("--- messagechain b4 save ", messagechain)
 
@@ -522,7 +522,7 @@ def chat(request):
                                 #######   before saving, is the chain too long?
                 
                 if tokens >3500:
-                    print('...inside summary block')
+                    # print('...inside summary block')
                     summariserequestmessage = {"role": "system", "content": "IMPORTANT! summarise the  conversation so far, into one paragraph. Refer to the 'assistant' as 'I. You are the assistant."}
                     messagechain = messagechain[2:]
                     messagechain.append(summariserequestmessage)
@@ -538,7 +538,7 @@ def chat(request):
                     )
                     # print('... summarycompletion ', summarycompletion)
                     summarisedtokencount = summarycompletion.usage.total_tokens
-                    print('... summarisedtokencount ', summarisedtokencount)
+                    # print('... summarisedtokencount ', summarisedtokencount)
                     summarycompletioncontent = summarycompletion.choices[0].message
                     # print('... summarycompletioncontent ', summarycompletioncontent)
                     summarycompletionmessage = {"role": "assistant", "content": f"This is what you were talking about: {summarycompletioncontent}"}
@@ -549,7 +549,7 @@ def chat(request):
                     messagechain.append(systemmessage(name))
                     messagechain.append(exampleassistantmessage(name))
                     messagechain.append(summarycompletionmessage)
-                    print('...> sumarised messagechain ', messagechain)
+                    # print('...> sumarised messagechain ', messagechain)
                     #       append the agent response and save the chat
                     # print('... messagechain after summaryblock ', messagechain)
                 thischat.messages = messagechain
@@ -579,8 +579,8 @@ def chat(request):
 
             #######    GET REQUEST, render the page with an empty form
 
-    print('>>>> GET request')
-    print('>>> reqest.session[selectedagent] ', request.session.get('selectedagent'))
+    # print('>>>> GET request')
+    # print('>>> reqest.session[selectedagent] ', request.session.get('selectedagent'))
     
     messages.add_message(request, messages.INFO, f"logged in as {request.user.username}")
     
@@ -589,7 +589,7 @@ def chat(request):
     name = request.session.get('selectedagent')
     context = chatcontext(name)  
     context.update({"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information"})
-    print('... name at GET ', name)
+    # print('... name at GET ', name)
                     
     return render(request, "ayou/chat.html", context)
 
@@ -601,7 +601,7 @@ def memories(request):
     try:
         domain = Domain.objects.get(user=request.user)
     except Domain.DoesNotExist:
-        print('... no domain for this user' )
+        # print('... no domain for this user' )
         domain = Domain.objects.create(user=request.user, domain='unspecified')
     
                 ##### variables we need
@@ -638,27 +638,27 @@ def memories(request):
         # print(f'... domainslist 2 {domainslist} type {type(domainslist[0])}')
         
     if request.method == "POST":
-        print(">>> POST request ", request.POST)
-        print('>>> POST request content>', request.POST)
+        # print(">>> POST request ", request.POST)
+        # print('>>> POST request content>', request.POST)
 
                     ######  are we adding a new bio item?
     
         if request.POST.get("formname") == "newbioform":
-            print(">>> nnewbioform request")
+            # print(">>> nnewbioform request")
             newbioform = NewBioForm(request.POST)
             if newbioform.is_valid():
-                print(">>> newbioform is valid ")             
+                # print(">>> newbioform is valid ")             
                 item = newbioform.cleaned_data['item']
-                print('... item ', item)
+                # print('... item ', item)
                 description = newbioform.cleaned_data['description']
-                print('... description ', description)  
+                # print('... description ', description)  
                 newbio = Biographyitem.objects.create(item=item, description=description, user=request.user)
-                print('... newbio ', newbio)    
+                # print('... newbio ', newbio)    
                 newbio.save()
                 message = f"New biography item added: {description}"
-                print('... newbio in db', Biographyitem.objects.filter(user=request.user).order_by('id').last())
+                # print('... newbio in db', Biographyitem.objects.filter(user=request.user).order_by('id').last())
             else:
-                print('... newbioform not valid', newbioform.errors)
+                # print('... newbioform not valid', newbioform.errors)
                 message = "Biography item not added. Correct the form and try again."
 
                             ##### RENDER  PAGE
@@ -668,7 +668,7 @@ def memories(request):
         elif request.POST.get("formname") == "deletebioform":
             deletebioform = DeleteBioForm(request.POST)
             if deletebioform.is_valid():
-                print(">> deletebioform  valid ")
+                # print(">> deletebioform  valid ")
                 deletebioboo = deletebioform.cleaned_data["deletebioboo"]
                 if deletebioboo:
                     bioid = request.POST.get("id")  
@@ -724,11 +724,11 @@ def memories(request):
             domainslistform = DomainsListForm(request.POST, instance=domain)
             if domainslistform.is_valid():
                 domainslistform.save()
-                print('updated domain? ',Domain.objects.get(user=request.user))
+                # print('updated domain? ',Domain.objects.get(user=request.user))
                 message='knowledge area updated'
 
         messages.add_message(request, messages.INFO, f" {request.user.username}")
-        print('rendering after domainslist processing')
+        # print('rendering after domainslist processing')
 
                             ##### RENDER PAGE
   
@@ -736,7 +736,7 @@ def memories(request):
     
                         ##### if here by GET
     
-    print('request path ', request.path)
+    # print('request path ', request.path)
 
                         ##### RENDER PAGE
 

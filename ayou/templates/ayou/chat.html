@@ -9,8 +9,13 @@
                 <pre>{{ heading }} {{ selectedagentheading }}</pre>
         </div>
         <br>
-        <div class="response">{{ responsecontent }}</div>
-        <form class="chatbox" action="{% url 'ayou:chat' %}" method="POST">
+        <div id="responsediv" class="response">{{ responsecontent }} arse
+                <p id="thinkingdiv" style="display: block;">Thinking...</p>
+        </div>
+
+        
+
+        <form id="chatform" class="chatbox" action="{% url 'ayou:chat' %}" method="POST">
                 {% csrf_token %}
           
                 <div class="form-group">
