@@ -24,71 +24,7 @@
 <body class="{{ pagebodyclass }}">
     <script>
         
-        document.addEventListener("DOMContentLoaded", function() {
-        const domaintxt = document.getElementById("domaintxt");
-        const domaininstructions = document.getElementById("domaininstructions");
-        domaininstructions.style.display = 'none';
-        const factstxt = document.getElementById("factstxt");
-        const factsinstructions = document.getElementById("factsinstructions");
-        factsinstructions.style.display = 'none';
-        const memoriestxt = document.getElementById("memoriestxt");
-        const memoriesinstructions = document.getElementById("memoriesinstructions");
-        memoriesinstructions.style.display = 'none';
-       
-        domaintxt.addEventListener("click", function() {
-            toggleAlert(domaininstructions);
-        });
-        factstxt.addEventListener("click", function() {
-        toggleAlert(factsinstructions);
-        });
-        memoriestxt.addEventListener("click", function() {
-            toggleAlert(memoriesinstructions);
-        });
-
-        function toggleAlert(instructions) {
-            if (instructions.style.display === 'block')
-            {
-                instructions.style.display = 'none';
-            }
-            else if (instructions.style.display === 'none')
-            {
-                instructions.style.display = 'block';
-            }            
-            }
-
-document.getElementById('chatform').addEventListener('submit', async function(event) {
-    event.preventDefault();
-
-    const submit = event.target;
-    const formData = new FormData(submit);
-
-    const responsediv = document.getElementById('response');
-    responsediv.innerHTML = '';
-
-    const thinkingdiv = document.getElementById('thinkingdiv');
-    
-// thinking
-    thinkingdiv.style.dislplay = 'block';
-
-
-    try {
-        const completion = await fetch(submit.action, {
-            method: 'POST',
-            body: formData,
-        })
-        if (completion.ok) {
-            const responsetext = await completion.text();
-            responsediv.innerHTML = responsetext; 
-        } else {
-            console.error('Request failed:', completion.status);
-        }
-    } catch (error) {
-        console.error('request error:', error);
- }
-});
-});
-
-
+        
 
        
     </script>

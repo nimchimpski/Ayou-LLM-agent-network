@@ -9,14 +9,15 @@
                 <pre>{{ heading }} {{ selectedagentheading }}</pre>
         </div>
         <br>
-        <div id="responsediv" class="response">{{ responsecontent }} arse
-                <p id="thinkingdiv" style="display: block;">Thinking...</p>
-        </div>
+
 
         
 
         <form id="chatform" class="chatbox" action="{% url 'ayou:chat' %}" method="POST">
                 {% csrf_token %}
+                <div id="responsediv" class="response">{{ responsecontent }}
+                        <p id="thinkingdiv">Thinking!...</p>
+                </div>
           
                 <div class="form-group">
                         <label for="chat">{{ chatform.usercontent.label }}</label>
@@ -35,7 +36,7 @@
 
                         {{ chatform.startnewchat }}
                         {% if tokensused %}
-                        <h3>tokens used in chat: {{ tokensused }}</h3>
+                        <h3>tokens used in chat: <p id='tokensused'></p></h3>
                         {% endif %}
                 </div>
         </form>
@@ -62,6 +63,48 @@
 </div>
 
 
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
 
+document.getElementById('chatform').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const submit = event.target;
+    const formData = new FormData(submit);
+
+    const responsediv = document.getElementById('responsediv');
+    responsediv.innerHTML = '';
+
+    const thinkingMessage = document.createElement('p');
+    thinkingMessage.textContent = 'Thinking...';
+    responsediv.appendChild(thinkingMessage);
+
+    console.log('Form submitted, waiting for response...');
+
+
+    try {
+        const completion = await fetch(submit.action, {
+            method: 'POST',
+            body: formData,
+        });
+        if (completion.ok) {
+            const responseData = await completion.json();
+            console.log('Received response:', responsejson);
+            responsediv.removeChild(thinkingMessage);
+            responsediv.innerHTML = responsetext; 
+        } else {
+            
+            console.error('Request failed:', completion.status);
+            responsediv.innerHTML = 'Request failed. Please try again.';
+        }
+    } catch (error) {
+        console.error('request error:', error);
+        responsediv.innerHTML = 'An error occurred. Please try again.';
+ }
+});
+});
+
+
+</script>
      
         {% endblock %}

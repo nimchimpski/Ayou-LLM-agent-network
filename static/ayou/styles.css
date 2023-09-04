@@ -320,6 +320,9 @@ a {
     align-items: center;
     justify-content: center;
 }
+#thinkingdiv {
+    display: none;
+}
 /* /////////////////   end chat page */
 /* ////////////////  memories page ////////// */
 

@@ -232,7 +232,7 @@ def chat(request):
                     #### we got the memory, now we need to send it back to the original agent
                     return newmessage
 
-                else:
+                # else:
                     # print('... in loop-memory id not valid')
                     # print(f'/// invalid memoryid= {memoryid}')
             if i == 3:
@@ -383,7 +383,7 @@ def chat(request):
                 selectedagent = selectagentform.cleaned_data["agent"]
                 # print(f'... validform agentname= {selectedagent}')
                 responseforuser = f"Hi there - my name's {selectedagent}, I just woke up. So, what do you want to talk about?"
-                tokens = 0  
+                tokensused = 0  
                 if selectedagent != request.user.username :
                     # print('>>> =', selectedagent, '>>> is not =', request.user.username)
                     request.session['selectedagent'] = selectedagent
@@ -406,7 +406,7 @@ def chat(request):
                 context = chatcontext(name)
                 context.update ({  "chatform": NewChatForm(),
                             "responsecontent": responseforuser,
-                            "tokensused": tokens,})
+                            "tokensused": tokensused,})
 
                 return render(
                         request,
@@ -495,8 +495,8 @@ def chat(request):
 
                     secondresponsedict = completionwithfunctionresults.choices[0]['message']
                     # print(f'... fn responsedict type= {type(secondresponsedict)} ++++ {secondresponsedict}')
-                    tokens = completionwithfunctionresults.usage.total_tokens
-                    # print("...> total_tokens ", tokens)
+                    tokensused = completionwithfunctionresults.usage.total_tokens
+                    # print("...> total_tokens ", tokensused)
                     messagechain.append(secondresponsedict)
 
                 else:
@@ -512,8 +512,8 @@ def chat(request):
                                 ########   this will be added to the chain
 
                     firstresponsedict = {'role': 'assistant', 'content': f'{firstcompletion.choices[0].message["content"]}'}    
-                    tokens = firstcompletion.usage.total_tokens
-                    # print("--- total_tokens ", tokens)
+                    tokensused = firstcompletion.usage.total_tokens
+                    # print("--- total_tokens ", tokensused)
                     messagechain.append(firstresponsedict)
                     # print("--- messagechain b4 save ", messagechain)
 
@@ -521,7 +521,7 @@ def chat(request):
                
                                 #######   before saving, is the chain too long?
                 
-                if tokens >3500:
+                if tokensused >3500:
                     # print('...inside summary block')
                     summariserequestmessage = {"role": "system", "content": "IMPORTANT! summarise the  conversation so far, into one paragraph. Refer to the 'assistant' as 'I. You are the assistant."}
                     messagechain = messagechain[2:]
@@ -558,24 +558,28 @@ def chat(request):
                                 ######   render the page with the last agent response
 
                 # heading, selectedagentheading, figletsubheading = figletheadings(request, name)
-            
-                messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
+
+                return JsonResponse('responsecontent':responseforuser, 'tokensused':tokensused, content_type='text/plain')
+
+                # messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
 
                                  ###### RETURN RENDER 2
-                name = request.session['selectedagent']
-                context = chatcontext(name)   
-                context.update( {
-                            "chatform": chatform,
-                            "responsecontent": responseforuser,
-                            "tokensused": tokens,
-                        })
+                                 
+                # name = request.session['selectedagent']
+                # context = chatcontext(name)   
+                # context.update( {
+                #             "chatform": chatform,
+                #             "responsecontent": responseforuser,
+                #             "tokensused": tokensused,
+                #         })
 
-                return render(
-                        request,
-                        "ayou/chat.html",
-                        context,
-                    )                
+                # return render(
+                #         request,
+                #         "ayou/chat.html",
+                #         context,
+                #     )        
 
+                        
 
             #######    GET REQUEST, render the page with an empty form
 
