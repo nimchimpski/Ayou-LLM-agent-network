@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse
 import requests, os, openai
 import json
@@ -559,7 +559,7 @@ def chat(request):
 
                 # heading, selectedagentheading, figletsubheading = figletheadings(request, name)
 
-                return JsonResponse('responsecontent':responseforuser, 'tokensused':tokensused, content_type='text/plain')
+                return JsonResponse({'responseforuser' : responseforuser, 'tokensused' : tokensused})
 
                 # messages.add_message(request, messages.INFO, f"Logged in as {request.user.username}")
 
@@ -592,7 +592,7 @@ def chat(request):
 
     name = request.session.get('selectedagent')
     context = chatcontext(name)  
-    context.update({"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my past, or ask my friends for information"})
+    context.update({"chatform": NewChatForm(), "name": 'your',"responsecontent": f"Hi, I'm {name}. I can tell you about myself and my personal knowledge and memories, or ask my friends for information"})
     # print('... name at GET ', name)
                     
     return render(request, "ayou/chat.html", context)

@@ -35,9 +35,9 @@
                         <label for="chat">{{ chatform.startnewchat.label }}</label>
 
                         {{ chatform.startnewchat }}
-                        {% if tokensused %}
-                        <h3>tokens used in chat: <p id='tokensused'></p></h3>
-                        {% endif %}
+                        <!-- {% if tokensused %} -->
+                        <h3 id='tokensuseddiv'></h3>
+                        <!-- {% endif %} -->
                 </div>
         </form>
         <br>
@@ -64,15 +64,16 @@
 
 
 <script>
-        document.addEventListener("DOMContentLoaded", function() {
-
-document.getElementById('chatform').addEventListener('submit', async function(event) {
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById('chatform').addEventListener('submit', async function(event) {
     event.preventDefault();
 
     const submit = event.target;
     const formData = new FormData(submit);
 
-    const responsediv = document.getElementById('responsediv');
+    const responsediv = document.getElementById('responsediv');    
+//     const tokensuseddiv = document.getElementById('tokensuseddiv')
+
     responsediv.innerHTML = '';
 
     const thinkingMessage = document.createElement('p');
@@ -88,14 +89,18 @@ document.getElementById('chatform').addEventListener('submit', async function(ev
             body: formData,
         });
         if (completion.ok) {
-            const responseData = await completion.json();
+            const responsejson = await completion.json();
             console.log('Received response:', responsejson);
             responsediv.removeChild(thinkingMessage);
-            responsediv.innerHTML = responsetext; 
+            responsediv.innerHTML = responsejson.responseforuser; 
+        //     const tokensused = responsejson.tokensused;
+        //     tokensuseddiv.innerHTML = `tokens used: ${ tokensused }`
+            
+            
         } else {
             
             console.error('Request failed:', completion.status);
-            responsediv.innerHTML = 'Request failed. Please try again.';
+            responsediv.innerHTML = "Sorry I was miles away... Please say again.";
         }
     } catch (error) {
         console.error('request error:', error);
