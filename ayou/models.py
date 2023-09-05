@@ -22,7 +22,7 @@ class Biographyitem(models.Model):
 
     def __str__(self):
         username = self.user.username if self.user else 'No Field'
-        return f'{username}: {self.item} : {self.description}'
+        return f'{username}: {self.description}'
 
 
 
