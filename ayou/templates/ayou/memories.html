@@ -48,7 +48,7 @@
         {# list the bio items #}
         <div class="configurescrollbox">
             <ul>{% for item in personality %}
-                <li>{{ item.item }} : {{ item.description}}
+                <li>{{ item.description}}
 
                     {# delete biography item #}
                     <form action="{% url 'ayou:memories' %}" method="POST">

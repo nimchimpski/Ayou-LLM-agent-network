@@ -38,7 +38,7 @@ class NewBioForm(forms.Form):
     description = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 40, 'class': 'textarea'}),label="Add new personality trait")
 
 class DeleteBioForm(forms.Form):
-    deletebioboo = forms.BooleanField(label="delete this fact?" )
+    deletebioboo = forms.BooleanField(label="delete this trait?" )
 
 class DomainsListForm(forms.ModelForm):
     domain = forms.CharField(widget=forms.Textarea(attrs={'style': 'width:300px', 'rows':2, 'mincols':30, 'class': 'textarea'}), label="",)
