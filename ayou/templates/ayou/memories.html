@@ -42,7 +42,7 @@
     {# edit the bio items #}
     <div class="configurebox">
         <p class="text1">{{ name }}'s personality<span id ="factstxt" class="instructionstxt">instructions</span></p>
-        <div id="factsinstructions" class="instructions">Short, individual personality traits, which will instruct the agent how to behave</div>
+        <div id="factsinstructions" class="instructions">Describe the personality of the agent. eg. qualities, weaknesses, values, skills, interests</div>
         {% if personality %}
 
         {# list the bio items #}
@@ -65,7 +65,7 @@
         </div>
         {% endif %}
         {# add new #}
-        <p class="text1"><br>Add new personality trait</p>
+       
 
         <form action="{% url 'ayou:memories' %}" method="POST">
             {% csrf_token %}

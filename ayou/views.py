@@ -35,8 +35,7 @@ class DeleteMemoryForm(forms.Form):
     deletememoryboo = forms.BooleanField(label="Forget?" )
 
 class NewBioForm(forms.Form):
-    item = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 40, 'class': 'textarea'}),label="item")
-    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 40, 'class': 'textarea'}),label="description")
+    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 1, 'cols': 40, 'class': 'textarea'}),label="Add new personality trait")
 
 class DeleteBioForm(forms.Form):
     deletebioboo = forms.BooleanField(label="delete this fact?" )
@@ -318,9 +317,10 @@ def chat(request):
    
     def biographyitems(userobject):
         biographyitemsquery=Biographyitem.objects.filter(user=userobject)
-        personality = {}
+        personality = []
         for item in biographyitemsquery:
-            personality[item.item]=item.description
+            personality.append(item.description)
+        print('personality=', personality)
         return personality
     
                 ##### the variables we need
@@ -652,11 +652,11 @@ def memories(request):
             newbioform = NewBioForm(request.POST)
             if newbioform.is_valid():
                 # print(">>> newbioform is valid ")             
-                item = newbioform.cleaned_data['item']
+               
                 # print('... item ', item)
                 description = newbioform.cleaned_data['description']
                 # print('... description ', description)  
-                newbio = Biographyitem.objects.create(item=item, description=description, user=request.user)
+                newbio = Biographyitem.objects.create(description=description, user=request.user)
                 # print('... newbio ', newbio)    
                 newbio.save()
                 message = f"New biography item added: {description}"
@@ -679,7 +679,7 @@ def memories(request):
                     # print('... bioid ', bioid)
                     biotodelete = Biographyitem.objects.get(id=bioid)
                     # print('... biotodelete ', biotodelete)
-                    message = f"Biography item deleted: {biotodelete.item}"
+                    message = f"Biography item deleted: {biotodelete.description}"
                     biotodelete.delete()
                     # print('... biotodelete deleteed now render page')
             else:

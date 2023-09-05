@@ -16,7 +16,6 @@ class Memory(models.Model):
         return f'{self.user.username} : {self.description} : {self.emotion}'
 
 class Biographyitem(models.Model):
-    item = models.CharField(max_length=64)
     description = models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
